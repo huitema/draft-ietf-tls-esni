@@ -1,6 +1,6 @@
 {
   "magic": "B8n2c@e8kvfx",
-  "timestamp": "2020-04-24T18:55:37.080793+00:00",
+  "timestamp": "2020-04-28T19:36:08.495689+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -3603,11 +3603,14 @@
       "state": "OPEN",
       "author": "davidben",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "davidben",
+        "chris-wood"
+      ],
       "labels": [],
       "body": "The draft has provisions for GREASE ESNI extensions, per \"Do not stick out\". However, this is not very effective if an attacker can distinguish a GREASE ESNI extension from a real one.\r\n\r\n#154 tried to address this, but it doesn't work if the (public) ESNI record is known. There's also a simpler attack: replay the ClientHello with one byte of ciphertext corrupted. ESNI currently distinguishes key mismatch from decrypt failure, with the latter resulting in an alert. We can fix that by saying decrypt failure should behave like key mismatch. This still leaves record_digest.\r\n\r\nThe natural fix is to drop record_digest in favor of trial decryption. The cost is the server must perform a DH operation per known key. The number of keys the server needs depends on its DNS TTLs and key rotation. (I think it's 1 + ceil(dns_ttl / time_between_rotation), plus some leeway[*].)\r\n\r\nInstead, we can keep a key name, but make the space dense. Suppose we replace it with a B-bit \"key phase\". The server picks a random starting key phase. Then, each time it rotates the keys, it increments the phase, with wraparound. The server then gets 2<sup>B</sup> keys for free. If it needs more, it still needs trial decryption but gains a 2<sup>B</sup> multiplicative factor in the cost. On the flip side, an individual GREASE extension with a random key phase has a 1/2<sup>B</sup> chance of colliding with a particular ESNI key.\r\n\r\nI'm not sure we actually need that many live keys, so B = 2 is probably plenty. Or even B = 1 if we say you should just rotate slower than your DNS TTL.\r\n\r\n[*] Note the robustness mechanism means that server doesn't need to cover _all_ clients with stale keys. The retry is expensive, so the server still needs to cover _almost all_ of them, but it can cut off the long tail.",
       "createdAt": "2019-07-24T18:37:10Z",
-      "updatedAt": "2020-04-24T14:46:10Z",
+      "updatedAt": "2020-04-27T22:03:06Z",
       "closedAt": null,
       "comments": [
         {
@@ -3623,6 +3626,13 @@
           "body": "I think we really need to go back to first principles here and ask what it is we are trying to accomplish.  First, it's public information whether a given server supports ECHO, so if an attacker wants to know that, it can mostly just ask [there is some complexity around getting candidate names, but note that you can always get the public name from the SNI value and any real attacker will see a lot of non-ECHO traffic and so will know a bunch of SNI values].\r\n\r\nWhat's not public information is whether a given *connection* uses ECHO. The attacker might not know this either because:\r\n\r\n1. It knows that the server is ECHO-supporting.\r\n1. It has a limited view of just the connection and isn't willing to do do the work of trying to determine if the server is ECHO-supporting.\r\n\r\nIn case (1) I would also expect that the attacker is not going to go to the trouble of doing probe connections, as determining if the server is ECHO supporting is easier. This leaves us with the case where the attacker knows that the server is ECHO supporting and that the client *knows* about ECHO (otherwise it couldn't generate GREASE) but doesn't know if the client is actually doing ECHO. Do we expect there to be a lot of clients like this? Why not just do ECHO?\r\n\r\n\r\n",
           "createdAt": "2020-04-24T14:46:10Z",
           "updatedAt": "2020-04-24T14:46:10Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As per today's call, we're going to revisit the GREASE threat model and then reconvene if further work is needed.",
+          "createdAt": "2020-04-27T22:02:57Z",
+          "updatedAt": "2020-04-27T22:02:57Z"
         }
       ]
     },
@@ -3754,7 +3764,7 @@
       "id": "MDU6SXNzdWU0OTg0MzQ4OTM=",
       "title": "Consider disabling server tickets if tickets are not uniform across the ESNI anonymity set",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/182",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -3763,8 +3773,8 @@
       "labels": [],
       "body": "Tickets and ESNI interact in a weird way, i.e., they may leak size or contain the SNI, leading to potential issues. One might want to disable them if also offering ESNI as a service.",
       "createdAt": "2019-09-25T17:54:45Z",
-      "updatedAt": "2019-09-30T07:48:59Z",
-      "closedAt": null,
+      "updatedAt": "2020-04-27T22:01:08Z",
+      "closedAt": "2020-04-27T22:01:08Z",
       "comments": [
         {
           "author": "davidben",
@@ -3842,6 +3852,13 @@
           "body": "@chris-wood I'd appreciate it if you could, as I'm not sure when I can do it.",
           "createdAt": "2019-09-30T07:48:59Z",
           "updatedAt": "2019-09-30T07:48:59Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing as this is effectively included in #209!",
+          "createdAt": "2020-04-27T22:01:08Z",
+          "updatedAt": "2020-04-27T22:01:08Z"
         }
       ]
     },
@@ -4251,15 +4268,15 @@
       "id": "MDU6SXNzdWU1MjgzMjI0MTk=",
       "title": "Anonymity sets",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/204",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sayrer",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Even if #146 and #139 are closed without further edits, I think the draft should clarify the intended anonymity set for ESNIConfig and its associated record_digest. The draft does address this in section 7.5.2. \"Avoid widely-deployed shared secrets\", but I missed that. Additionally, the draft uses the term \"anonymity set\" only once, in section 6.1. \"Misconfiguration and Deployment Concerns\".\r\n\r\nThe explanation Ben Schwartz wrote on the list is very clear:\r\n\r\n\"The record_digest, like the ESNIConfig itself, is intended to be constant across all domains that form an anonymity set (i.e. O(1) ESNIConfigs per CDN).  Thus, the record_digest reveals no additional information to an onlooker who can observe the server IP.\"\r\n\r\nPerhaps a short section on anonymity sets would clarify this. I think some combination of section 7.5.2 and the last paragraph of the introduction would work.",
       "createdAt": "2019-11-25T20:35:36Z",
-      "updatedAt": "2020-04-09T04:35:43Z",
-      "closedAt": null,
+      "updatedAt": "2020-04-27T21:58:03Z",
+      "closedAt": "2020-04-27T21:58:03Z",
       "comments": [
         {
           "author": "chris-wood",
@@ -4274,6 +4291,13 @@
           "body": "is the clarification still required? just curious.",
           "createdAt": "2020-04-09T04:35:42Z",
           "updatedAt": "2020-04-09T04:35:42Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Indeed, I'm not sure further clarification is needed. Given no action on this issue, I'm closing. Please propose a PR or text if you feel this still needs to be fixed!",
+          "createdAt": "2020-04-27T21:58:03Z",
+          "updatedAt": "2020-04-27T21:58:03Z"
         }
       ]
     },
@@ -4285,11 +4309,13 @@
       "state": "OPEN",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [],
       "body": "And possibly also include a bit inside ESNIConfig that tells clients whether or not to populate record_digest. (See https://bford.info/pub/sec/purb.pdf for some relevant definitions.)",
       "createdAt": "2019-11-26T21:26:01Z",
-      "updatedAt": "2019-11-26T21:26:25Z",
+      "updatedAt": "2020-04-27T22:03:53Z",
       "closedAt": null,
       "comments": []
     },
@@ -4298,30 +4324,40 @@
       "id": "MDU6SXNzdWU1NTkzNjc1OTc=",
       "title": "Suggestion to support user@domain.name",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/206",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "vanrein",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "I would like to suggest supporting not only the `server_name`, but also permit user names to be included.  This would provide excellent support for peer-to-peer applications for protocols that use `user@domain.name` identities and whose design can work peer-to-peer.\r\n\r\nThere are [TLS relays using SNI](https://github.com/dlundquist/sniproxy) that need no knowledge about the content of the TLS stream, so they are no men in the middle.  With user names added into ESNI, it would be possible to do similar things with registered users; [SIP](https://tools.ietf.org/html/rfc3261) springs to mind as an example, because phones/terminals `REGISTER` [to a domain's server](https://tools.ietf.org/html/rfc3261#section-10.3) that subsequently [relays](https://tools.ietf.org/html/rfc3261#page-12) `INVITE` and other messages between them but is effectively a MITM, which can modify traffic and tap [SDP](https://tools.ietf.org/html/rfc4566)-transmitted [keys](https://tools.ietf.org/html/rfc4566#section-5.12) and [communication end points](https://tools.ietf.org/html/rfc4566#section-4.1).\r\n\r\nThe general story is of course that end-to-end encryption is better than hop-by-hop encryption, as in current uses of TLS.  Peers representing users that register with an intermediate server sound like a good opportunity to be doing that.  All that is required is a way of deciding where to forward TLS traffic, without changing its contents.  ESNI comes really close to that goal (if it adds user names).",
       "createdAt": "2020-02-03T22:16:36Z",
-      "updatedAt": "2020-02-03T22:16:36Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-04-27T21:56:35Z",
+      "closedAt": "2020-04-27T21:56:35Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Since the draft now encrypts the entire CH, this issue is irrelevant. (In particular, if clients want to send user names, they can do so today, with or without ECHO.)",
+          "createdAt": "2020-04-27T21:56:35Z",
+          "updatedAt": "2020-04-27T21:56:35Z"
+        }
+      ]
     },
     {
       "number": 214,
       "id": "MDU6SXNzdWU1OTYwMzA5MTk=",
-      "title": "Clarify whether ClientHelloInner can support TLS 1.2.",
+      "title": "Clarify 1.2 connection support (don't break connections, but also don't protect the certificate)",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/214",
       "state": "OPEN",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [],
       "body": "If the backend server does not include any signal for ECHO negotiation, either as a ServerHello extension or part of ServerHello.random, then it's possible to tunnel CHs to TLS 1.2 servers. This can be a feature, so let's consider whether or not it's in scope. (Note that we may discover that lack of server-side handshake message padding may make traffic analysis trivial.)\r\n\r\ncc @grittygrease ",
       "createdAt": "2020-04-07T17:24:36Z",
-      "updatedAt": "2020-04-24T14:38:41Z",
+      "updatedAt": "2020-04-27T23:34:12Z",
       "closedAt": null,
       "comments": [
         {
@@ -4358,6 +4394,55 @@
           "body": "This seems clever, but on balance it seems like we are getting close to a \"tunnel everything\" design. We want people to move to 1.3 and so going out of our way to accommodate 1.2 seems backwards.",
           "createdAt": "2020-04-24T14:38:41Z",
           "updatedAt": "2020-04-24T14:38:41Z"
+        },
+        {
+          "author": "grittygrease",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The main problem this solves is in the fronting case. Specifically, in the\ncase that an ECHO-aware fronting server is operated by a different entity\nthan the backend server and the fronting server does not know whether the\nbackend server supports TLS 1.3 or not. Enabling support for TLS 1.2\nenables this fronting server to be deployed in front of a wide set of\nservers.\n\nOn Fri, Apr 24, 2020 at 7:38 AM ekr <notifications@github.com> wrote:\n\n> This seems clever, but on balance it seems like we are getting close to a\n> \"tunnel everything\" design. We want people to move to 1.3 and so going out\n> of our way to accommodate 1.2 seems backwards.\n>\n> \u2014\n> You are receiving this because you were mentioned.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/tlswg/draft-ietf-tls-esni/issues/214#issuecomment-619050908>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/ABHDHZ4SMC6TFEUWSRDFLIDROGQAFANCNFSM4MDJN5UQ>\n> .\n>\n",
+          "createdAt": "2020-04-24T23:02:26Z",
+          "updatedAt": "2020-04-24T23:02:26Z"
+        },
+        {
+          "author": "kazuho",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As others have pointed out, the cost of adding support for TLS 1.2 servers it that there needs to be a layer below the TLS record layer, so that the plaintext records sent by the backend server can be encrypted.\r\n\r\nI'd be a bit concerned about the required cost and complexity that that has, therefore my +1 goes to just supporting TLS 1.3.",
+          "createdAt": "2020-04-27T06:14:18Z",
+          "updatedAt": "2020-04-27T06:14:18Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Two concerns here:\r\n\r\n1. Security: Suppose an adversary can inject a TLS 1.2 ServerHello, without the echo_nonce, and a Certificate message.  Does the client react differently depending on whether the hidden name is in the SAN list (e.g. certificate mismatch fails faster than verification failure)?  If so, the adversary might be able to learn the hidden name.\r\n\r\n2. Management: Suppose a TLS 1.2 backend is not coordinating closely with forwarder, which seems to be the goal of this model.  When the backend upgrades to TLS 1.3, will connections start failing because it is not including the echo_nonce in the transcript?",
+          "createdAt": "2020-04-27T21:14:24Z",
+          "updatedAt": "2020-04-27T21:14:24Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The client reaction issue is interesting, though maybe we can get around that by requiring constant time verification? On some systems that might be very hard to enforce, as verification doesn't even happen in the same process. Hmm... penny for your thoughts, @ekr and @davidben?\r\n\r\nAs for the nonce issue -- it's already included in the ClientHello. The server doesn't include it an extension explicitly.",
+          "createdAt": "2020-04-27T21:26:05Z",
+          "updatedAt": "2020-04-27T21:26:55Z"
+        },
+        {
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thanks for the clarification.  I still think there's a potential best-practices concern if this encourages deployments that transmit the decrypted ClientHello in cleartext between the forwarder and backend, but that's less obvious.",
+          "createdAt": "2020-04-27T23:28:44Z",
+          "updatedAt": "2020-04-27T23:28:44Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Agreed! Clarifying text there would help. I'll see if I can craft something along those lines for this issue.",
+          "createdAt": "2020-04-27T23:30:47Z",
+          "updatedAt": "2020-04-27T23:30:47Z"
+        },
+        {
+          "author": "sftcd",
+          "authorAssociation": "NONE",
+          "body": "\nFWIW, I still think making complexity-inducing changes\nto better support TLSv1.2 (even in this reduced manner)\nwould be a bad plan. In large part because it'd take ages to figure it\nout. If someone could demonstrate a reduction\nin complexity and increase in security I might change my\nmind. Absent that, I continue to think we're better off\nexclusively supporting TLSv1.3.\n\nCheers,\nS.\n",
+          "createdAt": "2020-04-27T23:34:12Z",
+          "updatedAt": "2020-04-27T23:34:12Z"
         }
       ]
     },
@@ -4369,27 +4454,31 @@
       "state": "OPEN",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [],
       "body": "There's no explicit signal indicating that ECHO was negotiated for a connection. Thus, clients must perform trial decryption with both possible handshake keys. If we intend to keep this, then we should crisply state that \"don't stick out\" is limited to explicit signals, i.e., implicit signals such as size-related information is probably out of scope. (It's certainly an open question what is the \"best\" padding scheme for handshake messages.)\r\n\r\ncc @grittygrease ",
       "createdAt": "2020-04-07T17:28:54Z",
-      "updatedAt": "2020-04-07T17:28:54Z",
+      "updatedAt": "2020-04-27T22:03:17Z",
       "closedAt": null,
       "comments": []
     },
     {
       "number": 216,
       "id": "MDU6SXNzdWU1OTg1MDI5MDk=",
-      "title": "where servers put CH details/hints: ECHOConfig or HTTPSSVC? ",
+      "title": "Clarify ECHOConfig (HTTPSSVC) extension purpose",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/216",
       "state": "OPEN",
       "author": "sftcd",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [],
       "body": "ECHOConfig.public_name provides information that goes in the outer CH. HTTPSSVC.alpn provides information to go in the inner CH (I assume). We don't specify a way for the server to  explicitly say what alpn to use in the outer CH.  I think it'd be worth re-considering where servers/admins might want to put that kind of information and how much of the inner/outer CH they may want to describe. There could be a range of potential outcomes if we re-visit this - at one extreme HTTPSSVC or ECHOConfig might provide a template for the entire CH (possibly via some template naming/numbering scheme), at the other extreme we might decide that ECHOConfig should only contain the keying information and just define alpn, public_alpn and public_name as optional fields for inclusion in HTTPSSVC. But it seems a bit broken for the only two parts of the CH the server specifies to be handled so differently,",
       "createdAt": "2020-04-12T14:54:22Z",
-      "updatedAt": "2020-04-15T14:58:55Z",
+      "updatedAt": "2020-04-27T22:03:17Z",
       "closedAt": null,
       "comments": [
         {
@@ -4426,6 +4515,13 @@
           "body": "The latter sounds reasonable.\r\n\r\nA template would not fly because the outer ClientHello must still adhere to [protocol invariants](https://tools.ietf.org/html/rfc8446#section-9.3), so any parameters in there must ones the client would legitimately accept. (Unless they ignore the fallback case and retry all errors with a more accurate outer ClientHello.)",
           "createdAt": "2020-04-15T14:58:54Z",
           "updatedAt": "2020-04-15T14:58:54Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As per the call today, we'll use this issue to track guidance (that will be mirrored in the HTTPSSVC document) about how one populates extension information. In particular, information that pertains to the outer CH, which exists only for ECHO's sake, should be limited to ECHOConfig, whereas information that pertains to the inner CH should be put in the HTTPSSVC. We'll work with @bemasc to get this text in shape!",
+          "createdAt": "2020-04-27T21:53:53Z",
+          "updatedAt": "2020-04-27T21:54:08Z"
         }
       ]
     },
@@ -4434,15 +4530,15 @@
       "id": "MDU6SXNzdWU1OTg1MjU2MTY=",
       "title": "ECHOConfigContents.extensions is not needed",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/217",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sftcd",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "draft-06 includes an extensions field in ECHOConfigContents but no extension types are defined. If or when something new is needed it could just as easily be introduced via a new ECHOConfig.version or a new HTTPSSVC tag. The mandatory-to-understand design wit a \"critical\" bit was also used in X.509 and has not clearly worked as planned there. I don't see why that would differ here. Expecting implementers to include all the code required for generic extension handling and introducing new failure modes via critical bits, all for no concrete reason... seems wrong. I suggest we just delete the extensions field entirely. If needed, one can be added back via a new version later. \r\n\r\nBearing in mind the target for this draft is an experimental RFC, and so there's a reasonable likelihood of changes when/if we try promote ECHO to a standards-track RFC, we also don't need to be quite as future proof as normal, so deleting this field for now is not that risky.",
       "createdAt": "2020-04-12T16:50:26Z",
-      "updatedAt": "2020-04-24T14:36:47Z",
-      "closedAt": null,
+      "updatedAt": "2020-04-27T21:55:36Z",
+      "closedAt": "2020-04-27T21:55:36Z",
       "comments": [
         {
           "author": "ekr",
@@ -4450,22 +4546,31 @@
           "body": "I don't agree with this proposed change.\r\n\r\n1.  Extensions for TLS have proved very useful.\r\n2. The analogy to X.509 seems false. Criticality has a different context here and IMO it works fine for (say) STUN.\r\n\r\nIntroducing a new version has all kinds of other annoyances.\r\n\r\nAs for the experimental bit, that seems like an oversight. I expected this to be PS and I'm not sure why the draft has a different tag. I expect I just screwed up when I wrote the first draft. I note the adoption call doesn't say one way or the other. As a practical matter, we expect this to have widespread deployment.\r\n \r\n",
           "createdAt": "2020-04-24T14:36:47Z",
           "updatedAt": "2020-04-24T14:36:47Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As per the call today, we're closing this due to (a) the potential need for an extension to deliver padding hints in the future and (b) the benefits extensibility brought TLS in the past. ",
+          "createdAt": "2020-04-27T21:55:36Z",
+          "updatedAt": "2020-04-27T21:55:36Z"
         }
       ]
     },
     {
       "number": 218,
       "id": "MDU6SXNzdWU1OTg1NTY3MDI=",
-      "title": "HPKE code points vs. TLS ciphersuites",
+      "title": "Use HPKE codepoints for all HPKE-relevant operations",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/218",
       "state": "OPEN",
       "author": "sftcd",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [],
       "body": "HPKE has it's own cipher suite code points, as well as the KEM id. I don't see why we're using TLS codepoints (ECHOConfigContents.suites and ClientEncryptedCH.suite) and yet also use one HPKE code point (ECHOConfigContents.kem_id). But maybe I'm missing something?\r\n\r\nIf not, I think one of two things would make sense:\r\n\r\n1. Change HPKE to use TLS code points. (That could be done but'd involve a bit of nose-holding, however it might be better in the longer term.)\r\n2. Only use HPKE code points in ECHO - I don't see that TLS ciphersuites are actually needed for ECHO, so this seems easiest. (That'd mean s/suite/aead_id/g I guess.)\r\n",
       "createdAt": "2020-04-12T19:39:49Z",
-      "updatedAt": "2020-04-24T15:22:49Z",
+      "updatedAt": "2020-04-27T22:03:17Z",
       "closedAt": null,
       "comments": [
         {
@@ -4488,6 +4593,20 @@
           "body": "There's also a third option here:\r\n\r\n3. Use TLS code points (or something else) and define a mapping to HPKE code points\r\n\r\nLike @chris-wood, I am disinclined to tie HPKE to TLS, since it is a more general tool.\r\n\r\nIt seems like the answer here depends on what the negotiation in ECHO is being used for.  If it's just for the HPKE, use HPKE code points.  If it's used in TLS further down the line, use TLS code points and map to HPKE for the HPKE bits.",
           "createdAt": "2020-04-24T15:22:48Z",
           "updatedAt": "2020-04-24T15:22:48Z"
+        },
+        {
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "body": "How is (3) different than the current design?",
+          "createdAt": "2020-04-26T20:51:52Z",
+          "updatedAt": "2020-04-26T20:51:52Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Per the call today, we'll use this issue to track moving everything to HPKE codepoints. (We can remove the mapping table at the same time).",
+          "createdAt": "2020-04-27T21:54:43Z",
+          "updatedAt": "2020-04-27T21:54:43Z"
         }
       ]
     },
@@ -4496,15 +4615,15 @@
       "id": "MDU6SXNzdWU1OTg1NjU3NTU=",
       "title": "cardinality of ECHOConfig vs. HTTPSSVC",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/219",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sftcd",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "A server can publish multuple HTTPSSVC RRs. Each of those RRs can contain multiple ECHOConfigContent values (i.e. multiple public keys and public_names). I don't see a real need for two different ways to publish more than one public key for a given server. There is a minor efficiency benefit in terms of the number of octets published in the DNS, but there is a lot of additional complexity in terms of code, and if nobody really publishes multiple public keys in one RR value, then that code is likely where we'll find CVEs. Reducing down to one public key per RR value also reduces the complexity when writing code to create/publish RRs.\r\n\r\nI think we have to support multiple RR values, because that's how the DNS works, and so the one to drop is the multiple public keys in one ECHOConfigs. IOW, I'd suggest one ECHOConfig has exactly one public key.\r\n ",
       "createdAt": "2020-04-12T20:32:56Z",
-      "updatedAt": "2020-04-13T19:35:35Z",
-      "closedAt": null,
+      "updatedAt": "2020-04-27T21:52:40Z",
+      "closedAt": "2020-04-27T21:52:40Z",
       "comments": [
         {
           "author": "davidben",
@@ -4519,6 +4638,13 @@
           "body": "\n\nOn 13/04/2020 17:03, David Benjamin wrote:\n> \n> But you're no longer forced to explode it out like that, so we can \n> say an ECHOv1-only client that happens to pick route2 can act as if \n> route1 didn't exist. I.e. we set an expectation that all your routes \n> must be equally capable. (Just as we have that expectation \n> elsewhere.\n\nGotta admit I'm not at all getting what you're saying,\nsorry. As-is, clients need to write the code to handle\nmultiple keys (and all other variations possible) at\nboth levels, or if not, then we're missing text in the\nspec saying what doesn't need to be supported.\n\nI don't see a real benefit in that complexity.\n",
           "createdAt": "2020-04-13T19:35:35Z",
           "updatedAt": "2020-04-13T19:35:35Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As per today's call, we're closing this due to the simplifications it brings for client implementations, in particular around collating all logic about ECHOConfig compatibility inside the TLS stack without the need for additional interfaces.",
+          "createdAt": "2020-04-27T21:52:40Z",
+          "updatedAt": "2020-04-27T21:52:40Z"
         }
       ]
     },
@@ -4543,15 +4669,15 @@
       "id": "MDU6SXNzdWU2MDY0MDExNjE=",
       "title": "Restrict ECHO inner/outer variance for interop purposes",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/223",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sftcd",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "First, I do think the security analysis for ECHO ought consider that the inner can be entirely different from the outer. That does not mean that we need to make full use of that flexibility when considering interop.\r\n\r\nIn the ECHO coding I've done so far, handling more restricted variation between inner and outer is a lot simpler, code-wise, and I would expect, will make interop easier and more successful. It seems (at least with OpenSSL) that once the cryptographic parameters (e.g. key shares) are allowed to vary between inner and outer, then things get significantly more complex. (That's not only down to\r\nthe trial decryption on the client btw, but is clearly demonstrated by the need for trial decryption.)\r\n\r\nI suggest we consider, for now, restricting how the inner and outer can vary, for example, only requiring implementations be able to handle minimal variation, perhaps only with server name and alpn and the nonce and ECHO that have to differ.\r\n\r\nIf, having coded this up, people figure it is actually  easy enough to support more flexibility then we could change to require support for that later. I think we should be able to decide before WGLC or IETF LC but don't believe we can currently be confident that full flexibility would be a good interop choice.\r\n ",
       "createdAt": "2020-04-24T15:32:49Z",
-      "updatedAt": "2020-04-24T16:47:23Z",
-      "closedAt": null,
+      "updatedAt": "2020-04-27T21:51:17Z",
+      "closedAt": "2020-04-27T21:51:17Z",
       "comments": [
         {
           "author": "ekr",
@@ -4559,6 +4685,13 @@
           "body": "You need trial decryption on the client no matter what, because the transcript will be different, so that's not relevant here.\r\n\r\nI am not in favor of restricting how the inner and outer can vary. This is precisely the kind of thing that implementations might then get wrong by assuming and then we have problems.\r\n\r\nIt seems to me that your primary argument here is implementation difficulty, plus some speculation about interop. I don't anticipate any difficulty implementing this in NSS based on my experience with HRR, and it seems like we'll find out whether there are interop difficulties soon enough, so adding restrictions is premature.\r\n\r\n\r\n\r\n\r\n",
           "createdAt": "2020-04-24T16:47:23Z",
           "updatedAt": "2020-04-24T16:47:23Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Per the call today, we're closing this for now. We may revisit this later on if more implementation experience from the WG leads folks towards a restrictions on inner/outer variance.",
+          "createdAt": "2020-04-27T21:51:17Z",
+          "updatedAt": "2020-04-27T21:51:17Z"
         }
       ]
     }
@@ -8608,15 +8741,15 @@
       "id": "MDExOlB1bGxSZXF1ZXN0MjM4NDk2NzYw",
       "title": "Add CertificateVerify to padding recommendation",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/122",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sftcd",
       "authorAssociation": "FIRST_TIME_CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Also takes out the \"longest length\" part of the SHOULD since (as Viktor pointed out) a server might not always know that and it can change due to CA or other PKI changes that might lead to errors in some scenarios. (E.g. CA adds new extension thereby causing a cert to be longer than what the TLS server thinks is longest.)",
       "createdAt": "2018-12-13T19:00:33Z",
-      "updatedAt": "2020-03-08T00:34:45Z",
-      "closedAt": null,
+      "updatedAt": "2020-04-27T21:59:32Z",
+      "closedAt": "2020-04-27T21:59:31Z",
       "mergedAt": null,
       "mergedBy": null,
       "comments": [
@@ -8654,6 +8787,13 @@
           "body": "@sftcd this is likely overcome by events in #207. Would you mind updating based on that text, or closing this PR?",
           "createdAt": "2020-03-08T00:34:44Z",
           "updatedAt": "2020-03-08T00:34:44Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing as overcome by #209!",
+          "createdAt": "2020-04-27T21:59:31Z",
+          "updatedAt": "2020-04-27T21:59:31Z"
         }
       ],
       "reviews": [
@@ -12985,7 +13125,7 @@
       "labels": [],
       "body": "I've tried to capture what I think is a reasonable way to handle padding now we've changed from ESNI->ECHO.  If we could do something like this, that'd be better than what's in -06.\r\n\r\nNote that I'd be even happier if we entirely eliminated ECHOConfig.minimum_inner_length - I don't think it actually adds any value and it represents yet another way to get a configuration wrong.  ",
       "createdAt": "2020-03-14T21:05:06Z",
-      "updatedAt": "2020-04-24T16:52:49Z",
+      "updatedAt": "2020-04-27T21:49:56Z",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -13276,6 +13416,13 @@
           "body": "\"Fair point. The argument I'd make for keeping this\r\nis that if an anonymity set has ~80% of names <32\r\noctets, then if we do nothing, passive observation\r\nwill probably reveal when the server name is in\r\nthe longest ~20%. \"\r\n\r\nWhich is precisely why we want the server to provide the longest name, so the client can pad to it.\r\n",
           "createdAt": "2020-04-24T16:52:49Z",
           "updatedAt": "2020-04-24T16:52:49Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As discussed on today's call, let's do the following:\r\n\r\n1. Resolve merge conflicts.\r\n2. Drop random padding for the SNI. And add text which says that if the client's name is larger than max_name_length, it rounds up to the nearest 32B or 64B boundary.\r\n\r\n@sftcd do you need, or would you like, any help with this?",
+          "createdAt": "2020-04-27T21:49:56Z",
+          "updatedAt": "2020-04-27T21:49:56Z"
         }
       ],
       "reviews": [
