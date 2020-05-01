@@ -1,6 +1,6 @@
 {
   "magic": "B8n2c@e8kvfx",
-  "timestamp": "2020-04-28T19:36:08.495689+00:00",
+  "timestamp": "2020-05-01T23:34:46.293518+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -14072,6 +14072,33 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 224,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDEwMzE3ODA5",
+      "title": "Replace ECHOConfig TLS ciphersuites with HPKE code points.",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/224",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses #218.\r\n\r\nA given ECHOConfig now lists a single HPKE public key, with the corresponding\r\nKEM identifier, and a list of acceptable AEAD and KDF algorithm identifiers.\r\nClients may then choose their preferred AEAD and KDF algorithms for ClientHello\r\nencryption.\r\n\r\nWe may need to provide some guidance, either here or in the HPKE document, about acceptable (KEM, KDF, AEAD) tuples. \r\n\r\ncc @bifurcation",
+      "createdAt": "2020-04-28T19:36:29Z",
+      "updatedAt": "2020-05-01T23:34:07Z",
+      "closedAt": "2020-05-01T23:34:07Z",
+      "mergedAt": "2020-05-01T23:34:07Z",
+      "mergedBy": "ekr",
+      "comments": [
+        {
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I hadn't realized these were separate IDs. Oh well.",
+          "createdAt": "2020-05-01T23:33:47Z",
+          "updatedAt": "2020-05-01T23:33:47Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
