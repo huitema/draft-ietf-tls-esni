@@ -1,6 +1,6 @@
 {
   "magic": "B8n2c@e8kvfx",
-  "timestamp": "2020-05-01T23:34:46.293518+00:00",
+  "timestamp": "2020-05-02T22:02:09.155788+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -4561,7 +4561,7 @@
       "id": "MDU6SXNzdWU1OTg1NTY3MDI=",
       "title": "Use HPKE codepoints for all HPKE-relevant operations",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/218",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sftcd",
       "authorAssociation": "NONE",
       "assignees": [
@@ -4570,8 +4570,8 @@
       "labels": [],
       "body": "HPKE has it's own cipher suite code points, as well as the KEM id. I don't see why we're using TLS codepoints (ECHOConfigContents.suites and ClientEncryptedCH.suite) and yet also use one HPKE code point (ECHOConfigContents.kem_id). But maybe I'm missing something?\r\n\r\nIf not, I think one of two things would make sense:\r\n\r\n1. Change HPKE to use TLS code points. (That could be done but'd involve a bit of nose-holding, however it might be better in the longer term.)\r\n2. Only use HPKE code points in ECHO - I don't see that TLS ciphersuites are actually needed for ECHO, so this seems easiest. (That'd mean s/suite/aead_id/g I guess.)\r\n",
       "createdAt": "2020-04-12T19:39:49Z",
-      "updatedAt": "2020-04-27T22:03:17Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-02T01:36:23Z",
+      "closedAt": "2020-05-02T01:36:23Z",
       "comments": [
         {
           "author": "ekr",
@@ -14098,6 +14098,44 @@
           "updatedAt": "2020-05-01T23:33:47Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 225,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDEyMzg0NTYz",
+      "title": "Deterministic padding",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/225",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This builds on #209, but removes the probabilistic pieces. I created a fresh PR to make review easier. \r\n\r\ncc @sftcd",
+      "createdAt": "2020-05-02T02:04:54Z",
+      "updatedAt": "2020-05-02T02:12:15Z",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 226,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDEyNTE0MTY4",
+      "title": "Provide guidance on ECHOConfig extension usage.",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/226",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This addresses #216.",
+      "createdAt": "2020-05-02T22:01:51Z",
+      "updatedAt": "2020-05-02T22:01:51Z",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "comments": [],
       "reviews": []
     }
   ]
