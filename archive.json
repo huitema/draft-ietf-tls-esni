@@ -1,6 +1,6 @@
 {
   "magic": "B8n2c@e8kvfx",
-  "timestamp": "2020-05-03T14:05:44.356863+00:00",
+  "timestamp": "2020-05-03T22:33:41.723112+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -14130,12 +14130,59 @@
       "labels": [],
       "body": "This builds on #209, but removes the probabilistic pieces. I created a fresh PR to make review easier. \r\n\r\ncc @sftcd",
       "createdAt": "2020-05-02T02:04:54Z",
-      "updatedAt": "2020-05-02T02:12:15Z",
+      "updatedAt": "2020-05-03T22:33:10Z",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjU1MDI3",
+          "commit": {
+            "abbreviatedOid": "4cc7421"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2020-05-03T20:35:28Z",
+          "updatedAt": "2020-05-03T20:41:35Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "This text seems a bit confusing because clients typically offer a fixed set of ALPNs for a given application.  Perhaps:\r\n\r\n\"Clients typically support a small number of application profiles. For instance, a browser might support HTTP with ALPN values [\"http/1.1, \"h2\"] and WebRTC media with ALPNs [\"webrtc\", \"c-webrtc\"]. Clients SHOULD pad this extension by rounding up to the total size of the longest ALPN extension across all application profiles\".\r\n",
+              "createdAt": "2020-05-03T20:35:28Z",
+              "updatedAt": "2020-05-03T22:33:10Z"
+            },
+            {
+              "originalPosition": 78,
+              "body": "Say we just padded SNI and L = 0 and D = 10. We then compute the per-extension padding value as 22, but because of this paragraph we pad by 32? If so, I don't think this works, because if D was 11, we would also pad by 32, so now we are leaking the length of D.",
+              "createdAt": "2020-05-03T20:40:26Z",
+              "updatedAt": "2020-05-03T22:33:10Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjYzNzM3",
+          "commit": {
+            "abbreviatedOid": "4cc7421"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T22:31:51Z",
+          "updatedAt": "2020-05-03T22:31:51Z",
+          "comments": [
+            {
+              "originalPosition": 78,
+              "body": "Discussed offline -- will remove and consider later on, as this exists to mask fixed-length values across different stacks, and fingerprinting stacks is already pretty trivial.",
+              "createdAt": "2020-05-03T22:31:51Z",
+              "updatedAt": "2020-05-03T22:33:10Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 226,
