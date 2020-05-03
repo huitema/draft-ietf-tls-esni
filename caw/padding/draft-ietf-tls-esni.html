@@ -1619,7 +1619,7 @@ clients SHOULD use the server's length hint L (ECHOCOnfig.maximum_name_length) w
 computing the padding as follows:<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-7.2-4">
           <li id="section-7.2-4.1">If L &gt; D, add L - D bytes of padding. This rounds to the server's advertised
-hint, i.e., ECHOCOnfig.maximum_name_length.<a href="#section-7.2-4.1" class="pilcrow">¶</a>
+hint, i.e., ECHOConfig.maximum_name_length.<a href="#section-7.2-4.1" class="pilcrow">¶</a>
 </li>
 <li id="section-7.2-4.2">Otherwise, add 32 - (D % 32) bytes of padding. This rounds D up to the nearest
 multiple of 32 bytes.<a href="#section-7.2-4.2" class="pilcrow">¶</a>
