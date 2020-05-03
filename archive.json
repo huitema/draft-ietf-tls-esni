@@ -1,6 +1,6 @@
 {
   "magic": "B8n2c@e8kvfx",
-  "timestamp": "2020-05-02T22:02:09.155788+00:00",
+  "timestamp": "2020-05-03T14:05:44.356863+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -4306,7 +4306,7 @@
       "id": "MDU6SXNzdWU1Mjg5ODA1MTY=",
       "title": "Include \"receiver anonymity\" as motivation for empty record_digest values",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/205",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -4315,8 +4315,8 @@
       "labels": [],
       "body": "And possibly also include a bit inside ESNIConfig that tells clients whether or not to populate record_digest. (See https://bford.info/pub/sec/purb.pdf for some relevant definitions.)",
       "createdAt": "2019-11-26T21:26:01Z",
-      "updatedAt": "2020-04-27T22:03:53Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-03T14:05:15Z",
+      "closedAt": "2020-05-03T14:05:15Z",
       "comments": []
     },
     {
@@ -4694,6 +4694,24 @@
           "updatedAt": "2020-04-27T21:51:17Z"
         }
       ]
+    },
+    {
+      "number": 229,
+      "id": "MDU6SXNzdWU2MTEyODgwNDU=",
+      "title": "Describe HRR cut-and-paste 1 in Security Considerations.",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/229",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "chris-wood"
+      ],
+      "labels": [],
+      "body": "<img width=\"909\" alt=\"Screen Shot 2020-05-02 at 3 33 05 PM\" src=\"https://user-images.githubusercontent.com/2172048/80893782-3fae8980-8c8a-11ea-8bca-cb5fc1e33685.png\">\r\n",
+      "createdAt": "2020-05-02T22:33:24Z",
+      "updatedAt": "2020-05-03T14:04:49Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -14129,9 +14147,94 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "This addresses #216.",
+      "body": "This addresses #216.\r\n\r\ncc @davidben, @bemasc, @mikebishop, @sftcd, @enygren",
       "createdAt": "2020-05-02T22:01:51Z",
-      "updatedAt": "2020-05-02T22:01:51Z",
+      "updatedAt": "2020-05-03T01:45:14Z",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NTc0Mjgx",
+          "commit": {
+            "abbreviatedOid": "fc838d2"
+          },
+          "author": "bemasc",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-05-03T01:45:14Z",
+          "updatedAt": "2020-05-03T01:45:14Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 227,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDEyNTE2Mzc3",
+      "title": "Clarify \"do not stick out\" signals.",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/227",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses #215.\r\n\r\ncc @grittygrease ",
+      "createdAt": "2020-05-02T22:23:28Z",
+      "updatedAt": "2020-05-02T22:23:32Z",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 228,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDEyNTE3MDc5",
+      "title": "Clarify need for optional record digests.",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/228",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses #205.\r\n\r\ncc @huitema ",
+      "createdAt": "2020-05-02T22:30:52Z",
+      "updatedAt": "2020-05-03T14:05:08Z",
+      "closedAt": "2020-05-03T14:05:08Z",
+      "mergedAt": "2020-05-03T14:05:07Z",
+      "mergedBy": "chris-wood",
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NTY2MTUy",
+          "commit": {
+            "abbreviatedOid": "3fac6b3"
+          },
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Works for me.",
+          "createdAt": "2020-05-02T22:45:05Z",
+          "updatedAt": "2020-05-02T22:45:05Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 230,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDEyNTE4NDc0",
+      "title": "Add information about per-client tracking via unique ECHOConfig structures",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/230",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses #146.",
+      "createdAt": "2020-05-02T22:45:49Z",
+      "updatedAt": "2020-05-02T22:45:54Z",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
