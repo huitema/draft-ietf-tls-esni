@@ -1,6 +1,6 @@
 {
   "magic": "B8n2c@e8kvfx",
-  "timestamp": "2020-05-03T22:33:41.723112+00:00",
+  "timestamp": "2020-05-04T20:38:19.126145+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -13136,21 +13136,21 @@
       "id": "MDExOlB1bGxSZXF1ZXN0Mzg4NDM5NjA1",
       "title": "padding scheme text",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/209",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "sftcd",
-      "authorAssociation": "FIRST_TIME_CONTRIBUTOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "I've tried to capture what I think is a reasonable way to handle padding now we've changed from ESNI->ECHO.  If we could do something like this, that'd be better than what's in -06.\r\n\r\nNote that I'd be even happier if we entirely eliminated ECHOConfig.minimum_inner_length - I don't think it actually adds any value and it represents yet another way to get a configuration wrong.  ",
       "createdAt": "2020-03-14T21:05:06Z",
-      "updatedAt": "2020-04-27T21:49:56Z",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
+      "updatedAt": "2020-05-03T23:58:42Z",
+      "closedAt": "2020-05-03T23:58:42Z",
+      "mergedAt": "2020-05-03T23:58:42Z",
+      "mergedBy": "chris-wood",
       "comments": [
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Thanks for the fixes. \r\nOn the general point, I think that *if* we keep the flexibility for the client to vary the inner/outer CH however it chooses, then we will also have to depend on clients to figure out how to pad well for whatever they do. If we constrain the inner/outer variance a lot, then we could do better.\r\nIt also strikes me that the minimum_inner_length is sort of in tension with the idea of compression - if a server has to set the minimum_inner_length to 300ish to handle clients that don't compress, then clients that do compress either don't get the benefit or have to ignore the minimum_inner_length.",
           "createdAt": "2020-03-16T15:01:18Z",
           "updatedAt": "2020-03-16T15:03:37Z"
@@ -13164,7 +13164,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\nHiya,\n\nOn 16/03/2020 16:02, David Benjamin wrote:\n> I don't think this PR works. The server does not have enough\n> information to report a useful value, and the value the server\n> reports is not useful to maintain good anonymity sets.\n> \n> The server does not know that the client supports some large\n> extension or key share type (or lots of cipher suites, ALPN\n> protocols, etc). It also doesn't know which extensions the client\n> will compress from the outer ClientHello and which it will reencode.\n> \n> Conversely, the value the server sets isn't useful. If the client\n> implementation has a smaller baseline compression and extensions, we\n> waste bytes without much benefit. Worse, if the client implementation\n> has a larger baseline compression and extensions, this PR regresses\n> anonymity. The ClientHello will then exceed `minimum_inner_length`\n> and we don't hide the lengths of the sensitive bits.\n\nSorry, not seeing that last. The PR just says (or was\nmeant to say) to pad to some multiple of 16 in that\ncase which I agree isn't much guidance, but does allow\ndoing something that works. (As well as allowing things\nthat don't work well;-)\n\n> \n> Stepping back, we want to hide the distribution of ClientHelloInner\n> lengths within some anonymity set. Most of the contributors to that\n> length come from local client configuration: how many ciphers you\n> support, what ALPN protocols, etc. The client is the one that knows,\n> e.g., it sometimes asks servers for protocols A and B and sometimes\n> for A and C. It largely has enough information to pad itself.\n\nI agree that all this really needs to be driven by the\nclient.\n\n> The main exception is the server name. Realistically we need to trim\n> anonymity sets down to colocated services, and the client doesn't\n> know that distribution of names. \n\nWell, yes and no. I don't believe a server config is\nuseful for that, (as I've argued before and still do;-)\nISTM the max server name value will almost always be\nset to 254. May as well tell the client to pad as do\nthat IMO.\n\n> Thus, we want servers to report the\n> value in ECHOConfig. Maybe we'll need more such statistics later,\n> which is what extensions are for. It's annoying this is a bit\n> complicated, but we've signing up to encrypt far more things now.\n> \n> I should note this presumes an anonymity set of similarly-configured\n> clients. I think, realistically, that's all we can say rigorous\n> things about. It's nice to reduce visible artifacts of configuration,\n> which is why we *additionally* round up to multiples of 16, but\n> that's something we can burn into the protocol without ECHOConfig\n> support.\n\nNot quite sure if I agree with that last para or not TBH!\n\nS.\n\n\n> \n",
           "createdAt": "2020-03-16T21:46:18Z",
           "updatedAt": "2020-03-16T21:46:18Z"
@@ -13178,7 +13178,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\nHIya,\n\nOn 16/03/2020 22:13, David Benjamin wrote:\n>>> Conversely, the value the server sets isn't useful. If the\n>>> client implementation has a smaller baseline compression and\n>>> extensions, we waste bytes without much benefit. Worse, if the\n>>> client implementation has a larger baseline compression and\n>>> extensions, this PR regresses anonymity. The ClientHello will\n>>> then exceed `minimum_inner_length` and we don't hide the lengths\n>>> of the sensitive bits.\n>> \n>> Sorry, not seeing that last. The PR just says (or was meant to say)\n>> to pad to some multiple of 16 in that case which I agree isn't much\n>> guidance, but does allow doing something that works. (As well as\n>> allowing things that don't work well;-)\n> \n> Well, if we were satisfied just padding names to a multiple of 16, we\n> wouldn't need any of this. We'd just say to pad to a multiple 16 and\n> move on. :-) In the current name-focused spelling, the client is\n> always able to apply a smarter padding decision based on the server's\n> knowledge of the name distribution. With this PR, clients whose local\n> configuration exceeds or is near `minimum_inner_length` lose this and\n> hit the baseline multiple of 16 behavior. Clients whose local\n> configuration is decently below `minimum_inner_length` do hide the\n> name distribution, but using many more bytes than they would with the\n> current text.\n\nYes. That's IMO the downside of having any server config.\n(To answer your question below, I prefer not having any\nserver config at all but proposed this as I think it's\nbetter than draft-06.)\n\n> \n>>> The main exception is the server name. Realistically we need to\n>>> trim anonymity sets down to colocated services, and the client\n>>> doesn't know that distribution of names.\n>> \n>> Well, yes and no. I don't believe a server config is useful for\n>> that, (as I've argued before and still do;-) ISTM the max server\n>> name value will almost always be set to 254. May as well tell the\n>> client to pad as do that IMO.\n> \n> We have some metrics in Chrome on the distribution of DNS names. It's\n> nowhere near 254. \n\nHaving also looked at some passive DNS stuff, I fully\nagree. But ISTM for many scenarios the entity that\ngenerates the ECHOConfig won't know the distribution\nof names in use (e.g. whoever configures OpenSSL won't,\nsame with Apache etc.) so it's likely they'll have to\ngo for whatever is the max (i.e. 254). Same is true\nfor anyone with a wild-card server cert in play\nsomewhere.\n\n> But, regardless, if you don't believe a server\n> config is even useful for the name and agree with me that other\n> extensions ought to be client-driven, I'm confused, why this PR? This\n> PR seems to go in the opposite direction.\n\nSee above. I'm trying for either a modest improvement\nover draft-06 or for us all to arrive at a real\nimprovement by ditching the server config entirely:-)\n\n> \n>>> I should note this presumes an anonymity set of\n>>> similarly-configured clients. I think, realistically, that's all\n>>> we can say rigorous things about. It's nice to reduce visible\n>>> artifacts of configuration, which is why we *additionally* round\n>>> up to multiples of 16, but that's something we can burn into the\n>>> protocol without ECHOConfig support.\n>> \n>> Not quite sure if I agree with that last para or not TBH!\n> \n> Hehe. Which part?\n\nI like the last sentence. I think I dislike the 1st:-)\n\nCheers,\nS.\n\n> \n",
           "createdAt": "2020-03-16T22:28:24Z",
           "updatedAt": "2020-03-16T22:28:24Z"
@@ -13192,7 +13192,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\nHiya,\n\nOn 17/03/2020 19:32, David Benjamin wrote:\n>>> [...] With this PR, clients whose local configuration exceeds or\n>>> is near `minimum_inner_length` lose this and hit the baseline\n>>> multiple of 16 behavior.  [...trimmed for brevity, but please let\n>>> me know if I've misinterpreted what 'That' referred to!]\n>> \n>> Yes. That's IMO the downside of having any server config. (To\n>> answer your question below, I prefer not having any server config\n>> at all but proposed this as I think it's better than draft-06.)\n> \n> It's not a downside of the draft-06 formulation, is it? The client\n> learns something targeted to the name and can pad accordingly.\n\nDraft-06 assumes that no other inner CH content has the\nproperty that server guidance will help. My claim is that\nthat guidance is useless in practice, and therefore\nunnecessary. I think the server config'd length in the PR\nis a little less useless:-)\n\n> \n>>> We have some metrics in Chrome on the distribution of DNS names.\n>>> It's nowhere near 254.\n>> \n>> Having also looked at some passive DNS stuff, I fully agree. But\n>> ISTM for many scenarios the entity that generates the ECHOConfig\n>> won't know the distribution of names in use (e.g. whoever\n>> configures OpenSSL won't, same with Apache etc.) so it's likely\n>> they'll have to go for whatever is the max (i.e. 254). Same is\n>> true for anyone with a wild-card server cert in play somewhere.\n> \n> Even with a wildcard server cert, the server should still know the\n> distribution. \n\nSome servers will. Some will not. Many (most?) server\nECHOConfig instances will make use of default settings.\nThose'll pick 254 because adding a new VirtualHost to\nan apache instance (or similar) won't be co-ordinated\nwith making a new ECHOConfig in general. And even it\nit were, (but it won't!) we get a TTL's worth of mismatch.\nIf we don't provide a way for clients to handle the case\nwhere the server config is too short, again servers will\npublish 254.\n\n> For instance, `*.github.io` isn't going to see anything\n> terribly long most of the time. \n\nI am more interested in random smaller web sites/hosters\nmyself. I think ECHO should work for those as well as we\ncan make it, (albeit with smaller anonymity sets), and\nthis tie between web server config and ECHOConfig is just\na bad plan for such.\n\n> (Looks like the registration limit is\n> 39 characters.) For reference, this is how long a 254-character\n> hostname is:\n> \n> aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n>\n>  In order to enjoy wide adoption, ECHO can't be too much of a waste\n> of resources. \n\nAFAIK, all current deployments do just that. To be fair,\nthat's largely driven by CF's draft-02 deployment, but\nI think that backs up my argument that if there's a max,\nthat'll almost always be chosen, which implies it's a\nuseless field that leads to the inefficiency you note.\n\n> I think it thus makes sense to target a different\n> maximum here.\n\nThen it can't be the max:-) The 254 value matches the\nmax for server_name IIRC.\n\n> \n>> See above. I'm trying for either a modest improvement over draft-06\n>> or for us all to arrive at a real improvement by ditching the\n>> server config entirely:-)\n> \n> I guess my view is that, because of this issue above, this is a\n> regression over the draft-06 formulation, even though it looks more\n> general.\n\nOk. We disagree. But what do you think the client should\ndo? Draft-06 is IMO plainly incorrect in that it says to\npad in a way that'd expose other lengths should those be\nsensitive. If your answer were pad the SNI to at least\nECHOConfig.maximum_name_length and then make the overall\na multiple of 16, with as many added 16 octets blocks as\nthe client chooses, then a) that's != draft-06 and b) is\nquite close to this PR and c) just failing if the actual\nSNI in the inner CH is longer than the config setting\nseems quite wrong to me and d) hardcodes the assumption\nthat SNI is the only thing where the server may know\nbetter.\n\nCheers,\nS.\n\n\n> \n",
           "createdAt": "2020-03-17T20:06:49Z",
           "updatedAt": "2020-03-17T20:06:49Z"
@@ -13220,7 +13220,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\n\nOn 18/03/2020 15:26, Christopher Wood wrote:\n> I like @davidben's suggested algorithm, as an ideal padding function\n> requires input from both the client and server. (Ideally, servers\n> would send padding recommendations for each extension that might vary\n> specifically for them, such as the server name. They don't have\n> insight into anything else, so clients need to make padding decisions\n> based on local configuration.)\n> \n> @sftcd, what do you think?\n\nCould live with it, but still prefer no server config.\nI'm looking a bit at some numbers and will try make a\nconcrete suggestion later today. If I don't get that\ndone, it seems fair to accept @davidben's algo and move\non.\n\nCheers,\nS.\n\n> \n",
           "createdAt": "2020-03-18T15:29:25Z",
           "updatedAt": "2020-03-18T15:29:25Z"
@@ -13234,7 +13234,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\n(trimming violently and responding slowly:-)\n\nOn 17/03/2020 22:02, David Benjamin wrote:\n> I'm thinking something along the lines of:\n\nSo your steps 1-6 is a better scheme than draft-06.\n\nI still think step 2 would be better as something like:\n\n2. ECHOConfig contains max_name_len as before but we\nRECOMMEND it be zero and a) if the name to be padded is\nlonger than max_name_len, then names will be padded as\nfollows: P=32-(len(name)%32)+heads_or_tails*32, or b)\nif the name to be padded is shorter than max_name_len\nthen we just do as the server asked and pad to that\nlength.\n\nThat (hopefully:-) means a default of \"pad out to the\nnext multiple of 32, then toss a coin and add another\n32 if the coin landed as heads.\"\n\nIf we landed somewhere there, I'd be happy to make this\nPR say that or to make a new one or whatever.\n\nAccording to some data I have the CDFs for names and\nfor these padded lengths would be as follows:\n\nLen, CDF, Padded-CDF\n32, 81.28, 40.64\n64, 97.87, 89.57\n96, 99.31, 98.59\n128, 99.87, 99.59\n\nThat means that 81.28 of names are <32 octets long\nand 40.64% of name+name_padding will be 32 octets\nlong. 97.87% of names are <64 octets and 89.57% of\nname+name_padding are 64 octets long.\n\nI think we should RECOMMEND setting max_name_len to\nzero unless an ESNI key generator has a specific\nreason to set it to a non-zero value. ISTM the use-case\nfor non-zero values is where the anonymity set has only\na few very long names that with length differences of\n>32 octets for which it is considered important to use\nECHO. I'm basically fine that we default to not\nserving that use-case wellmby default, as I don't\nbelieve it's real. (But I could be wrong;-)\n\n\nCheers,\nS.\n\n\n\n\n\n\n",
           "createdAt": "2020-03-20T11:34:52Z",
           "updatedAt": "2020-03-20T11:34:52Z"
@@ -13262,14 +13262,14 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\nHiya,\n\nOn 22/03/2020 16:32, Christopher Wood wrote:\n> @sftcd what's the value in adding zero or one 32B blocks after\n> rounding? Why not just stick with what was done, say, in RFC8467?\n>\n\nSay if the anonymity set has lots of names <32 length\n(~81% of names in the data I have) but a small number\nbetween 32 and 64 (~16% in my data). Then this should\ndisguise the use of the longer names at the expense\nof sending more octets. Would be v. happy to know if\nthat made sense to others.\n\nCheers,\nS.\n\n",
           "createdAt": "2020-03-22T16:39:07Z",
           "updatedAt": "2020-03-22T16:39:07Z"
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\nA friendly amendment below (but one I think is\nimportant)...\n\nOn 22/03/2020 16:34, Christopher Wood wrote:\n>> I don't understand the focus on server input to a padding function\n>> that would ideally fill out one packet.\n> \n> Per [David's\n> comment](https://github.com/tlswg/draft-ietf-tls-esni/pull/209#issuecomment-600322366)\n> above, clients *could* use help from servers in choosing appropriate\n> padding lengths. (Only servers know their name anonymity set.)\n> \n\nI think that last really needs to be \"Only servers can know\ntheir name anonymity set. But many servers will not know\nthat, either due to wildcard certs or because names/vhosts\nare added and removed all the time independent of whatever\nis in the DNS.\"\n\nCheers,\nS.\n",
           "createdAt": "2020-03-22T16:41:47Z",
           "updatedAt": "2020-03-22T16:41:47Z"
@@ -13283,7 +13283,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\n\nOn 22/03/2020 16:44, Christopher Wood wrote:\n>> Would be v. happy to know if that made sense to others.\n> \n> It makes sense, I'm just not not sure it's worth the cost. \n\nYep. Me neither. It is cheaper than padding to 254 octets\nfor everyone though;-)\n\nPartly, I'm not that sympathetic towards anyone who\nwants to hide a crazily-long server_name. OTOH, I guess\nthere may be a few who can't easily change names so we\nprobably ought try do something for 'em.\n\nCheers,\nS.\n\n> That said,\n> this will always be an imperfect solution, so I'm happy either way.\n> \n> \n",
           "createdAt": "2020-03-22T16:48:26Z",
           "updatedAt": "2020-03-22T16:48:26Z"
@@ -13353,7 +13353,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "I've updated the PR to try reflect the discussion above. Please take a peek and see if it seems useful now.",
           "createdAt": "2020-04-02T13:53:26Z",
           "updatedAt": "2020-04-02T13:53:26Z"
@@ -13367,7 +13367,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Thanks for all the changes Chris. I think I've actioned all those as requested. If not, I tried, but failed:-)",
           "createdAt": "2020-04-04T21:33:38Z",
           "updatedAt": "2020-04-04T21:33:38Z"
@@ -13381,7 +13381,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\n\nOn 07/04/2020 14:47, Christopher Wood wrote:\n> @sftcd do you need any help moving this forward?\n>\nDoing other stuff today but feel free to take the text\nand then do more edits. Or I can look at it tomorrow.\nEither's fine by me.\n\nS.\n",
           "createdAt": "2020-04-07T13:51:12Z",
           "updatedAt": "2020-04-07T13:51:12Z"
@@ -13409,7 +13409,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\n\nOn 24/04/2020 16:07, ekr wrote:\n> @ekr commented on this pull request.\n> \n> I am generally fine with this, with the exception of the random\n> padding, which I think should be omitted. It's hard to analyze and\n> the value is unclear. In particular, many clients will retry if they\n> receive TCP errors, and so the attacker can learn information about\n> the true minimum value by forging TCP RSTs and looking at the new\n> CH.\n\nFair point. The argument I'd make for keeping this\nis that if an anonymity set has ~80% of names <32\noctets, then if we do nothing, passive observation\nwill probably reveal when the server name is in\nthe longest ~20%. And I'd guess that only a few\nnames in that set would be popular/common, so we\ncould be giving away the game whenever an ECHO\nis 32 octets longer than the usual. The random\npadding could mitigate that passive attack but\nyes would be vulnerable to an active reset based\ncounter.\n\nI'd also be fine with just living with the issue\nin which case we might want to note that using\nECHO with uncommonly long names is a bad idea.\n\n> \n>> +and randomly add another 32 octets 50% of the time and then\n>> include that amount\n> +of additional padding.\n> \n> I actually don't think we should recommend the random padding. Let's\n> do the minimum here.\n> \n\n",
           "createdAt": "2020-04-24T15:15:50Z",
           "updatedAt": "2020-04-24T15:15:50Z"
@@ -13488,7 +13488,7 @@
             "abbreviatedOid": "18d5638"
           },
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2020-03-16T14:58:33Z",
@@ -13786,7 +13786,7 @@
             "abbreviatedOid": "d4fe6f3"
           },
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2020-04-12T19:19:52Z",
@@ -13806,7 +13806,7 @@
             "abbreviatedOid": "d4fe6f3"
           },
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2020-04-12T19:27:03Z",
@@ -14103,7 +14103,7 @@
       "labels": [],
       "body": "Addresses #218.\r\n\r\nA given ECHOConfig now lists a single HPKE public key, with the corresponding\r\nKEM identifier, and a list of acceptable AEAD and KDF algorithm identifiers.\r\nClients may then choose their preferred AEAD and KDF algorithms for ClientHello\r\nencryption.\r\n\r\nWe may need to provide some guidance, either here or in the HPKE document, about acceptable (KEM, KDF, AEAD) tuples. \r\n\r\ncc @bifurcation",
       "createdAt": "2020-04-28T19:36:29Z",
-      "updatedAt": "2020-05-01T23:34:07Z",
+      "updatedAt": "2020-05-04T20:38:16Z",
       "closedAt": "2020-05-01T23:34:07Z",
       "mergedAt": "2020-05-01T23:34:07Z",
       "mergedBy": "ekr",
@@ -14114,6 +14114,20 @@
           "body": "I hadn't realized these were separate IDs. Oh well.",
           "createdAt": "2020-05-01T23:33:47Z",
           "updatedAt": "2020-05-01T23:33:47Z"
+        },
+        {
+          "author": "ocheron",
+          "authorAssociation": "NONE",
+          "body": "HpkeCipherSuite should also be used in ClientEncryptedCH.",
+          "createdAt": "2020-05-04T20:26:10Z",
+          "updatedAt": "2020-05-04T20:26:10Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oops -- thanks, @ocheron!",
+          "createdAt": "2020-05-04T20:38:16Z",
+          "updatedAt": "2020-05-04T20:38:16Z"
         }
       ],
       "reviews": []
@@ -14123,17 +14137,17 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDEyMzg0NTYz",
       "title": "Deterministic padding",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/225",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This builds on #209, but removes the probabilistic pieces. I created a fresh PR to make review easier. \r\n\r\ncc @sftcd",
       "createdAt": "2020-05-02T02:04:54Z",
-      "updatedAt": "2020-05-03T22:33:10Z",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
+      "updatedAt": "2020-05-03T23:58:40Z",
+      "closedAt": "2020-05-03T23:58:40Z",
+      "mergedAt": "2020-05-03T23:58:40Z",
+      "mergedBy": "chris-wood",
       "comments": [],
       "reviews": [
         {
@@ -14152,13 +14166,13 @@
               "originalPosition": 63,
               "body": "This text seems a bit confusing because clients typically offer a fixed set of ALPNs for a given application.  Perhaps:\r\n\r\n\"Clients typically support a small number of application profiles. For instance, a browser might support HTTP with ALPN values [\"http/1.1, \"h2\"] and WebRTC media with ALPNs [\"webrtc\", \"c-webrtc\"]. Clients SHOULD pad this extension by rounding up to the total size of the longest ALPN extension across all application profiles\".\r\n",
               "createdAt": "2020-05-03T20:35:28Z",
-              "updatedAt": "2020-05-03T22:33:10Z"
+              "updatedAt": "2020-05-03T23:54:28Z"
             },
             {
               "originalPosition": 78,
               "body": "Say we just padded SNI and L = 0 and D = 10. We then compute the per-extension padding value as 22, but because of this paragraph we pad by 32? If so, I don't think this works, because if D was 11, we would also pad by 32, so now we are leaking the length of D.",
               "createdAt": "2020-05-03T20:40:26Z",
-              "updatedAt": "2020-05-03T22:33:10Z"
+              "updatedAt": "2020-05-03T23:54:28Z"
             }
           ]
         },
@@ -14178,7 +14192,80 @@
               "originalPosition": 78,
               "body": "Discussed offline -- will remove and consider later on, as this exists to mask fixed-length values across different stacks, and fingerprinting stacks is already pretty trivial.",
               "createdAt": "2020-05-03T22:31:51Z",
-              "updatedAt": "2020-05-03T22:33:10Z"
+              "updatedAt": "2020-05-03T23:54:28Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjY0NDQ0",
+          "commit": {
+            "abbreviatedOid": "82e87bc"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2020-05-03T22:41:05Z",
+          "updatedAt": "2020-05-03T22:41:05Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjcwMDEy",
+          "commit": {
+            "abbreviatedOid": "82e87bc"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T23:50:59Z",
+          "updatedAt": "2020-05-03T23:50:59Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "This might be a little narrow a view.  In a browser, we have a bunch of things we might do.  But that is because the browser is platform.  But the anonymity set on a different platform (say you used the system TLS stack) is potentially wider (all apps) and cannot make the same claim about application profiles.",
+              "createdAt": "2020-05-03T23:50:59Z",
+              "updatedAt": "2020-05-03T23:54:28Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjcwMDcx",
+          "commit": {
+            "abbreviatedOid": "82e87bc"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T23:51:39Z",
+          "updatedAt": "2020-05-03T23:53:50Z",
+          "comments": [
+            {
+              "originalPosition": 74,
+              "body": "```suggestion\r\nhint, i.e., ECHOConfig.maximum_name_length.\r\n```",
+              "createdAt": "2020-05-03T23:51:39Z",
+              "updatedAt": "2020-05-03T23:54:28Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjcwMjk3",
+          "commit": {
+            "abbreviatedOid": "82e87bc"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T23:54:13Z",
+          "updatedAt": "2020-05-03T23:54:13Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "The point is that the \"platform,\" be it the stack used in the browser or in the OS, typically defines the set of values here and should pad accordingly. I'm fine with using the browser as an example here, as it's just a specific instance of that platform.",
+              "createdAt": "2020-05-03T23:54:13Z",
+              "updatedAt": "2020-05-03T23:54:28Z"
             }
           ]
         }
@@ -14196,11 +14283,19 @@
       "labels": [],
       "body": "This addresses #216.\r\n\r\ncc @davidben, @bemasc, @mikebishop, @sftcd, @enygren",
       "createdAt": "2020-05-02T22:01:51Z",
-      "updatedAt": "2020-05-03T01:45:14Z",
+      "updatedAt": "2020-05-04T18:55:14Z",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "MikeBishop",
+          "authorAssociation": "NONE",
+          "body": "This looks fine, though I'll note that since an HTTPSSVC record is public and the outer ClientHello record is public, it's not unreasonable to pull values from there to put in the public fields since the observer already knows (or can get) them.  Restricting them to come only from the ECHOConfig seems unnecessary.\r\n\r\nI think the key observation in this PR is that the outer ClientHello isn't _really_ offering to establish a TLS connection -- it's a not-crazy-looking wrapper for the actual ClientHello inside the ECHO extension, and the vehicle for the recovery flow.  The only things a server can legitimately do are respond to the inner ClientHello or do a recovery handshake.  Thus, most of the things you might set on the outer ClientHello are irrelevant; they can be chosen to look innocuous, chosen at random, or copied from the inner ClientHello as the implementation chooses.",
+          "createdAt": "2020-05-04T18:55:14Z",
+          "updatedAt": "2020-05-04T18:55:14Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NTc0Mjgx",
@@ -14214,6 +14309,124 @@
           "createdAt": "2020-05-03T01:45:14Z",
           "updatedAt": "2020-05-03T01:45:14Z",
           "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjY4MDgy",
+          "commit": {
+            "abbreviatedOid": "fc838d2"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T23:27:52Z",
+          "updatedAt": "2020-05-03T23:30:25Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "features or protections",
+              "createdAt": "2020-05-03T23:27:53Z",
+              "updatedAt": "2020-05-03T23:58:19Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "Comma",
+              "createdAt": "2020-05-03T23:28:17Z",
+              "updatedAt": "2020-05-03T23:58:19Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "SHOULD? ",
+              "createdAt": "2020-05-03T23:28:58Z",
+              "updatedAt": "2020-05-03T23:58:19Z"
+            },
+            {
+              "originalPosition": 43,
+              "body": "Except, as we have discussed, the length, though I guess that is a part of the outer, too.",
+              "createdAt": "2020-05-03T23:30:20Z",
+              "updatedAt": "2020-05-03T23:58:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjcwNDA0",
+          "commit": {
+            "abbreviatedOid": "fc838d2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T23:55:10Z",
+          "updatedAt": "2020-05-03T23:55:11Z",
+          "comments": [
+            {
+              "originalPosition": 43,
+              "body": "Yep, I'm considering that part of the outer.",
+              "createdAt": "2020-05-03T23:55:10Z",
+              "updatedAt": "2020-05-03T23:58:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjcwNDQ1",
+          "commit": {
+            "abbreviatedOid": "fc838d2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T23:55:40Z",
+          "updatedAt": "2020-05-03T23:55:40Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Isn't protection a feature?",
+              "createdAt": "2020-05-03T23:55:40Z",
+              "updatedAt": "2020-05-03T23:58:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjcwNjA0",
+          "commit": {
+            "abbreviatedOid": "fc838d2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T23:57:21Z",
+          "updatedAt": "2020-05-03T23:57:22Z",
+          "comments": [
+            {
+              "originalPosition": 19,
+              "body": "Will fix here and elsewhere!",
+              "createdAt": "2020-05-03T23:57:22Z",
+              "updatedAt": "2020-05-03T23:58:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjcwNjI4",
+          "commit": {
+            "abbreviatedOid": "fc838d2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T23:57:39Z",
+          "updatedAt": "2020-05-03T23:57:40Z",
+          "comments": [
+            {
+              "originalPosition": 38,
+              "body": "I read them both the same, so that works for me.",
+              "createdAt": "2020-05-03T23:57:40Z",
+              "updatedAt": "2020-05-03T23:58:19Z"
+            }
+          ]
         }
       ]
     },
@@ -14248,7 +14461,7 @@
       "labels": [],
       "body": "Addresses #205.\r\n\r\ncc @huitema ",
       "createdAt": "2020-05-02T22:30:52Z",
-      "updatedAt": "2020-05-03T14:05:08Z",
+      "updatedAt": "2020-05-03T23:31:40Z",
       "closedAt": "2020-05-03T14:05:08Z",
       "mergedAt": "2020-05-03T14:05:07Z",
       "mergedBy": "chris-wood",
@@ -14281,7 +14494,73 @@
       "labels": [],
       "body": "Addresses #146.",
       "createdAt": "2020-05-02T22:45:49Z",
-      "updatedAt": "2020-05-02T22:45:54Z",
+      "updatedAt": "2020-05-04T00:04:36Z",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjY3NzE3",
+          "commit": {
+            "abbreviatedOid": "0f32404"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-03T23:23:19Z",
+          "updatedAt": "2020-05-03T23:27:12Z",
+          "comments": [
+            {
+              "originalPosition": 9,
+              "body": "A paragraph break here might be good. You jump from description of the attack to a description of mitigating factors without segue. ",
+              "createdAt": "2020-05-03T23:23:19Z",
+              "updatedAt": "2020-05-04T00:04:36Z"
+            },
+            {
+              "originalPosition": 13,
+              "body": "I don't think the v6 example is good. And none of these are especially strong, except perhaps the DNS one. \r\n\r\nFor me, the question is how targeted the delivery could be, and whether the client can then do anything about that. For instance, a client might decide to flush its ECHO config cache if it moves and wants to be unlinkable.",
+              "createdAt": "2020-05-03T23:27:07Z",
+              "updatedAt": "2020-05-04T00:04:36Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA0NjcxMDU0",
+          "commit": {
+            "abbreviatedOid": "0f32404"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-04T00:02:27Z",
+          "updatedAt": "2020-05-04T00:02:27Z",
+          "comments": [
+            {
+              "originalPosition": 13,
+              "body": "@martinthomson I'll remove the last sentence, not because of v6 (which I do think is a good example), but because it can probably bite us in the future when someone does turn it into a threat. :)\r\n\r\nOn the latter points, how about the following:\r\n\r\nThe cost of this type of attack scales linearly with the desired number of target clients. DNS caching behavior makes targeting individual users for extended periods of time, e.g., using per-client ECHOConfig structures delivered via HTTPSSVC RRs with high TTLs, challenging. Moreover, clients can flush any ECHOConfig state upon changing networks to mitigate potential linkability problems.",
+              "createdAt": "2020-05-04T00:02:27Z",
+              "updatedAt": "2020-05-04T00:04:36Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 231,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDEzMTcyMzA3",
+      "title": "Fix remaining HPKE issues.",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/231",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-05-04T20:38:06Z",
+      "updatedAt": "2020-05-04T20:38:06Z",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
