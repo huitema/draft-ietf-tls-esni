@@ -832,7 +832,7 @@ table.left {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Rescorla, et al.</td>
-<td class="center">Expires 4 November 2020</td>
+<td class="center">Expires 5 November 2020</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -845,12 +845,12 @@ table.left {
 <dd class="internet-draft">draft-ietf-tls-esni-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-05-03" class="published">3 May 2020</time>
+<time datetime="2020-05-04" class="published">4 May 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Experimental</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2020-11-04">4 November 2020</time></dd>
+<dd class="expires"><time datetime="2020-11-05">5 November 2020</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -897,7 +897,7 @@ Server Name Indication for TLS 1.3.<a href="#section-abstract-1" class="pilcrow"
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 4 November 2020.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 5 November 2020.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1388,7 +1388,7 @@ ClientEncryptedCH structure:<a href="#section-5-3" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-5-4">
 <pre>
    struct {
-       CipherSuite suite;
+       HpkeCipherSuite suite;
        opaque record_digest&lt;0..2^16-1&gt;;
        opaque enc&lt;1..2^16-1&gt;;
        opaque encrypted_ch&lt;1..2^16-1&gt;;
@@ -1398,14 +1398,15 @@ ClientEncryptedCH structure:<a href="#section-5-3" class="pilcrow">¶</a></p>
 <dl class="dlParallel" id="section-5-5">
         <dt id="section-5-5.1">suite</dt>
 <dd id="section-5-5.2">
-  The cipher suite used to encrypt ClientHelloInner.<a href="#section-5-5.2" class="pilcrow">¶</a>
+  The HpkeCipherSuite cipher suite used to encrypt ClientHelloInner. This MUST
+match a value provided in the corresponding ECHOConfig.cipher_suites list.<a href="#section-5-5.2" class="pilcrow">¶</a>
 </dd>
 <dt id="section-5-5.3">record_digest</dt>
 <dd id="section-5-5.4">
   A cryptographic hash of the ECHOConfig structure from which the ECHO
 key was obtained, i.e., from the first byte of "version" to the end
 of the structure.  This hash is computed using the hash function
-associated with <code>suite</code>.<a href="#section-5-5.4" class="pilcrow">¶</a>
+associated with <code>suite</code>, i.e., the corresponding HPKE KDF algorithm hash.<a href="#section-5-5.4" class="pilcrow">¶</a>
 </dd>
 <dt id="section-5-5.5">enc</dt>
 <dd id="section-5-5.6">
@@ -1415,7 +1416,7 @@ encrypted_ch field.<a href="#section-5-5.6" class="pilcrow">¶</a>
 <dt id="section-5-5.7">encrypted_ch</dt>
 <dd id="section-5-5.8">
   The serialized and encrypted ClientHelloInner structure, AEAD-encrypted using
-cipher suite "suite" and the key generated as described below.<a href="#section-5-5.8" class="pilcrow">¶</a>
+HPKE with the selected KEM, KDF, and AEAD algorithm and key generated as described below.<a href="#section-5-5.8" class="pilcrow">¶</a>
 </dd>
 </dl>
 <p id="section-5-6">If the server accepts ECHO, it does not send this extension.
@@ -1537,9 +1538,9 @@ and ClientHelloOuter even if they have identical values.<a href="#section-6.1-6"
         </h3>
 <p id="section-7.1-1">In order to send an encrypted ClientHello, the client first determines if it
 supports the server's chosen KEM, as identified by ECHOConfig.kem_id. If one
-is supported, the client MUST select an appropriate cipher suite from the list of
+is supported, the client MUST select an appropriate HpkeCipherSuite from the list of
 suites offered by the server. If the client does not support the corresponding
-KEM or is unable to select an appropriate group or suite, it SHOULD ignore
+KEM or is unable to select an appropriate group or HpkeCipherSuite, it SHOULD ignore
 that ECHOConfig value and MAY attempt to use another value provided by
 the server. The client MUST NOT send ECHO using HPKE algorithms not advertised
 by the server.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
@@ -1579,7 +1580,7 @@ or below.<a href="#section-7.1-7" class="pilcrow">¶</a></p>
 containing the "encrypted_client_hello" extension with the values as
 indicated above. In particular,<a href="#section-7.1-10" class="pilcrow">¶</a></p>
 <ul>
-<li id="section-7.1-11.1">suite contains the client's chosen ciphersuite;<a href="#section-7.1-11.1" class="pilcrow">¶</a>
+<li id="section-7.1-11.1">suite contains the client's chosen HpkeCipherSuite;<a href="#section-7.1-11.1" class="pilcrow">¶</a>
 </li>
 <li id="section-7.1-11.2">record_digest contains the digest of the corresponding ECHOConfig structure;<a href="#section-7.1-11.2" class="pilcrow">¶</a>
 </li>
@@ -1786,13 +1787,13 @@ actually this needs to be secret? Analysis needed.]]<a href="#section-7.3.3-7" c
 structure available for the server, it SHOULD send a GREASE
 <span>[<a href="#RFC8701" class="xref">RFC8701</a>]</span> "encrypted_client_hello" extension as follows:<a href="#section-7.4-1" class="pilcrow">¶</a></p>
 <ul>
-<li id="section-7.4-2.1">Set the "suite" field  to a supported cipher suite. The selection
+<li id="section-7.4-2.1">Set the "suite" field  to a supported HpkeCipherSuite. The selection
 SHOULD vary to exercise all supported configurations, but MAY be held constant
 for successive connections to the same server in the same session.<a href="#section-7.4-2.1" class="pilcrow">¶</a>
 </li>
 <li id="section-7.4-2.2">Set the "record_digest" field to a randomly-generated string of hash_length
 bytes, where hash_length is the length of the hash function associated with
-the chosen cipher suite.<a href="#section-7.4-2.2" class="pilcrow">¶</a>
+the chosen HpkeCipherSuite.<a href="#section-7.4-2.2" class="pilcrow">¶</a>
 </li>
 <li id="section-7.4-2.3">Set the "enc" field to a randomly-generated valid encapsulated public key
 output by the HPKE KEM.<a href="#section-7.4-2.3" class="pilcrow">¶</a>

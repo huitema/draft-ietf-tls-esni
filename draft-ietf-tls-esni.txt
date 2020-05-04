@@ -5,12 +5,12 @@
 tls                                                          E. Rescorla
 Internet-Draft                                                RTFM, Inc.
 Intended status: Experimental                                     K. Oku
-Expires: 4 November 2020                                          Fastly
+Expires: 5 November 2020                                          Fastly
                                                              N. Sullivan
                                                               Cloudflare
                                                                C.A. Wood
                                                              Apple, Inc.
-                                                              3 May 2020
+                                                              4 May 2020
 
 
               Encrypted Server Name Indication for TLS 1.3
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 November 2020.
+   This Internet-Draft will expire on 5 November 2020.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 1]
+Rescorla, et al.         Expires 5 November 2020                [Page 1]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 2]
+Rescorla, et al.         Expires 5 November 2020                [Page 2]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -165,7 +165,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 3]
+Rescorla, et al.         Expires 5 November 2020                [Page 3]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -221,7 +221,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 4]
+Rescorla, et al.         Expires 5 November 2020                [Page 4]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -277,7 +277,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 5]
+Rescorla, et al.         Expires 5 November 2020                [Page 5]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -333,7 +333,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 6]
+Rescorla, et al.         Expires 5 November 2020                [Page 6]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -389,7 +389,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 7]
+Rescorla, et al.         Expires 5 November 2020                [Page 7]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -402,25 +402,28 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    ClientEncryptedCH structure:
 
       struct {
-          CipherSuite suite;
+          HpkeCipherSuite suite;
           opaque record_digest<0..2^16-1>;
           opaque enc<1..2^16-1>;
           opaque encrypted_ch<1..2^16-1>;
       } ClientEncryptedCH;
 
-   suite  The cipher suite used to encrypt ClientHelloInner.
+   suite  The HpkeCipherSuite cipher suite used to encrypt
+      ClientHelloInner.  This MUST match a value provided in the
+      corresponding ECHOConfig.cipher_suites list.
 
    record_digest  A cryptographic hash of the ECHOConfig structure from
       which the ECHO key was obtained, i.e., from the first byte of
       "version" to the end of the structure.  This hash is computed
-      using the hash function associated with "suite".
+      using the hash function associated with "suite", i.e., the
+      corresponding HPKE KDF algorithm hash.
 
    enc  The HPKE encapsulated key, used by servers to decrypt the
       corresponding encrypted_ch field.
 
    encrypted_ch  The serialized and encrypted ClientHelloInner
-      structure, AEAD-encrypted using cipher suite "suite" and the key
-      generated as described below.
+      structure, AEAD-encrypted using HPKE with the selected KEM, KDF,
+      and AEAD algorithm and key generated as described below.
 
    If the server accepts ECHO, it does not send this extension.  If it
    rejects ECHO, then it sends the following structure in
@@ -442,10 +445,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-
-
-
-Rescorla, et al.         Expires 4 November 2020                [Page 8]
+Rescorla, et al.         Expires 5 November 2020                [Page 8]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -501,7 +501,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 9]
+Rescorla, et al.         Expires 5 November 2020                [Page 9]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -538,12 +538,12 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    In order to send an encrypted ClientHello, the client first
    determines if it supports the server's chosen KEM, as identified by
    ECHOConfig.kem_id.  If one is supported, the client MUST select an
-   appropriate cipher suite from the list of suites offered by the
+   appropriate HpkeCipherSuite from the list of suites offered by the
    server.  If the client does not support the corresponding KEM or is
-   unable to select an appropriate group or suite, it SHOULD ignore that
-   ECHOConfig value and MAY attempt to use another value provided by the
-   server.  The client MUST NOT send ECHO using HPKE algorithms not
-   advertised by the server.
+   unable to select an appropriate group or HpkeCipherSuite, it SHOULD
+   ignore that ECHOConfig value and MAY attempt to use another value
+   provided by the server.  The client MUST NOT send ECHO using HPKE
+   algorithms not advertised by the server.
 
    Given a compatible ECHOConfig with fields public_key and kem_id,
    carrying the HpkePublicKey and KEM identifier corresponding to the
@@ -557,7 +557,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 10]
+Rescorla, et al.         Expires 5 November 2020               [Page 10]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -587,7 +587,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    containing the "encrypted_client_hello" extension with the values as
    indicated above.  In particular,
 
-   *  suite contains the client's chosen ciphersuite;
+   *  suite contains the client's chosen HpkeCipherSuite;
 
    *  record_digest contains the digest of the corresponding ECHOConfig
       structure;
@@ -613,7 +613,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 11]
+Rescorla, et al.         Expires 5 November 2020               [Page 11]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -669,7 +669,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 12]
+Rescorla, et al.         Expires 5 November 2020               [Page 12]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -725,7 +725,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 13]
+Rescorla, et al.         Expires 5 November 2020               [Page 13]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -781,7 +781,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 14]
+Rescorla, et al.         Expires 5 November 2020               [Page 14]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -832,22 +832,22 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    ECHOConfig structure available for the server, it SHOULD send a
    GREASE [RFC8701] "encrypted_client_hello" extension as follows:
 
-   *  Set the "suite" field to a supported cipher suite.  The selection
-      SHOULD vary to exercise all supported configurations, but MAY be
+   *  Set the "suite" field to a supported HpkeCipherSuite.  The
+      selection SHOULD vary to exercise all supported configurations,
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 15]
+Rescorla, et al.         Expires 5 November 2020               [Page 15]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
-      held constant for successive connections to the same server in the
-      same session.
+      but MAY be held constant for successive connections to the same
+      server in the same session.
 
    *  Set the "record_digest" field to a randomly-generated string of
       hash_length bytes, where hash_length is the length of the hash
-      function associated with the chosen cipher suite.
+      function associated with the chosen HpkeCipherSuite.
 
    *  Set the "enc" field to a randomly-generated valid encapsulated
       public key output by the HPKE KEM.
@@ -893,7 +893,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 16]
+Rescorla, et al.         Expires 5 November 2020               [Page 16]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -949,7 +949,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 17]
+Rescorla, et al.         Expires 5 November 2020               [Page 17]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1005,7 +1005,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 18]
+Rescorla, et al.         Expires 5 November 2020               [Page 18]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1061,7 +1061,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 19]
+Rescorla, et al.         Expires 5 November 2020               [Page 19]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1117,7 +1117,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 20]
+Rescorla, et al.         Expires 5 November 2020               [Page 20]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1173,7 +1173,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 21]
+Rescorla, et al.         Expires 5 November 2020               [Page 21]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1229,7 +1229,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 22]
+Rescorla, et al.         Expires 5 November 2020               [Page 22]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1285,7 +1285,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 23]
+Rescorla, et al.         Expires 5 November 2020               [Page 23]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1341,7 +1341,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 24]
+Rescorla, et al.         Expires 5 November 2020               [Page 24]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1397,7 +1397,7 @@ A.1.1.  TLS in Early Data
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 25]
+Rescorla, et al.         Expires 5 November 2020               [Page 25]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1453,7 +1453,7 @@ Appendix B.  Total Client Hello Encryption
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 26]
+Rescorla, et al.         Expires 5 November 2020               [Page 26]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1509,4 +1509,4 @@ Authors' Addresses
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 27]
+Rescorla, et al.         Expires 5 November 2020               [Page 27]
