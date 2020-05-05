@@ -86,26 +86,26 @@ Table of Contents
      9.2.  Middleboxes . . . . . . . . . . . . . . . . . . . . . . .  19
    10. Security Considerations . . . . . . . . . . . . . . . . . . .  19
      10.1.  Why is cleartext DNS OK? . . . . . . . . . . . . . . . .  19
-     10.2.  Optional Record Digests and Trial Decryption . . . . . .  20
-     10.3.  Related Privacy Leaks  . . . . . . . . . . . . . . . . .  20
-     10.4.  Comparison Against Criteria  . . . . . . . . . . . . . .  20
-       10.4.1.  Mitigate against replay attacks  . . . . . . . . . .  21
-       10.4.2.  Avoid widely-deployed shared secrets . . . . . . . .  21
-       10.4.3.  Prevent SNI-based DoS attacks  . . . . . . . . . . .  21
-       10.4.4.  Do not stick out . . . . . . . . . . . . . . . . . .  21
-       10.4.5.  Forward secrecy  . . . . . . . . . . . . . . . . . .  21
-       10.4.6.  Proper security context  . . . . . . . . . . . . . .  22
-       10.4.7.  Split server spoofing  . . . . . . . . . . . . . . .  22
-       10.4.8.  Supporting multiple protocols  . . . . . . . . . . .  22
-     10.5.  Misrouting . . . . . . . . . . . . . . . . . . . . . . .  22
-     10.6.  Padding Policy . . . . . . . . . . . . . . . . . . . . .  22
+     10.2.  Client Tracking  . . . . . . . . . . . . . . . . . . . .  20
+     10.3.  Optional Record Digests and Trial Decryption . . . . . .  20
+     10.4.  Related Privacy Leaks  . . . . . . . . . . . . . . . . .  20
+     10.5.  Comparison Against Criteria  . . . . . . . . . . . . . .  21
+       10.5.1.  Mitigate against replay attacks  . . . . . . . . . .  21
+       10.5.2.  Avoid widely-deployed shared secrets . . . . . . . .  21
+       10.5.3.  Prevent SNI-based DoS attacks  . . . . . . . . . . .  21
+       10.5.4.  Do not stick out . . . . . . . . . . . . . . . . . .  22
+       10.5.5.  Forward secrecy  . . . . . . . . . . . . . . . . . .  22
+       10.5.6.  Proper security context  . . . . . . . . . . . . . .  22
+       10.5.7.  Split server spoofing  . . . . . . . . . . . . . . .  22
+       10.5.8.  Supporting multiple protocols  . . . . . . . . . . .  22
+     10.6.  Misrouting . . . . . . . . . . . . . . . . . . . . . . .  23
+     10.7.  Padding Policy . . . . . . . . . . . . . . . . . . . . .  23
    11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  23
      11.1.  Update of the TLS ExtensionType Registry . . . . . . . .  23
      11.2.  Update of the TLS Alert Registry . . . . . . . . . . . .  23
    12. References  . . . . . . . . . . . . . . . . . . . . . . . . .  23
      12.1.  Normative References . . . . . . . . . . . . . . . . . .  23
      12.2.  Informative References . . . . . . . . . . . . . . . . .  24
-   Appendix A.  Alternative SNI Protection Designs . . . . . . . . .  25
 
 
 
@@ -114,14 +114,15 @@ Rescorla, et al.         Expires 6 November 2020                [Page 2]
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
+   Appendix A.  Alternative SNI Protection Designs . . . . . . . . .  25
      A.1.  TLS-layer . . . . . . . . . . . . . . . . . . . . . . . .  25
-       A.1.1.  TLS in Early Data . . . . . . . . . . . . . . . . . .  25
+       A.1.1.  TLS in Early Data . . . . . . . . . . . . . . . . . .  26
        A.1.2.  Combined Tickets  . . . . . . . . . . . . . . . . . .  26
      A.2.  Application-layer . . . . . . . . . . . . . . . . . . . .  26
-       A.2.1.  HTTP/2 CERTIFICATE Frames . . . . . . . . . . . . . .  26
-   Appendix B.  Total Client Hello Encryption  . . . . . . . . . . .  26
-   Appendix C.  Acknowledgements . . . . . . . . . . . . . . . . . .  27
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  27
+       A.2.1.  HTTP/2 CERTIFICATE Frames . . . . . . . . . . . . . .  27
+   Appendix B.  Total Client Hello Encryption  . . . . . . . . . . .  27
+   Appendix C.  Acknowledgements . . . . . . . . . . . . . . . . . .  28
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  28
 
 1.  Introduction
 
@@ -160,7 +161,6 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    the fact that SNI is being protected.  Unfortunately, the result
    often has undesirable performance consequences, incomplete coverage,
    or both.
-
 
 
 
@@ -1073,7 +1073,22 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    in the introduction, SNI encryption is less useful without encryption
    of DNS queries in transit via DoH or DPRIVE mechanisms.
 
-10.2.  Optional Record Digests and Trial Decryption
+10.2.  Client Tracking
+
+   A malicious client-facing server could distribute unique, per-client
+   ECHOConfig structures as a way of tracking clients across subsequent
+   connections.  On-path adversaries which know about these unique keys
+   could also track clients in this way by observing TLS connection
+   attempts.
+
+   The cost of this type of attack scales linearly with the desired
+   number of target clients.  Moreover, DNS caching behavior makes
+   targeting individual users for extended periods of time, e.g., using
+   per-client ECHOConfig structures delivered via HTTPSSVC RRs with high
+   TTLs, challenging.  Clients can help mitigate this problem by
+   flushing any DNS or ECHOConfig state upon changing networks.
+
+10.3.  Optional Record Digests and Trial Decryption
 
    Optional record digests may be useful in scenarios where clients and
    client-facing servers do not want to reveal information about the
@@ -1086,7 +1101,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    example, implement some form of rate limiting mechanism to limit the
    damage caused by such attacks.
 
-10.3.  Related Privacy Leaks
+10.4.  Related Privacy Leaks
 
    ECHO requires encrypted DNS to be an effective privacy protection
    mechanism.  However, verifying the server's identity from the
@@ -1099,6 +1114,14 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    specific traffic for additional information sources as part of
    verification.
 
+
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 20]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
+
    Implementations SHOULD avoid leaking information that may identify
    the server.  Even when sent over an encrypted transport, such
    requests may result in indirect exposure of the server's identity,
@@ -1108,21 +1131,13 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    SHOULD take steps to minimize or protect such requests during
    certificate validation.
 
-10.4.  Comparison Against Criteria
+10.5.  Comparison Against Criteria
 
    [I-D.ietf-tls-sni-encryption] lists several requirements for SNI
    encryption.  In this section, we re-iterate these requirements and
    assess the ECHO design against them.
 
-
-
-
-Rescorla, et al.         Expires 6 November 2020               [Page 20]
-
-Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
-
-
-10.4.1.  Mitigate against replay attacks
+10.5.1.  Mitigate against replay attacks
 
    Since servers process either ClientHelloInner or ClientHelloOuter,
    and ClientHelloInner contains an HPKE-derived nonce, it is not
@@ -1131,7 +1146,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    This is because the attacker lacks access to the HPKE-derived nonce
    used to derive the handshake secrets.
 
-10.4.2.  Avoid widely-deployed shared secrets
+10.5.2.  Avoid widely-deployed shared secrets
 
    This design depends upon DNS as a vehicle for semi-static public key
    distribution.  Server operators may partition their private keys
@@ -1142,7 +1157,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    by publishing different DNS records containing ECHOConfig values with
    different keys using a short TTL.
 
-10.4.3.  Prevent SNI-based DoS attacks
+10.5.3.  Prevent SNI-based DoS attacks
 
    This design requires servers to decrypt ClientHello messages with
    ClientEncryptedCH extensions carrying valid digests.  Thus, it is
@@ -1150,7 +1165,20 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    server.  This attack is bound by the number of valid TCP connections
    an attacker can open.
 
-10.4.4.  Do not stick out
+
+
+
+
+
+
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 21]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
+
+10.5.4.  Do not stick out
 
    The only explicit signal indicating possible use of ECHO is the
    ClientHello "encrypted_client_hello" extension.  Server handshake
@@ -1164,27 +1192,19 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    all Web browsers start using ECHO, the presence of this value will
    not signal unusual behavior to passive eavesdroppers.
 
-10.4.5.  Forward secrecy
+10.5.5.  Forward secrecy
 
    This design is not forward secret because the server's ECHO key is
    static.  However, the window of exposure is bound by the key
    lifetime.  It is RECOMMENDED that servers rotate keys frequently.
 
-
-
-
-Rescorla, et al.         Expires 6 November 2020               [Page 21]
-
-Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
-
-
-10.4.6.  Proper security context
+10.5.6.  Proper security context
 
    This design permits servers operating in Split Mode to forward
    connections directly to backend origin servers, thereby avoiding
    unnecessary MiTM attacks.
 
-10.4.7.  Split server spoofing
+10.5.7.  Split server spoofing
 
    Assuming ECHO records retrieved from DNS are authenticated, e.g., via
    DNSSEC or fetched from a trusted Recursive Resolver, spoofing a
@@ -1196,14 +1216,25 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    the server because the client validates the server certificate
    against the public name before retrying.
 
-10.4.8.  Supporting multiple protocols
+10.5.8.  Supporting multiple protocols
 
    This design has no impact on application layer protocol negotiation.
    It may affect connection routing, server certificate selection, and
    client certificate verification.  Thus, it is compatible with
    multiple protocols.
 
-10.5.  Misrouting
+
+
+
+
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 22]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
+
+10.6.  Misrouting
 
    Note that the backend server has no way of knowing what the SNI was,
    but that does not lead to additional privacy exposure because the
@@ -1218,21 +1249,12 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    odd, and probably some precise rules about handling ECHO and no SNI
    uniformly?]]
 
-10.6.  Padding Policy
+10.7.  Padding Policy
 
    Variations in the length of the ClientHelloInner ciphertext could
    leak information about the corresponding plaintext.  Section 7.2
    describes a RECOMMENDED padding mechanism for clients aimed at
    reducing potential information leakage.
-
-
-
-
-
-Rescorla, et al.         Expires 6 November 2020               [Page 22]
-
-Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
-
 
 11.  IANA Considerations
 
@@ -1260,6 +1282,14 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
               <http://www.ietf.org/internet-drafts/draft-nygren-dnsop-
               svcb-httpssvc-00.txt>.
 
+
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 23]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
+
    [I-D.ietf-tls-exported-authenticator]
               Sullivan, N., "Exported Authenticators in TLS", Work in
               Progress, Internet-Draft, draft-ietf-tls-exported-
@@ -1282,13 +1312,6 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
               Extensions: Extension Definitions", RFC 6066,
               DOI 10.17487/RFC6066, January 2011,
               <https://www.rfc-editor.org/info/rfc6066>.
-
-
-
-Rescorla, et al.         Expires 6 November 2020               [Page 23]
-
-Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
-
 
    [RFC7685]  Langley, A., "A Transport Layer Security (TLS) ClientHello
               Padding Extension", RFC 7685, DOI 10.17487/RFC7685,
@@ -1314,6 +1337,15 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 12.2.  Informative References
 
+
+
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 24]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
+
    [I-D.ietf-doh-dns-over-https]
               Hoffman, P. and P. McManus, "DNS Queries over HTTPS
               (DoH)", Work in Progress, Internet-Draft, draft-ietf-doh-
@@ -1337,14 +1369,6 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
               "Transport Layer Security (TLS) Application-Layer Protocol
               Negotiation Extension", RFC 7301, DOI 10.17487/RFC7301,
               July 2014, <https://www.rfc-editor.org/info/rfc7301>.
-
-
-
-
-Rescorla, et al.         Expires 6 November 2020               [Page 24]
-
-Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
-
 
    [RFC7858]  Hu, Z., Zhu, L., Heidemann, J., Mankin, A., Wessels, D.,
               and P. Hoffman, "Specification for DNS over Transport
@@ -1370,6 +1394,14 @@ Appendix A.  Alternative SNI Protection Designs
 
 A.1.  TLS-layer
 
+
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 25]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
+
 A.1.1.  TLS in Early Data
 
    In this variant, TLS Client Hellos are tunneled within early data
@@ -1392,16 +1424,6 @@ A.1.1.  TLS in Early Data
    distinct Client Hello extension and neither abuses early data nor
    requires a bootstrapping connection.
 
-
-
-
-
-
-Rescorla, et al.         Expires 6 November 2020               [Page 25]
-
-Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
-
-
 A.1.2.  Combined Tickets
 
    In this variant, client-facing and backend servers coordinate to
@@ -1415,6 +1437,26 @@ A.1.2.  Combined Tickets
    contrast, encrypted SNI requires no such coordination.
 
 A.2.  Application-layer
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 26]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
 
 A.2.1.  HTTP/2 CERTIFICATE Frames
 
@@ -1449,15 +1491,6 @@ Appendix B.  Total Client Hello Encryption
 
    *  The client-facing server can still see the other extensions.  By
       contrast we could introduce another EncryptedExtensions block that
-
-
-
-
-Rescorla, et al.         Expires 6 November 2020               [Page 26]
-
-Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
-
-
       was encrypted to the backend server and not the client-facing
       server.
 
@@ -1468,6 +1501,18 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    *  A conforming middlebox will strip every extension, which might
       result in a ClientHello which is just unacceptable to the server
       (more analysis needed).
+
+
+
+
+
+
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 27]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
 
 Appendix C.  Acknowledgements
 
@@ -1509,4 +1554,15 @@ Authors' Addresses
 
 
 
-Rescorla, et al.         Expires 6 November 2020               [Page 27]
+
+
+
+
+
+
+
+
+
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 28]
