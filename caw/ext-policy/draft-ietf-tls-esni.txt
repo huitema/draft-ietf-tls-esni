@@ -5,12 +5,12 @@
 tls                                                          E. Rescorla
 Internet-Draft                                                RTFM, Inc.
 Intended status: Experimental                                     K. Oku
-Expires: 4 November 2020                                          Fastly
+Expires: 6 November 2020                                          Fastly
                                                              N. Sullivan
                                                               Cloudflare
                                                                C.A. Wood
                                                              Apple, Inc.
-                                                              3 May 2020
+                                                              5 May 2020
 
 
               Encrypted Server Name Indication for TLS 1.3
@@ -36,7 +36,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 November 2020.
+   This Internet-Draft will expire on 6 November 2020.
 
 Copyright Notice
 
@@ -53,7 +53,7 @@ Copyright Notice
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 1]
+Rescorla, et al.         Expires 6 November 2020                [Page 1]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 2]
+Rescorla, et al.         Expires 6 November 2020                [Page 2]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -165,7 +165,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 3]
+Rescorla, et al.         Expires 6 November 2020                [Page 3]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -221,7 +221,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 4]
+Rescorla, et al.         Expires 6 November 2020                [Page 4]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -277,7 +277,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 5]
+Rescorla, et al.         Expires 6 November 2020                [Page 5]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -333,7 +333,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 6]
+Rescorla, et al.         Expires 6 November 2020                [Page 6]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -364,9 +364,9 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
    extensions  A list of extensions that the client can take into
       consideration when generating a ClientHello message.  The purpose
-      of the field is to provide room for additional features in the
-      future.  See Section 12 for guidance on what type of extensions
-      are appropriate for this structure.
+      of the field is to provide room for additional functionality in
+      the future.  See Section 12 for guidance on what type of
+      extensions are appropriate for this structure.
 
    The format is defined in [RFC8446], Section 4.2.  The same
    interpretation rules apply: extensions MAY appear in any order, but
@@ -389,7 +389,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 7]
+Rescorla, et al.         Expires 6 November 2020                [Page 7]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -445,7 +445,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 8]
+Rescorla, et al.         Expires 6 November 2020                [Page 8]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -501,7 +501,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020                [Page 9]
+Rescorla, et al.         Expires 6 November 2020                [Page 9]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -557,7 +557,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 10]
+Rescorla, et al.         Expires 6 November 2020               [Page 10]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -613,7 +613,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 11]
+Rescorla, et al.         Expires 6 November 2020               [Page 11]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -669,7 +669,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 12]
+Rescorla, et al.         Expires 6 November 2020               [Page 12]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -725,7 +725,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 13]
+Rescorla, et al.         Expires 6 November 2020               [Page 13]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -781,7 +781,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 14]
+Rescorla, et al.         Expires 6 November 2020               [Page 14]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -837,7 +837,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 15]
+Rescorla, et al.         Expires 6 November 2020               [Page 15]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -893,7 +893,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 16]
+Rescorla, et al.         Expires 6 November 2020               [Page 16]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -949,7 +949,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 17]
+Rescorla, et al.         Expires 6 November 2020               [Page 17]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1005,7 +1005,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 18]
+Rescorla, et al.         Expires 6 November 2020               [Page 18]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1061,7 +1061,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 19]
+Rescorla, et al.         Expires 6 November 2020               [Page 19]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1117,7 +1117,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 20]
+Rescorla, et al.         Expires 6 November 2020               [Page 20]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1173,7 +1173,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 21]
+Rescorla, et al.         Expires 6 November 2020               [Page 21]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1194,14 +1194,12 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 12.  ECHOConfig Extension Guidance
 
    Any future information or hints that influence the outer ClientHello
-   SHOULD be specified as ECHOConfig extensions.  This is primarily
-   because the outer ClientHello exists only in support of ECHO.
-   Namely, it is both an envelope for the encrypted inner ClientHello
-   and enabler for authenticated key mismatch signals (see Section 8).
-   In contrast, the inner ClientHello is the true ClientHello used upon
-   ECHO negotiation.  Any information that influences the inner
-   ClientHello, if needed, therefore belongs elsewhere, such as the
-   corresponding HTTPSSVC record [HTTPSSVC].
+   SHOULD be specified as ECHOConfig extensions, or in an entirely new
+   version of ECHOConfig.  This is primarily because the outer
+   ClientHello exists only in support of ECHO.  Namely, it is both an
+   envelope for the encrypted inner ClientHello and enabler for
+   authenticated key mismatch signals (see Section 8).  In contrast, the
+   inner ClientHello is the true ClientHello used upon ECHO negotiation.
 
 13.  References
 
@@ -1229,7 +1227,9 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 22]
+
+
+Rescorla, et al.         Expires 6 November 2020               [Page 22]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1285,7 +1285,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 23]
+Rescorla, et al.         Expires 6 November 2020               [Page 23]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1341,7 +1341,7 @@ A.1.  TLS-layer
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 24]
+Rescorla, et al.         Expires 6 November 2020               [Page 24]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1397,7 +1397,7 @@ A.2.  Application-layer
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 25]
+Rescorla, et al.         Expires 6 November 2020               [Page 25]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1453,7 +1453,7 @@ Appendix B.  Total Client Hello Encryption
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 26]
+Rescorla, et al.         Expires 6 November 2020               [Page 26]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
@@ -1509,4 +1509,4 @@ Authors' Addresses
 
 
 
-Rescorla, et al.         Expires 4 November 2020               [Page 27]
+Rescorla, et al.         Expires 6 November 2020               [Page 27]

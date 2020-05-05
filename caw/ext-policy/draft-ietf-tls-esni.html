@@ -832,7 +832,7 @@ table.left {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Rescorla, et al.</td>
-<td class="center">Expires 4 November 2020</td>
+<td class="center">Expires 6 November 2020</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -845,12 +845,12 @@ table.left {
 <dd class="internet-draft">draft-ietf-tls-esni-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2020-05-03" class="published">3 May 2020</time>
+<time datetime="2020-05-05" class="published">5 May 2020</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Experimental</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2020-11-04">4 November 2020</time></dd>
+<dd class="expires"><time datetime="2020-11-06">6 November 2020</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -897,7 +897,7 @@ Server Name Indication for TLS 1.3.<a href="#section-abstract-1" class="pilcrow"
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 4 November 2020.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 November 2020.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1351,8 +1351,8 @@ invalid if maximum_name_length is greater than 256.<a href="#section-4-7.10" cla
 <dd id="section-4-7.12">
   A list of extensions that the client can take into consideration when
 generating a ClientHello message. The purpose of the field is to provide room
-for additional features in the future. See <a href="#config-extensions" class="xref">Section 12</a> for guidance
-on what type of extensions are appropriate for this structure.<a href="#section-4-7.12" class="pilcrow">¶</a>
+for additional functionality in the future. See <a href="#config-extensions" class="xref">Section 12</a> for 
+guidance on what type of extensions are appropriate for this structure.<a href="#section-4-7.12" class="pilcrow">¶</a>
 </dd>
 </dl>
 <p id="section-4-8">The format is defined in <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>, Section 4.2. The same interpretation rules
@@ -2148,13 +2148,11 @@ existing registry for Alerts (defined in <span>[<a href="#RFC8446" class="xref">
 <a href="#section-12" class="section-number selfRef">12. </a><a href="#name-echoconfig-extension-guidan" class="section-name selfRef">ECHOConfig Extension Guidance</a>
       </h2>
 <p id="section-12-1">Any future information or hints that influence the outer ClientHello SHOULD be
-specified as ECHOConfig extensions. This is primarily because the outer ClientHello
-exists only in support of ECHO. Namely, it is both an envelope for the encrypted
-inner ClientHello and enabler for authenticated key mismatch signals
-(see <a href="#server-behavior" class="xref">Section 8</a>). In contrast, the inner ClientHello is the true ClientHello
-used upon ECHO negotiation. Any information that influences the inner ClientHello,
-if needed, therefore belongs elsewhere, such as the corresponding HTTPSSVC
-record <span>[<a href="#HTTPSSVC" class="xref">HTTPSSVC</a>]</span>.<a href="#section-12-1" class="pilcrow">¶</a></p>
+specified as ECHOConfig extensions, or in an entirely new version of ECHOConfig. 
+This is primarily because the outer ClientHello exists only in support of ECHO. 
+Namely, it is both an envelope for the encrypted inner ClientHello and enabler for 
+authenticated key mismatch signals (see <a href="#server-behavior" class="xref">Section 8</a>). In contrast, the inner 
+ClientHello is the true ClientHello used upon ECHO negotiation.<a href="#section-12-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <section id="section-13">
