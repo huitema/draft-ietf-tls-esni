@@ -1,6 +1,6 @@
 {
   "magic": "B8n2c@e8kvfx",
-  "timestamp": "2020-05-04T20:38:19.126145+00:00",
+  "timestamp": "2020-05-05T18:30:46.875453+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -14103,7 +14103,7 @@
       "labels": [],
       "body": "Addresses #218.\r\n\r\nA given ECHOConfig now lists a single HPKE public key, with the corresponding\r\nKEM identifier, and a list of acceptable AEAD and KDF algorithm identifiers.\r\nClients may then choose their preferred AEAD and KDF algorithms for ClientHello\r\nencryption.\r\n\r\nWe may need to provide some guidance, either here or in the HPKE document, about acceptable (KEM, KDF, AEAD) tuples. \r\n\r\ncc @bifurcation",
       "createdAt": "2020-04-28T19:36:29Z",
-      "updatedAt": "2020-05-04T20:38:16Z",
+      "updatedAt": "2020-05-04T20:38:25Z",
       "closedAt": "2020-05-01T23:34:07Z",
       "mergedAt": "2020-05-01T23:34:07Z",
       "mergedBy": "ekr",
@@ -14125,9 +14125,9 @@
         {
           "author": "chris-wood",
           "authorAssociation": "COLLABORATOR",
-          "body": "Oops -- thanks, @ocheron!",
+          "body": "Oops -- thanks, @ocheron! Fixed here: https://github.com/tlswg/draft-ietf-tls-esni/pull/231.",
           "createdAt": "2020-05-04T20:38:16Z",
-          "updatedAt": "2020-05-04T20:38:16Z"
+          "updatedAt": "2020-05-04T20:38:25Z"
         }
       ],
       "reviews": []
@@ -14494,7 +14494,7 @@
       "labels": [],
       "body": "Addresses #146.",
       "createdAt": "2020-05-02T22:45:49Z",
-      "updatedAt": "2020-05-04T00:04:36Z",
+      "updatedAt": "2020-05-05T18:30:03Z",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -14516,13 +14516,13 @@
               "originalPosition": 9,
               "body": "A paragraph break here might be good. You jump from description of the attack to a description of mitigating factors without segue. ",
               "createdAt": "2020-05-03T23:23:19Z",
-              "updatedAt": "2020-05-04T00:04:36Z"
+              "updatedAt": "2020-05-05T18:30:03Z"
             },
             {
               "originalPosition": 13,
               "body": "I don't think the v6 example is good. And none of these are especially strong, except perhaps the DNS one. \r\n\r\nFor me, the question is how targeted the delivery could be, and whether the client can then do anything about that. For instance, a client might decide to flush its ECHO config cache if it moves and wants to be unlinkable.",
               "createdAt": "2020-05-03T23:27:07Z",
-              "updatedAt": "2020-05-04T00:04:36Z"
+              "updatedAt": "2020-05-05T18:30:03Z"
             }
           ]
         },
@@ -14542,7 +14542,107 @@
               "originalPosition": 13,
               "body": "@martinthomson I'll remove the last sentence, not because of v6 (which I do think is a good example), but because it can probably bite us in the future when someone does turn it into a threat. :)\r\n\r\nOn the latter points, how about the following:\r\n\r\nThe cost of this type of attack scales linearly with the desired number of target clients. DNS caching behavior makes targeting individual users for extended periods of time, e.g., using per-client ECHOConfig structures delivered via HTTPSSVC RRs with high TTLs, challenging. Moreover, clients can flush any ECHOConfig state upon changing networks to mitigate potential linkability problems.",
               "createdAt": "2020-05-04T00:02:27Z",
-              "updatedAt": "2020-05-04T00:04:36Z"
+              "updatedAt": "2020-05-05T18:30:03Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MDA3MDA4",
+          "commit": {
+            "abbreviatedOid": "7a5943b"
+          },
+          "author": "davidben",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T17:32:07Z",
+          "updatedAt": "2020-05-05T17:32:08Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Is the thinking here that the client might have some ECHOConfig state outside the DNS cache, or is this just saying the client could flush its DNS cache on network change? An attacker that can distribute per-client ECHOConfigs in DNS could just as easily distribute per-client A/AAAA records in DNS. (Well, A may be hard due to address scarcity, but AAAA should be doable.) So if you're concerned about this attack, you probably want to treat this as a DNS-wide issue and drop the entire DNS cache.",
+              "createdAt": "2020-05-05T17:32:07Z",
+              "updatedAt": "2020-05-05T18:30:03Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MDE0ODc4",
+          "commit": {
+            "abbreviatedOid": "7a5943b"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T17:42:41Z",
+          "updatedAt": "2020-05-05T17:42:41Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Indeed -- in practice it'll likely be the entire cache. I didn't want to include other state (V4 or V6) to make any assumption on what the cache might contain, be it the DNS cache or something else. Is this just too generic for your taste?",
+              "createdAt": "2020-05-05T17:42:41Z",
+              "updatedAt": "2020-05-05T18:30:03Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MDIyMjAw",
+          "commit": {
+            "abbreviatedOid": "7a5943b"
+          },
+          "author": "davidben",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T17:52:31Z",
+          "updatedAt": "2020-05-05T17:52:31Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Mostly a clarifying question. Though perhaps we should say \"flushing any DNS state\" instead of flushing any ECHOConfig state\". Or perhaps \"flushing any DNS or ECHOConfig state\". Or maybe we leave it along because too many words. :-)",
+              "createdAt": "2020-05-05T17:52:31Z",
+              "updatedAt": "2020-05-05T18:30:03Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MDI4NTk2",
+          "commit": {
+            "abbreviatedOid": "7a5943b"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T18:00:46Z",
+          "updatedAt": "2020-05-05T18:00:47Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "I'm fine with \"flushing any DNS or ECHOConfig state\"!",
+              "createdAt": "2020-05-05T18:00:46Z",
+              "updatedAt": "2020-05-05T18:30:03Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MDQyODY3",
+          "commit": {
+            "abbreviatedOid": "7a5943b"
+          },
+          "author": "davidben",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T18:20:10Z",
+          "updatedAt": "2020-05-05T18:20:10Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "SGTM",
+              "createdAt": "2020-05-05T18:20:10Z",
+              "updatedAt": "2020-05-05T18:30:03Z"
             }
           ]
         }
@@ -14553,17 +14653,17 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDEzMTcyMzA3",
       "title": "Fix remaining HPKE issues.",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/231",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2020-05-04T20:38:06Z",
-      "updatedAt": "2020-05-04T20:38:06Z",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
+      "updatedAt": "2020-05-04T20:38:32Z",
+      "closedAt": "2020-05-04T20:38:32Z",
+      "mergedAt": "2020-05-04T20:38:31Z",
+      "mergedBy": "chris-wood",
       "comments": [],
       "reviews": []
     }
