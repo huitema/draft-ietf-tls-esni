@@ -1,6 +1,6 @@
 {
-  "magic": "B8n2c@e8kvfx",
-  "timestamp": "2020-05-05T18:30:46.875453+00:00",
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2020-05-07T18:44:16.805557+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -3252,7 +3252,7 @@
       "id": "MDU6SXNzdWU0MTczMjEwODk=",
       "title": "User tracking via ESNI keys",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/146",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kirsey",
       "authorAssociation": "NONE",
       "assignees": [
@@ -3263,8 +3263,8 @@
       ],
       "body": "If each client receives a unique ESNI key from a DNS provider, it is possible to link every usage of this key to the same client. It seems feasible that online services, as well as passive observers of the network traffic, can exploit such a practice for user tracking.\r\n\r\nTo enhance the privacy protections of this draft, we should describe these privacy risks in the draft. Furthermore, I recommend a clear restriction on the clients\u2019 caching durations of ESNI keys. For example, clients MUST NOT cache ESNI keys longer than 24 hours and as privacy protection, it is RECOMMENDED to cache ESNI keys only for 10 minutes.",
       "createdAt": "2019-03-05T14:18:34Z",
-      "updatedAt": "2019-07-08T21:56:14Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-05T22:07:27Z",
+      "closedAt": "2020-05-05T20:10:31Z",
       "comments": [
         {
           "author": "jb-wisemo",
@@ -3300,13 +3300,6 @@
           "body": "The document already sets the maximum TTL to the lifetime of the SNI key.\r\nIt also recommends that \"servers rotate keys frequently\" to reduce the harm from compromised keys.\r\n\r\nSo it seems that short-lived keys are good both for security and privacy.\r\n\r\nA recommended value would be useful.\r\nOtherwise \"frequently\" could be interpreted as months.",
           "createdAt": "2019-03-08T00:10:09Z",
           "updatedAt": "2019-03-08T00:10:21Z"
-        },
-        {
-          "author": "whalehub",
-          "authorAssociation": "NONE",
-          "body": "@kontaxis I think 24h would be a good timeframe for rotating keys.",
-          "createdAt": "2019-04-22T10:03:01Z",
-          "updatedAt": "2019-04-22T10:03:01Z"
         }
       ]
     },
@@ -4451,7 +4444,7 @@
       "id": "MDU6SXNzdWU1OTYwMzMzNTQ=",
       "title": "Limit \"Don't stick out\" to explicit signals",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/215",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -4460,8 +4453,8 @@
       "labels": [],
       "body": "There's no explicit signal indicating that ECHO was negotiated for a connection. Thus, clients must perform trial decryption with both possible handshake keys. If we intend to keep this, then we should crisply state that \"don't stick out\" is limited to explicit signals, i.e., implicit signals such as size-related information is probably out of scope. (It's certainly an open question what is the \"best\" padding scheme for handshake messages.)\r\n\r\ncc @grittygrease ",
       "createdAt": "2020-04-07T17:28:54Z",
-      "updatedAt": "2020-04-27T22:03:17Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-05T20:10:04Z",
+      "closedAt": "2020-05-05T20:10:04Z",
       "comments": []
     },
     {
@@ -4469,17 +4462,17 @@
       "id": "MDU6SXNzdWU1OTg1MDI5MDk=",
       "title": "Clarify ECHOConfig (HTTPSSVC) extension purpose",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/216",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sftcd",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "chris-wood"
       ],
       "labels": [],
       "body": "ECHOConfig.public_name provides information that goes in the outer CH. HTTPSSVC.alpn provides information to go in the inner CH (I assume). We don't specify a way for the server to  explicitly say what alpn to use in the outer CH.  I think it'd be worth re-considering where servers/admins might want to put that kind of information and how much of the inner/outer CH they may want to describe. There could be a range of potential outcomes if we re-visit this - at one extreme HTTPSSVC or ECHOConfig might provide a template for the entire CH (possibly via some template naming/numbering scheme), at the other extreme we might decide that ECHOConfig should only contain the keying information and just define alpn, public_alpn and public_name as optional fields for inclusion in HTTPSSVC. But it seems a bit broken for the only two parts of the CH the server specifies to be handled so differently,",
       "createdAt": "2020-04-12T14:54:22Z",
-      "updatedAt": "2020-04-27T22:03:17Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-07T18:43:48Z",
+      "closedAt": "2020-05-07T18:43:47Z",
       "comments": [
         {
           "author": "davidben",
@@ -4490,7 +4483,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\n\nOn 13/04/2020 15:54, David Benjamin wrote:\n>> HTTPSSVC.alpn provides information to go in the inner CH (I\n>> assume).\n> \n> It doesn't. It's important for downgrade protection that the DNS (not\n> secured) *not* impact the client's ALPN preferences. The interaction\n> between HTTPSSVC and ALPN is... rather a mess and the text around\n> this still needs work.\n\nAh. Fair enough. Though I guess ECHO will likely only be\nused via DoH or something equivalent which could change\nthings maybe.\n\nBut regardless... doesn't the point still stand that we'd\nbe better off with some consistency in how we manage the\nserver-name in the outer CH, the ALPNs in both inner and outer, and any\nother CH content where the server wants to\npublish some hints?\n\nI'm not particularly wedded to a specific approach (though\nI'd likely be more biased to simplifying the ECHOConfig).\n\n\n",
           "createdAt": "2020-04-13T15:00:58Z",
           "updatedAt": "2020-04-13T15:00:58Z"
@@ -4522,6 +4515,13 @@
           "body": "As per the call today, we'll use this issue to track guidance (that will be mirrored in the HTTPSSVC document) about how one populates extension information. In particular, information that pertains to the outer CH, which exists only for ECHO's sake, should be limited to ECHOConfig, whereas information that pertains to the inner CH should be put in the HTTPSSVC. We'll work with @bemasc to get this text in shape!",
           "createdAt": "2020-04-27T21:53:53Z",
           "updatedAt": "2020-04-27T21:54:08Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #226. Closing.",
+          "createdAt": "2020-05-07T18:43:47Z",
+          "updatedAt": "2020-05-07T18:43:47Z"
         }
       ]
     },
@@ -4732,7 +4732,16 @@
       "mergedAt": "2018-05-11T23:09:25Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "cdd930894881e8f1abab1c2d1e8e5b0107fe46b3",
+      "headRepository": null,
+      "headRefName": "master",
+      "headRefOid": "ded62dd0faa173577a5f31c3fd80fce854464fd3",
+      "mergeCommit": {
+        "oid": "ded62dd0faa173577a5f31c3fd80fce854464fd3"
+      }
     },
     {
       "number": 2,
@@ -4850,7 +4859,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "5dec6a11f91e314205d86de1d73b9fe0abe0ac26",
+      "headRepository": null,
+      "headRefName": "caw/assess",
+      "headRefOid": "8ef656997e7a3f6c63047939757e9d410eaa2127",
+      "mergeCommit": {
+        "oid": "483739199977a81d5b6d379e8556e259bd7fc28b"
+      }
     },
     {
       "number": 3,
@@ -4890,7 +4908,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "483739199977a81d5b6d379e8556e259bd7fc28b",
+      "headRepository": null,
+      "headRefName": "caw/dns",
+      "headRefOid": "02efa31d518f23d395cd20d41b5510f083097320",
+      "mergeCommit": {
+        "oid": "2a927e6f3884c74c155ca199e61b997d4089546b"
+      }
     },
     {
       "number": 4,
@@ -4958,7 +4985,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "2a927e6f3884c74c155ca199e61b997d4089546b",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "cleartext_dns",
+      "headRefOid": "4f173e07500acdd309f458950fd84b59e6d6c664",
+      "mergeCommit": {
+        "oid": "4f173e07500acdd309f458950fd84b59e6d6c664"
+      }
     },
     {
       "number": 9,
@@ -5044,7 +5080,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9da97156f4553c7f3424be53047099fe72328f47",
+      "headRepository": null,
+      "headRefName": "caw/issues",
+      "headRefOid": "a6ee53b988d804d8fd8e368c39fd5566f53cdb73",
+      "mergeCommit": {
+        "oid": "a6ee53b988d804d8fd8e368c39fd5566f53cdb73"
+      }
     },
     {
       "number": 11,
@@ -5104,7 +5149,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9da97156f4553c7f3424be53047099fe72328f47",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "simplify_keys",
+      "headRefOid": "314f8e741554c4defb828f536bae8506d20bc3e2",
+      "mergeCommit": {
+        "oid": "c30baff03a7471998a775e9f18e25f3f4e8e7eb5"
+      }
     },
     {
       "number": 12,
@@ -5145,7 +5199,16 @@
           "updatedAt": "2018-05-12T15:25:25Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "0a0d116d7ddcf73554597e4716573529ba8f31ce",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "fail_on_bad_label",
+      "headRefOid": "1772724e8da753d3deacb4280a87f8ba91ba12de",
+      "mergeCommit": {
+        "oid": "eb9af6279dd98f92cfc627f52714b884581b7f89"
+      }
     },
     {
       "number": 13,
@@ -5185,7 +5248,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "0a0d116d7ddcf73554597e4716573529ba8f31ce",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "obscure_length",
+      "headRefOid": "29c165f147e794c4d266b7b635704ee97b5892a4",
+      "mergeCommit": {
+        "oid": "a37f5e34927438ee13fe7fa2622eaf9f5e84bad0"
+      }
     },
     {
       "number": 16,
@@ -5204,7 +5276,16 @@
       "mergedAt": "2018-05-12T18:33:25Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "a37f5e34927438ee13fe7fa2622eaf9f5e84bad0",
+      "headRepository": null,
+      "headRefName": "fixes",
+      "headRefOid": "a430e93215f6553185cae4e4e5c5241ce1ba32b4",
+      "mergeCommit": {
+        "oid": "ea9fc6d00233bad98d90fbb0b6246179359fe796"
+      }
     },
     {
       "number": 18,
@@ -5364,7 +5445,16 @@
           "updatedAt": "2018-05-13T00:01:03Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "ea9fc6d00233bad98d90fbb0b6246179359fe796",
+      "headRepository": null,
+      "headRefName": "caw/encoding",
+      "headRefOid": "674f746cf41dd33551002f080cc79919865eea94",
+      "mergeCommit": {
+        "oid": "a44aea22621347cef696c8fd1a210f92a43e1460"
+      }
     },
     {
       "number": 21,
@@ -5391,7 +5481,16 @@
           "updatedAt": "2018-05-13T22:01:12Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "a44aea22621347cef696c8fd1a210f92a43e1460",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "add_kazuho",
+      "headRefOid": "e78c4f36dc7d5f117727de1c0c8b52e79a669019",
+      "mergeCommit": {
+        "oid": "77a9cef4ba9de590a1cf327a655e10ce0df6d11d"
+      }
     },
     {
       "number": 22,
@@ -5418,7 +5517,16 @@
           "updatedAt": "2018-05-14T13:15:38Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "77a9cef4ba9de590a1cf327a655e10ce0df6d11d",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/extensions",
+      "headRefOid": "e2362439b34c7e280bb2a9fee2152cbae55016f4",
+      "mergeCommit": {
+        "oid": "87f70eeeff775e26b57a92cb0d01586f0cf8f58c"
+      }
     },
     {
       "number": 23,
@@ -5519,7 +5627,16 @@
           "updatedAt": "2018-05-14T16:02:06Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "16b8a6ff244862647683be24fcded2ab8b5657e9",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/client-side-validation",
+      "headRefOid": "ca6c490833165bf920e6c05af2ebb57c259549a0",
+      "mergeCommit": {
+        "oid": "3ad81cc1e3a141ca9ad90c5d184773a25cca4af8"
+      }
     },
     {
       "number": 24,
@@ -5815,7 +5932,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "3ad81cc1e3a141ca9ad90c5d184773a25cca4af8",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/one-key-per-group",
+      "headRefOid": "f55f9c31735eba8fcf04b8e2110966e0dcafa7a4",
+      "mergeCommit": {
+        "oid": "6276955dbfee725e5db060d38d66cd479d8acf58"
+      }
     },
     {
       "number": 26,
@@ -5856,7 +5982,16 @@
           "updatedAt": "2018-05-14T13:05:07Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "77a9cef4ba9de590a1cf327a655e10ce0df6d11d",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/hash-based-vs-wildcard-delegation",
+      "headRefOid": "ffc797263c950cb44cfd5c199f8f55c57209598f",
+      "mergeCommit": {
+        "oid": "16b8a6ff244862647683be24fcded2ab8b5657e9"
+      }
     },
     {
       "number": 31,
@@ -5904,7 +6039,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "3ad81cc1e3a141ca9ad90c5d184773a25cca4af8",
+      "headRepository": null,
+      "headRefName": "mulitple_records",
+      "headRefOid": "103b04c10bfa6c946c7b290b13a5365661f0d71a",
+      "mergeCommit": {
+        "oid": "e19b8088bb5e81983c9b279614766cc8fa7839bf"
+      }
     },
     {
       "number": 36,
@@ -5923,7 +6067,16 @@
       "mergedAt": "2018-05-15T22:09:55Z",
       "mergedBy": "chris-wood",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "e19b8088bb5e81983c9b279614766cc8fa7839bf",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/normative-reference-to-rfc4408",
+      "headRefOid": "279d79a0697d792288df0054161568c76fe5a87e",
+      "mergeCommit": {
+        "oid": "6ba58db63026fed2bcbabe3290e2af451ee6f5bf"
+      }
     },
     {
       "number": 43,
@@ -5956,7 +6109,16 @@
           "updatedAt": "2018-05-17T19:42:33Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "6276955dbfee725e5db060d38d66cd479d8acf58",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/no-label",
+      "headRefOid": "b5ce41040b3f28706ae2f4aa99980e1f705d2e32",
+      "mergeCommit": {
+        "oid": "1e1a8ffcc57a616ab418e3097f583da96ce40f42"
+      }
     },
     {
       "number": 44,
@@ -5997,7 +6159,16 @@
           "updatedAt": "2018-05-17T20:29:07Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "6276955dbfee725e5db060d38d66cd479d8acf58",
+      "headRepository": null,
+      "headRefName": "no-altsvc",
+      "headRefOid": "46b519f3105f06796ef8c5dee7d2987179556a52",
+      "mergeCommit": {
+        "oid": "67ca02fdc6be26906aa401ad8e6a68f839c33a5d"
+      }
     },
     {
       "number": 45,
@@ -6016,7 +6187,16 @@
       "mergedAt": "2018-05-21T00:08:27Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "67ca02fdc6be26906aa401ad8e6a68f839c33a5d",
+      "headRepository": null,
+      "headRefName": "caw/nix-fronting",
+      "headRefOid": "5b49eeb30048f04acff1fbcc4cfe74bce5111261",
+      "mergeCommit": {
+        "oid": "14cc61eec9b80485d1356857b20c356a1eda0b23"
+      }
     },
     {
       "number": 46,
@@ -6049,7 +6229,16 @@
           "updatedAt": "2018-05-21T21:51:24Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1e1a8ffcc57a616ab418e3097f583da96ce40f42",
+      "headRepository": "reaperhulk/draft-rescorla-tls-esni",
+      "headRefName": "patch-1",
+      "headRefOid": "1a8b50a4e7240902024dcbdf753db69e34b07605",
+      "mergeCommit": {
+        "oid": "dd379d3031f72b6137d2bbee6d067d0787187b39"
+      }
     },
     {
       "number": 48,
@@ -6301,7 +6490,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "dd379d3031f72b6137d2bbee6d067d0787187b39",
+      "headRepository": null,
+      "headRefName": "caw/padded",
+      "headRefOid": "095eae5ab689aaec89bdabbefb7f9b8caace394b",
+      "mergeCommit": {
+        "oid": "44589659396b2f58fccb980860f270cdcbe42684"
+      }
     },
     {
       "number": 49,
@@ -6515,7 +6713,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "44589659396b2f58fccb980860f270cdcbe42684",
+      "headRepository": null,
+      "headRefName": "caw/alternates",
+      "headRefOid": "35eb736a1fd180e0364d3a0ba036cbcd483c1ca2",
+      "mergeCommit": {
+        "oid": "368ed7d1ba6bd0124fe1afe7f0a7c33c2dd03650"
+      }
     },
     {
       "number": 50,
@@ -6548,7 +6755,16 @@
           "updatedAt": "2018-06-15T21:54:45Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "44589659396b2f58fccb980860f270cdcbe42684",
+      "headRepository": "grittygrease/draft-rescorla-tls-esni",
+      "headRefName": "nick/author",
+      "headRefOid": "d4af1ee50283017f52d56ee587f567876514bc90",
+      "mergeCommit": {
+        "oid": "99de7bde18aed8a52e362ae0b33a89540efbbbba"
+      }
     },
     {
       "number": 51,
@@ -6567,7 +6783,16 @@
       "mergedAt": "2018-06-25T19:42:07Z",
       "mergedBy": "chris-wood",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "368ed7d1ba6bd0124fe1afe7f0a7c33c2dd03650",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/author",
+      "headRefOid": "1a8b0959b887f86ca8bf9f93c4e6652c9a341020",
+      "mergeCommit": {
+        "oid": "f0e80361e890e99d86477c8c03b86a4b51699f76"
+      }
     },
     {
       "number": 52,
@@ -6586,7 +6811,16 @@
       "mergedAt": "2018-07-02T14:11:47Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f0e80361e890e99d86477c8c03b86a4b51699f76",
+      "headRepository": null,
+      "headRefName": "padding_len",
+      "headRefOid": "0348f408b95c833744de9571f9ce9a09de4f1f34",
+      "mergeCommit": {
+        "oid": "df2fcf152d436683090eb0ae395dddd699ed33f4"
+      }
     },
     {
       "number": 53,
@@ -6646,7 +6880,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f0e80361e890e99d86477c8c03b86a4b51699f76",
+      "headRepository": null,
+      "headRefName": "client_cache",
+      "headRefOid": "9f452faf97a5cc082dea2c548a2d9e487a480617",
+      "mergeCommit": {
+        "oid": "237cb9dd389c23224379eb0cfd1f72211403d0db"
+      }
     },
     {
       "number": 54,
@@ -6687,7 +6930,14 @@
           "updatedAt": "2018-07-02T02:33:45Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f0e80361e890e99d86477c8c03b86a4b51699f76",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/fix-max-length",
+      "headRefOid": "c153340a60062c6698015e805ca9690d5782a721",
+      "mergeCommit": null
     },
     {
       "number": 55,
@@ -6756,7 +7006,14 @@
           "updatedAt": "2018-07-09T14:01:33Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f0e80361e890e99d86477c8c03b86a4b51699f76",
+      "headRepository": null,
+      "headRefName": "server_echo",
+      "headRefOid": "106d313f0a7c37833b0ebb2e77a22fe12592cb8f",
+      "mergeCommit": null
     },
     {
       "number": 56,
@@ -6775,7 +7032,14 @@
       "mergedAt": null,
       "mergedBy": null,
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f0e80361e890e99d86477c8c03b86a4b51699f76",
+      "headRepository": null,
+      "headRefName": "iana",
+      "headRefOid": "bb30359063a7189be2e7440b3f9f676ae1544ac8",
+      "mergeCommit": null
     },
     {
       "number": 57,
@@ -6809,7 +7073,16 @@
           "updatedAt": "2018-07-02T20:46:08Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "0cd1d37cfd9d8cd7eadb3f0f7204853969f5f14c",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/reorg-not-after-vs-ttl-discussion",
+      "headRefOid": "d75151312c15814691390e2c53833a99598cd037",
+      "mergeCommit": {
+        "oid": "3f4ec98e02e5a0478e08041ac93cfdc8300938ee"
+      }
     },
     {
       "number": 58,
@@ -6849,7 +7122,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "0cd1d37cfd9d8cd7eadb3f0f7204853969f5f14c",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "terminology",
+      "headRefOid": "b6c54c7c0a657c91f6e506b8852e7fa16d9e7eac",
+      "mergeCommit": {
+        "oid": "6611fb65fa444721fa22ebc3e2303e1d12dab219"
+      }
     },
     {
       "number": 59,
@@ -6868,7 +7150,16 @@
       "mergedAt": "2018-07-02T21:12:07Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "6611fb65fa444721fa22ebc3e2303e1d12dab219",
+      "headRepository": null,
+      "headRefName": "more_nitpick_language",
+      "headRefOid": "ce7622476cd7b0ecc172c5cb405cd200a11e7f82",
+      "mergeCommit": {
+        "oid": "91ea306749c85e77f7e749469cc2e3aa40362211"
+      }
     },
     {
       "number": 60,
@@ -6887,7 +7178,16 @@
       "mergedAt": "2018-07-09T14:19:16Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "91ea306749c85e77f7e749469cc2e3aa40362211",
+      "headRepository": null,
+      "headRefName": "remove_open_issue",
+      "headRefOid": "54d7151f1a706036e6d3320d1eede151ec4ed39c",
+      "mergeCommit": {
+        "oid": "e72b0512cc779f2273f72a794af18a36598d19a2"
+      }
     },
     {
       "number": 70,
@@ -6921,7 +7221,14 @@
           "updatedAt": "2018-07-06T00:18:57Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "91ea306749c85e77f7e749469cc2e3aa40362211",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/different-ke-for-esni-and-handshake",
+      "headRefOid": "6bd78b7a76b1ec9f66c652e28928a4a4d01ccc95",
+      "mergeCommit": null
     },
     {
       "number": 71,
@@ -7075,7 +7382,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "e72b0512cc779f2273f72a794af18a36598d19a2",
+      "headRepository": "tmshort/draft-rescorla-tls-esni",
+      "headRefName": "master-tmshort",
+      "headRefOid": "aa1bd7ae6eff44e7e2112e6673f09ac3ad9e1af5",
+      "mergeCommit": null
     },
     {
       "number": 72,
@@ -7102,7 +7416,14 @@
           "updatedAt": "2018-07-11T17:35:15Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "e72b0512cc779f2273f72a794af18a36598d19a2",
+      "headRepository": null,
+      "headRefName": "rrtype",
+      "headRefOid": "7d69391b239f21f8cf6c3fae18f1fb51558ec9ca",
+      "mergeCommit": null
     },
     {
       "number": 73,
@@ -7178,7 +7499,14 @@
           "updatedAt": "2019-03-06T00:55:10Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "7b2c2f8b8ff9656a713b1449a50efb9ee8ca60bc",
+      "headRepository": null,
+      "headRefName": "rrtype-bis",
+      "headRefOid": "e9f39739d5c24e739c777842b01c880b698dc31c",
+      "mergeCommit": null
     },
     {
       "number": 76,
@@ -7197,7 +7525,16 @@
       "mergedAt": "2018-07-15T14:36:02Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "e72b0512cc779f2273f72a794af18a36598d19a2",
+      "headRepository": "mcmanus/draft-rescorla-tls-esni",
+      "headRefName": "attrleaf",
+      "headRefOid": "d13c5c843b00248df342308beb897b3e8f494a3c",
+      "mergeCommit": {
+        "oid": "9b8f4362a7f7bed7507a5c6932fbb1be7b4989cf"
+      }
     },
     {
       "number": 77,
@@ -7230,7 +7567,16 @@
           "updatedAt": "2018-07-16T20:31:59Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9b8f4362a7f7bed7507a5c6932fbb1be7b4989cf",
+      "headRepository": null,
+      "headRefName": "caw/clarify-encoding",
+      "headRefOid": "53126950df6185be5c37a63da80172188ae2f446",
+      "mergeCommit": {
+        "oid": "49af7eb82f46c3fcc58f485d5abd7bcdbb65b5b2"
+      }
     },
     {
       "number": 78,
@@ -7325,7 +7671,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9b8f4362a7f7bed7507a5c6932fbb1be7b4989cf",
+      "headRepository": "tmshort/draft-rescorla-tls-esni",
+      "headRefName": "master-tmshort-rev",
+      "headRefOid": "96c94d5ef23e68c7a7c89a2089429a3da1349a59",
+      "mergeCommit": null
     },
     {
       "number": 85,
@@ -7373,7 +7726,14 @@
           "updatedAt": "2018-08-07T12:50:59Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "49af7eb82f46c3fcc58f485d5abd7bcdbb65b5b2",
+      "headRepository": null,
+      "headRefName": "caw/contributive",
+      "headRefOid": "134b15c87b5c4cde7f52500138662f64757e2e9c",
+      "mergeCommit": null
     },
     {
       "number": 86,
@@ -7400,7 +7760,16 @@
           "updatedAt": "2018-08-07T16:02:29Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "49af7eb82f46c3fcc58f485d5abd7bcdbb65b5b2",
+      "headRepository": null,
+      "headRefName": "caw/query",
+      "headRefOid": "3152be598fbfcef510b89589963389c1cedbe0a3",
+      "mergeCommit": {
+        "oid": "3d52a23db2ddda6279c1915b5224789ccf5d951a"
+      }
     },
     {
       "number": 87,
@@ -7486,7 +7855,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "49af7eb82f46c3fcc58f485d5abd7bcdbb65b5b2",
+      "headRepository": null,
+      "headRefName": "caw/separate-keyshares",
+      "headRefOid": "0a47e5b16eecb49678ec83fcbf3e3dd3e321f32f",
+      "mergeCommit": {
+        "oid": "6995fd93a9a69363581b531318115543c9afb6bf"
+      }
     },
     {
       "number": 89,
@@ -7728,7 +8106,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "6995fd93a9a69363581b531318115543c9afb6bf",
+      "headRepository": null,
+      "headRefName": "caw/echo-nonce",
+      "headRefOid": "6eb942287b53da31eece48bab25d1a3ac945e284",
+      "mergeCommit": {
+        "oid": "e3cd3f544b0018a4b42621a9a12b62ff92d81cdf"
+      }
     },
     {
       "number": 90,
@@ -7787,7 +8174,16 @@
           "updatedAt": "2018-09-16T19:46:38Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1e7bf63593a342fd15ee065450686ed9b99a8d7f",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "version_number",
+      "headRefOid": "792ec78c70cb3f8d8c26d6c07b3f507f14ead029",
+      "mergeCommit": {
+        "oid": "a5c6ac1843f5cc251c32723f2686b3d8066aa0fa"
+      }
     },
     {
       "number": 91,
@@ -7859,7 +8255,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "a5c6ac1843f5cc251c32723f2686b3d8066aa0fa",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "reorder_psnl",
+      "headRefOid": "a35fbb358e8a13fe9097a3b6f284c0c11625b14e",
+      "mergeCommit": {
+        "oid": "71105a168d81a7bb11e37d18fe147f27ab395f72"
+      }
     },
     {
       "number": 92,
@@ -7892,7 +8297,16 @@
           "updatedAt": "2018-09-17T16:37:13Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "d1caee56da2f49ea38f9c064d26049aaf8d2418e",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "clarify_key_share",
+      "headRefOid": "4f9b8f06329aba4952ddab94a58146f24cafab30",
+      "mergeCommit": {
+        "oid": "1dd0d218b8a12dcbf695338b4880bd677e440b76"
+      }
     },
     {
       "number": 93,
@@ -7911,7 +8325,16 @@
       "mergedAt": "2018-09-18T14:33:17Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1dd0d218b8a12dcbf695338b4880bd677e440b76",
+      "headRepository": null,
+      "headRefName": "encrypted_sni",
+      "headRefOid": "34522b7c617dd80873818f49cf506bd93aa69447",
+      "mergeCommit": {
+        "oid": "682928e63c897ff5fba83693625a70073b0978c1"
+      }
     },
     {
       "number": 94,
@@ -7965,7 +8388,16 @@
           "updatedAt": "2018-09-18T14:54:21Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "682928e63c897ff5fba83693625a70073b0978c1",
+      "headRepository": null,
+      "headRefName": "checksum",
+      "headRefOid": "dfe09481d3eead6825da3e7a79e8640a1693ef1f",
+      "mergeCommit": {
+        "oid": "67fb40a4bee107293a3f835673a76015f9acd79f"
+      }
     },
     {
       "number": 95,
@@ -7998,7 +8430,16 @@
           "updatedAt": "2018-09-18T14:49:04Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "682928e63c897ff5fba83693625a70073b0978c1",
+      "headRepository": null,
+      "headRefName": "clarify_clarify",
+      "headRefOid": "6e2e80c32f0e2bdec5db3649ac0e7a7474f1583a",
+      "mergeCommit": {
+        "oid": "bff4cee30cec7e8a4ba0397dbc58dc93201fa8cd"
+      }
     },
     {
       "number": 96,
@@ -8017,7 +8458,16 @@
       "mergedAt": "2018-09-18T17:24:21Z",
       "mergedBy": "kazuho",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "bff4cee30cec7e8a4ba0397dbc58dc93201fa8cd",
+      "headRepository": null,
+      "headRefName": "version",
+      "headRefOid": "5442864faab95a1bc79922f25748886d3b4adfff",
+      "mergeCommit": {
+        "oid": "7b2c2f8b8ff9656a713b1449a50efb9ee8ca60bc"
+      }
     },
     {
       "number": 98,
@@ -8145,7 +8595,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "7b2c2f8b8ff9656a713b1449a50efb9ee8ca60bc",
+      "headRepository": null,
+      "headRefName": "sni_ack",
+      "headRefOid": "3655e4c9d64c470790fb7dc432fe304a126e9a1c",
+      "mergeCommit": {
+        "oid": "b74e843a0e6db2553e216df6508296e5a3cc5292"
+      }
     },
     {
       "number": 100,
@@ -8178,7 +8637,16 @@
           "updatedAt": "2018-10-18T03:41:53Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "b74e843a0e6db2553e216df6508296e5a3cc5292",
+      "headRepository": "mcmanus/draft-rescorla-tls-esni",
+      "headRefName": "mcmanus-61",
+      "headRefOid": "88cc4bb5ef44c88d878d76bc33e87d169ac01563",
+      "mergeCommit": {
+        "oid": "35ab3043ffb8e4a266407e1750c9aa8c932cb440"
+      }
     },
     {
       "number": 101,
@@ -8211,7 +8679,16 @@
           "updatedAt": "2018-10-21T20:17:46Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "b74e843a0e6db2553e216df6508296e5a3cc5292",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "reject_tls12",
+      "headRefOid": "342e1ebc6e9675741d96d6c532047c24645e6188",
+      "mergeCommit": {
+        "oid": "3fcacbeb8f4feb5f80ea89460a4252c3bea12b72"
+      }
     },
     {
       "number": 102,
@@ -8362,7 +8839,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "3fcacbeb8f4feb5f80ea89460a4252c3bea12b72",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "clarify_soft_fail",
+      "headRefOid": "c114216ff895005b361cce73c6b37d89b805216c",
+      "mergeCommit": {
+        "oid": "bf4f394215d04aafefaf8870285d27866abad217"
+      }
     },
     {
       "number": 104,
@@ -8480,7 +8966,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "bf4f394215d04aafefaf8870285d27866abad217",
+      "headRepository": "mcmanus/draft-rescorla-tls-esni",
+      "headRefName": "mcmanus-35",
+      "headRefOid": "ec9f09c84750d1c03bb3ed4cbae44e3f63553f6d",
+      "mergeCommit": null
     },
     {
       "number": 106,
@@ -8513,7 +9006,16 @@
           "updatedAt": "2018-10-27T04:53:24Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "bf4f394215d04aafefaf8870285d27866abad217",
+      "headRepository": "thomwiggers/draft-ietf-tls-esni",
+      "headRefName": "typos",
+      "headRefOid": "c37cfa3ffbfe908d7b7b9f70ab601e77e66ebf6c",
+      "mergeCommit": {
+        "oid": "7bd60fcc09c1569b0f87cdebd6534fbaad922161"
+      }
     },
     {
       "number": 108,
@@ -8588,7 +9090,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "bf4f394215d04aafefaf8870285d27866abad217",
+      "headRepository": "mcmanus/draft-rescorla-tls-esni",
+      "headRefName": "mcmanus-105",
+      "headRefOid": "283701cf86728c5c6550f9f459a2b1af9dd62ec4",
+      "mergeCommit": null
     },
     {
       "number": 111,
@@ -8615,7 +9124,14 @@
           "updatedAt": "2020-02-23T13:49:21Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "bf4f394215d04aafefaf8870285d27866abad217",
+      "headRepository": "mcmanus/draft-rescorla-tls-esni",
+      "headRefName": "mcmanus-esniptr",
+      "headRefOid": "22614a4eb459b6634081ee82f54dad7acf07d17e",
+      "mergeCommit": null
     },
     {
       "number": 112,
@@ -8687,7 +9203,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "7bd60fcc09c1569b0f87cdebd6534fbaad922161",
+      "headRepository": "mcmanus/draft-rescorla-tls-esni",
+      "headRefName": "mcmanus-cnamefriendly",
+      "headRefOid": "a189ef2cd5ee26595154a08b4db389e440385e3d",
+      "mergeCommit": null
     },
     {
       "number": 114,
@@ -8706,7 +9229,16 @@
       "mergedAt": "2018-11-03T06:47:39Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "7bd60fcc09c1569b0f87cdebd6534fbaad922161",
+      "headRepository": "Eudi4H/draft-ietf-tls-esni",
+      "headRefName": "caps",
+      "headRefOid": "935470acc000c03b6fb8f66e534cf3b45db5fe15",
+      "mergeCommit": {
+        "oid": "752c4ff43cc1aaf163a5955539e74029c46b3522"
+      }
     },
     {
       "number": 115,
@@ -8725,7 +9257,16 @@
       "mergedAt": "2018-11-03T21:57:31Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "752c4ff43cc1aaf163a5955539e74029c46b3522",
+      "headRepository": "martinthomson/draft-ietf-tls-esni",
+      "headRefName": "README",
+      "headRefOid": "ce6c4c93e15eb632d274df06590c2a508b3a65db",
+      "mergeCommit": {
+        "oid": "65e0cc3b795cfd87aedbc347901fd97083177bca"
+      }
     },
     {
       "number": 120,
@@ -8752,7 +9293,16 @@
           "updatedAt": "2018-12-05T15:30:22Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1ed8d7d02c3b0884ac20c93f891d2745ab0f9d49",
+      "headRepository": "davidben/draft-ietf-tls-esni",
+      "headRefName": "fix-typo",
+      "headRefOid": "39f17a269fef9807a01ee48aef3ce1748218453f",
+      "mergeCommit": {
+        "oid": "3013b3c0c7bd93202cd4ca847380de64352ec79f"
+      }
     },
     {
       "number": 122,
@@ -8867,7 +9417,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "3013b3c0c7bd93202cd4ca847380de64352ec79f",
+      "headRepository": null,
+      "headRefName": "master",
+      "headRefOid": "c57591570967befd4bcaebc05833694048618179",
+      "mergeCommit": null
     },
     {
       "number": 124,
@@ -9613,7 +10170,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "5e08e1439e3bbfd8ed022252679e76d0c90b4c88",
+      "headRepository": "davidben/draft-ietf-tls-esni",
+      "headRefName": "robustness",
+      "headRefOid": "7e67cd82ec8b0c9f2ef2455222031e23c3f2060f",
+      "mergeCommit": {
+        "oid": "f07d3806d52add7920a0f4087f93c85bede08581"
+      }
     },
     {
       "number": 125,
@@ -9847,7 +10413,16 @@
           "updatedAt": "2019-04-22T18:38:43Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8679dc49caa2131d9b660d9d30e4343aa7e994f9",
+      "headRepository": "davidben/draft-ietf-tls-esni",
+      "headRefName": "grease",
+      "headRefOid": "361feec6e4ad6dff2b40c27ba3cd09b491d667a6",
+      "mergeCommit": {
+        "oid": "4f3ce56fdb4caea12c6480ca3a9a5ec6bfd074c1"
+      }
     },
     {
       "number": 127,
@@ -9874,7 +10449,16 @@
           "updatedAt": "2019-01-19T00:47:48Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "3013b3c0c7bd93202cd4ca847380de64352ec79f",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/cached_info",
+      "headRefOid": "105aa9a14d351afbcca44961facc9dd302cad73a",
+      "mergeCommit": {
+        "oid": "5e08e1439e3bbfd8ed022252679e76d0c90b4c88"
+      }
     },
     {
       "number": 128,
@@ -9929,7 +10513,16 @@
           "updatedAt": "2019-03-05T03:11:49Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "d9437fd5a4ed04dff1b5e48f97c586f242e80fb4",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/hrr",
+      "headRefOid": "39295c9b7b3a50ab39416021154f520f0374ed90",
+      "mergeCommit": {
+        "oid": "1b339186ec98274e93132de121e76ca55cce849d"
+      }
     },
     {
       "number": 129,
@@ -9991,7 +10584,14 @@
           "updatedAt": "2019-02-15T02:03:40Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "3013b3c0c7bd93202cd4ca847380de64352ec79f",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/version-swap",
+      "headRefOid": "8842702305794a3c100a47e598605fb66691796c",
+      "mergeCommit": null
     },
     {
       "number": 136,
@@ -10092,7 +10692,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "a73367b8c58ba0a7f726743ad72ca4fd2b22574d",
+      "headRepository": "chris-wood/draft-ietf-tls-esni",
+      "headRefName": "caw/multi-cdn-simple",
+      "headRefOid": "e9140ecba6c2fa17231c0d040e96e78f4cb44219",
+      "mergeCommit": {
+        "oid": "ba52fe66fb3a9a8d98dfd3d59b7322c454405f03"
+      }
     },
     {
       "number": 137,
@@ -10245,7 +10854,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f07d3806d52add7920a0f4087f93c85bede08581",
+      "headRepository": "chris-wood/draft-ietf-tls-esni",
+      "headRefName": "caw/multi-cdn",
+      "headRefOid": "7adfa01707ef34bca44891084f386d2c587e1e04",
+      "mergeCommit": null
     },
     {
       "number": 144,
@@ -10307,7 +10923,16 @@
           "updatedAt": "2019-03-05T02:57:05Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f07d3806d52add7920a0f4087f93c85bede08581",
+      "headRepository": "chris-wood/draft-ietf-tls-esni",
+      "headRefName": "caw/remove-prefix-with-new-rrtype",
+      "headRefOid": "5f191fdb2c5826a7be33de59a2128ac6d7ee6060",
+      "mergeCommit": {
+        "oid": "5fda4a09bcde55a2256053c79d5fc432d58b2f8d"
+      }
     },
     {
       "number": 147,
@@ -10334,7 +10959,14 @@
           "updatedAt": "2019-07-04T14:24:24Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "d9437fd5a4ed04dff1b5e48f97c586f242e80fb4",
+      "headRepository": "roelfdutoit/draft-ietf-tls-esni",
+      "headRefName": "encrypted_nonce",
+      "headRefOid": "9346ce43c15b9ccbb2d3369c362bed1acbc64e11",
+      "mergeCommit": null
     },
     {
       "number": 148,
@@ -10367,7 +10999,16 @@
           "updatedAt": "2019-03-08T21:24:25Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1b339186ec98274e93132de121e76ca55cce849d",
+      "headRepository": "mcmanus/draft-rescorla-tls-esni",
+      "headRefName": "mcmanus-altsvc-clarification",
+      "headRefOid": "89e83e54809f169c36679cba6b92bccf89fa2978",
+      "mergeCommit": {
+        "oid": "a73367b8c58ba0a7f726743ad72ca4fd2b22574d"
+      }
     },
     {
       "number": 151,
@@ -10528,7 +11169,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "ba52fe66fb3a9a8d98dfd3d59b7322c454405f03",
+      "headRepository": null,
+      "headRefName": "record-digest-no-extensions",
+      "headRefOid": "0d5c6905c8fc5ec2d9d9574bc958c8179af643ba",
+      "mergeCommit": null
     },
     {
       "number": 152,
@@ -10561,7 +11209,16 @@
           "updatedAt": "2019-04-12T23:18:32Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "ba52fe66fb3a9a8d98dfd3d59b7322c454405f03",
+      "headRepository": null,
+      "headRefName": "not-txt",
+      "headRefOid": "70b9b6b66a02866626699d0ad11981cf55309e32",
+      "mergeCommit": {
+        "oid": "51bc4ed89ae61585bd800d55785b5abd7c457a30"
+      }
     },
     {
       "number": 153,
@@ -10629,7 +11286,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "51bc4ed89ae61585bd800d55785b5abd7c457a30",
+      "headRepository": null,
+      "headRefName": "extensions-all-the-way-down",
+      "headRefOid": "2432376197825756c171842e06fbcfc981f13a74",
+      "mergeCommit": {
+        "oid": "8679dc49caa2131d9b660d9d30e4343aa7e994f9"
+      }
     },
     {
       "number": 154,
@@ -10795,7 +11461,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "4f3ce56fdb4caea12c6480ca3a9a5ec6bfd074c1",
+      "headRepository": "dvorak42/draft-ietf-tls-esni",
+      "headRefName": "grease_mac",
+      "headRefOid": "bf4dee02a17f8afbb2828b50c320527be1e2d455",
+      "mergeCommit": null
     },
     {
       "number": 157,
@@ -10828,7 +11501,16 @@
           "updatedAt": "2019-06-02T15:12:58Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "4f3ce56fdb4caea12c6480ca3a9a5ec6bfd074c1",
+      "headRepository": "DavidSchinazi/draft-ietf-tls-esni",
+      "headRefName": "allow_different_records",
+      "headRefOid": "0248ca74b80bcf2c9174753c2599232d555964c4",
+      "mergeCommit": {
+        "oid": "8c9626ea59a087ab006da8b37bb251b28df68403"
+      }
     },
     {
       "number": 158,
@@ -10904,7 +11586,16 @@
           "updatedAt": "2019-06-02T19:57:31Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8c9626ea59a087ab006da8b37bb251b28df68403",
+      "headRepository": "Lekensteyn/draft-ietf-tls-esni",
+      "headRefName": "clarify-aad",
+      "headRefOid": "6c43eb7a76fb16cc18746bae665dd54a767f9b6f",
+      "mergeCommit": {
+        "oid": "6c78c495e19f4977d3b030a36433dd982f544b18"
+      }
     },
     {
       "number": 159,
@@ -10938,7 +11629,14 @@
           "updatedAt": "2020-03-09T21:58:20Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "6c78c495e19f4977d3b030a36433dd982f544b18",
+      "headRepository": "Lekensteyn/draft-ietf-tls-esni",
+      "headRefName": "clarify-anti-replay",
+      "headRefOid": "429e5a8da0bd3e09effbc7075eb62a94597aedd5",
+      "mergeCommit": null
     },
     {
       "number": 161,
@@ -10984,7 +11682,16 @@
           "updatedAt": "2019-06-17T18:17:10Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "6c78c495e19f4977d3b030a36433dd982f544b18",
+      "headRepository": null,
+      "headRefName": "remove-not-before-after",
+      "headRefOid": "9b267c20662db55ba54afa715a06be5990fe6930",
+      "mergeCommit": {
+        "oid": "46490d1ad41cf67b2ae4ad4aac9785a351acd8fd"
+      }
     },
     {
       "number": 162,
@@ -11045,7 +11752,16 @@
           "updatedAt": "2019-06-25T23:33:29Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "46490d1ad41cf67b2ae4ad4aac9785a351acd8fd",
+      "headRepository": "bemasc/draft-ietf-tls-esni",
+      "headRefName": "bemasc-padded-length",
+      "headRefOid": "7d453b23db56f59e9a72895f953ca789a8b00060",
+      "mergeCommit": {
+        "oid": "dfad9d1f770133375535808f12ccc6376faabeb7"
+      }
     },
     {
       "number": 163,
@@ -11078,7 +11794,16 @@
           "updatedAt": "2019-07-03T01:19:48Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "dfad9d1f770133375535808f12ccc6376faabeb7",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/remove-checksum",
+      "headRefOid": "f087cd10d2586ebf61341f32aa80c474ad1ea89b",
+      "mergeCommit": {
+        "oid": "a25f407349622080025d737536b09ba421cd6bbb"
+      }
     },
     {
       "number": 164,
@@ -11097,7 +11822,16 @@
       "mergedAt": "2019-07-03T01:08:59Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "dfad9d1f770133375535808f12ccc6376faabeb7",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/presentation-language",
+      "headRefOid": "fad362f9809d24b96ed029e36a60f616792135da",
+      "mergeCommit": {
+        "oid": "5f41edfaa689fe899148bb640a3886ce7c7e3fef"
+      }
     },
     {
       "number": 165,
@@ -11170,7 +11904,16 @@
           "updatedAt": "2019-07-03T02:02:50Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "5f41edfaa689fe899148bb640a3886ce7c7e3fef",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/hostnames-only",
+      "headRefOid": "6a37e61f86521654a9afe015347e9a8d9bd4a8b9",
+      "mergeCommit": {
+        "oid": "4ec4cb4ee196a4cec35fdce9640bf86cc559bc2a"
+      }
     },
     {
       "number": 166,
@@ -11466,7 +12209,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "342840b5430948ffe709f5d665d63859edee2f67",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/optional-digest",
+      "headRefOid": "4163aff4ffdcf9f5cc7b61588128be0102d25714",
+      "mergeCommit": {
+        "oid": "b33c43a8b751643962e3d12c441f4baa0d7c1776"
+      }
     },
     {
       "number": 167,
@@ -11619,7 +12371,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "22e62139a983958708e4fb6f3cf0d5043b54375c",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/ocsp",
+      "headRefOid": "f09381dd10831296a8f7a155eb0dc11d912664b0",
+      "mergeCommit": {
+        "oid": "cb1c91658944a23938b51d4cd420ddb5a33f186b"
+      }
     },
     {
       "number": 168,
@@ -11721,7 +12482,16 @@
           "updatedAt": "2019-07-04T14:22:07Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "4ec4cb4ee196a4cec35fdce9640bf86cc559bc2a",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/hrr",
+      "headRefOid": "ccb5b563caea6f84aa4c27c71bacb13836d7a8b0",
+      "mergeCommit": {
+        "oid": "393aa3301cda28b0d27e486ad595434d4b39a946"
+      }
     },
     {
       "number": 169,
@@ -11740,7 +12510,16 @@
       "mergedAt": "2019-07-08T13:45:25Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "cb1c91658944a23938b51d4cd420ddb5a33f186b",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/alpn-note",
+      "headRefOid": "0e51ecd9e9634fafd6d16127f0a889addc8e6af5",
+      "mergeCommit": {
+        "oid": "342840b5430948ffe709f5d665d63859edee2f67"
+      }
     },
     {
       "number": 170,
@@ -11844,7 +12623,14 @@
           "updatedAt": "2019-07-08T21:53:20Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "cb1c91658944a23938b51d4cd420ddb5a33f186b",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/hrr-fresh-esni-key",
+      "headRefOid": "8cf067d5ab8bd7d5621e50aa6991c6c6e4a94552",
+      "mergeCommit": null
     },
     {
       "number": 172,
@@ -11885,7 +12671,16 @@
           "updatedAt": "2019-07-23T19:43:11Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "393aa3301cda28b0d27e486ad595434d4b39a946",
+      "headRepository": "dmcardle/draft-ietf-tls-esni",
+      "headRefName": "master",
+      "headRefOid": "112f9db180f50c7f95ef6af40f1f95aecdf692cb",
+      "mergeCommit": {
+        "oid": "ddf3111a618bcda8791ced99aa7c87a90f165165"
+      }
     },
     {
       "number": 174,
@@ -11918,7 +12713,16 @@
           "updatedAt": "2019-07-23T19:41:46Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "393aa3301cda28b0d27e486ad595434d4b39a946",
+      "headRepository": "mrsylerpowers/draft-ietf-tls-esni",
+      "headRefName": "sni-reference-remove",
+      "headRefOid": "971f2318b74f06164fb3bd11ec84815d474896c2",
+      "mergeCommit": {
+        "oid": "aed9ec47295529ab9188a1deb6230175fcba912d"
+      }
     },
     {
       "number": 175,
@@ -11945,7 +12749,14 @@
           "updatedAt": "2019-11-04T20:36:06Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "393aa3301cda28b0d27e486ad595434d4b39a946",
+      "headRepository": "gsamat/draft-ietf-tls-esni",
+      "headRefName": "patch-4",
+      "headRefOid": "6c2c02346626ea88ee36f84018ac4e603b9f6202",
+      "mergeCommit": null
     },
     {
       "number": 176,
@@ -11986,7 +12797,16 @@
           "updatedAt": "2019-10-25T17:57:07Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "ddf3111a618bcda8791ced99aa7c87a90f165165",
+      "headRepository": "dmcardle/draft-ietf-tls-esni",
+      "headRefName": "dmcardlebranch",
+      "headRefOid": "483ca96533d05ce9c05f1a7ada5c91adde8946ed",
+      "mergeCommit": {
+        "oid": "6ade68ed92984b283ddf1b0834e452431688c903"
+      }
     },
     {
       "number": 181,
@@ -12039,7 +12859,16 @@
           "updatedAt": "2019-08-09T17:40:32Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "ddf3111a618bcda8791ced99aa7c87a90f165165",
+      "headRepository": "kazuho/draft-rescorla-tls-esni",
+      "headRefName": "kazuho/editorial",
+      "headRefOid": "e2eb0d8b0e1d8febafe4b84d9f7f9ffd4cca5406",
+      "mergeCommit": {
+        "oid": "9e54d3572c171a65e522a3a045907282a046843e"
+      }
     },
     {
       "number": 184,
@@ -12072,7 +12901,16 @@
           "updatedAt": "2020-02-23T13:51:54Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9e54d3572c171a65e522a3a045907282a046843e",
+      "headRepository": "pengin7384/draft-ietf-tls-esni",
+      "headRefName": "encrypted-sni-record-patch",
+      "headRefOid": "8a9cacebaf6910688743d794ef8469e3679c08b6",
+      "mergeCommit": {
+        "oid": "80df23129af22ea6846b7f2dfe1efe2e371892d0"
+      }
     },
     {
       "number": 185,
@@ -12152,7 +12990,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9e54d3572c171a65e522a3a045907282a046843e",
+      "headRepository": "bemasc/draft-ietf-tls-esni",
+      "headRefName": "bemasc-partial-split",
+      "headRefOid": "8e7113d0204805c3e29cc1ef84e9fa041457ecd5",
+      "mergeCommit": {
+        "oid": "5abba83633afe4dc15e57a976dcd93be5119447b"
+      }
     },
     {
       "number": 186,
@@ -12186,7 +13033,14 @@
           "updatedAt": "2019-10-23T20:22:35Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9e54d3572c171a65e522a3a045907282a046843e",
+      "headRepository": "bemasc/draft-ietf-tls-esni",
+      "headRefName": "bemasc-hash",
+      "headRefOid": "33f2537c2c47ed2c2110ff840fc6f82fa2d3c048",
+      "mergeCommit": null
     },
     {
       "number": 187,
@@ -12385,7 +13239,16 @@
           "updatedAt": "2019-10-25T20:09:00Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "5abba83633afe4dc15e57a976dcd93be5119447b",
+      "headRepository": "chris-wood/draft-ietf-tls-esni",
+      "headRefName": "caw/httpsvc",
+      "headRefOid": "160dd9085c9ec730c7845fa6d74836b1739a645f",
+      "mergeCommit": {
+        "oid": "6457893d8614fe47f3e8365957985ec848d754b0"
+      }
     },
     {
       "number": 194,
@@ -12425,7 +13288,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "6457893d8614fe47f3e8365957985ec848d754b0",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/crypto-consistency",
+      "headRefOid": "fdf6d5a3e259e555922dad7064d116965fee626f",
+      "mergeCommit": {
+        "oid": "8395959ed6e17e3b6b91aa132fbce93652ad2ef1"
+      }
     },
     {
       "number": 195,
@@ -12458,7 +13330,16 @@
           "updatedAt": "2020-02-23T13:51:01Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8395959ed6e17e3b6b91aa132fbce93652ad2ef1",
+      "headRepository": "dmcardle/draft-ietf-tls-esni",
+      "headRefName": "esniconfig-httpssvc-changes",
+      "headRefOid": "fdc917ff8d9fb4d6a6c25062339adc444948bb48",
+      "mergeCommit": {
+        "oid": "9024e205e2b7f151c49882e49803f4486fa6d042"
+      }
     },
     {
       "number": 196,
@@ -12773,7 +13654,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8395959ed6e17e3b6b91aa132fbce93652ad2ef1",
+      "headRepository": "ekr/draft-ietf-tls-esni",
+      "headRefName": "tunnel_version",
+      "headRefOid": "44a7d7dc0706c30932f645abd19fecfba3ef5883",
+      "mergeCommit": null
     },
     {
       "number": 197,
@@ -12800,7 +13688,14 @@
           "updatedAt": "2019-11-22T00:52:12Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8395959ed6e17e3b6b91aa132fbce93652ad2ef1",
+      "headRepository": "chris-wood/draft-ietf-tls-esni",
+      "headRefName": "caw/key-schedule-injection",
+      "headRefOid": "a22ffbe5e5aa1f00f9f6d6b541f00379bde8e937",
+      "mergeCommit": null
     },
     {
       "number": 198,
@@ -12819,7 +13714,16 @@
       "mergedAt": "2019-11-21T10:17:47Z",
       "mergedBy": "chris-wood",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8395959ed6e17e3b6b91aa132fbce93652ad2ef1",
+      "headRepository": "davidben/draft-ietf-tls-esni",
+      "headRefName": "esni-config-contents",
+      "headRefOid": "4a589f9559fd8d65d923d595dc0be4a7e9851432",
+      "mergeCommit": {
+        "oid": "4a589f9559fd8d65d923d595dc0be4a7e9851432"
+      }
     },
     {
       "number": 199,
@@ -12860,7 +13764,14 @@
           "updatedAt": "2019-11-06T15:44:27Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8395959ed6e17e3b6b91aa132fbce93652ad2ef1",
+      "headRepository": "davidben/draft-ietf-tls-esni",
+      "headRefName": "esni-configs",
+      "headRefOid": "d4f38d88ab9e11718a638f669e7b254813d68ba8",
+      "mergeCommit": null
     },
     {
       "number": 200,
@@ -12929,7 +13840,16 @@
           "updatedAt": "2019-11-14T20:38:24Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8395959ed6e17e3b6b91aa132fbce93652ad2ef1",
+      "headRepository": "davidben/draft-ietf-tls-esni",
+      "headRefName": "esni-configs-2",
+      "headRefOid": "72711a8959dcf8f9b63c5c7e041a17b969f5f9ce",
+      "mergeCommit": {
+        "oid": "d45d404dd2000740ddef3d7a8a537c7c3b55e7a8"
+      }
     },
     {
       "number": 201,
@@ -12962,7 +13882,16 @@
           "updatedAt": "2019-11-14T20:40:45Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8395959ed6e17e3b6b91aa132fbce93652ad2ef1",
+      "headRepository": "davidben/draft-ietf-tls-esni",
+      "headRefName": "esni-configs-flatten",
+      "headRefOid": "67a2e15076a4e95c03b125d54e5d1888663e2605",
+      "mergeCommit": {
+        "oid": "4d2aa537160d22456a8bc1db9cf7a0295055963c"
+      }
     },
     {
       "number": 203,
@@ -12995,7 +13924,16 @@
           "updatedAt": "2019-11-14T20:35:20Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "8395959ed6e17e3b6b91aa132fbce93652ad2ef1",
+      "headRepository": "mrsylerpowers/draft-ietf-tls-esni",
+      "headRefName": "patch-1",
+      "headRefOid": "e9c66fcbe8756a2c86461b70c56975ec71616c55",
+      "mergeCommit": {
+        "oid": "811def0f5f7f858a42a2c51cbf70baf0c2562202"
+      }
     },
     {
       "number": 207,
@@ -13028,7 +13966,16 @@
           "updatedAt": "2020-03-09T21:56:12Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f13e0c956c1b42e4121ee41904a77af1bacebf18",
+      "headRepository": "chris-wood/draft-ietf-tls-esni",
+      "headRefName": "caw/tunnel",
+      "headRefOid": "42c6c489a9bfa7bdceb4b9b8b6c34415dae3ca68",
+      "mergeCommit": {
+        "oid": "7d53f5b6985242c18e1a988104090dc1f08a4d74"
+      }
     },
     {
       "number": 208,
@@ -13129,7 +14076,16 @@
           "updatedAt": "2020-03-18T15:17:12Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "7d53f5b6985242c18e1a988104090dc1f08a4d74",
+      "headRepository": "dmcardle/draft-ietf-tls-esni",
+      "headRefName": "dan-clean-up-grease",
+      "headRefOid": "750477aad3b5b19c56d8c1975806309147adfc8f",
+      "mergeCommit": {
+        "oid": "db1d9a793c0640f03750612a4fd2be7bfe8f30b5"
+      }
     },
     {
       "number": 209,
@@ -13880,7 +14836,16 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "7d53f5b6985242c18e1a988104090dc1f08a4d74",
+      "headRepository": "sftcd/draft-ietf-tls-esni",
+      "headRefName": "master",
+      "headRefOid": "abd6637cd2910dae0d3001a1d3edd41779dc4be4",
+      "mergeCommit": {
+        "oid": "aa15d6e4d5ec406d9c0c8f782284df5b543d0510"
+      }
     },
     {
       "number": 210,
@@ -13899,7 +14864,16 @@
       "mergedAt": "2020-03-19T16:50:56Z",
       "mergedBy": "ekr",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "db1d9a793c0640f03750612a4fd2be7bfe8f30b5",
+      "headRepository": "chris-wood/draft-ietf-tls-esni",
+      "headRefName": "caw/nits",
+      "headRefOid": "fd4d0004abb16ecc0ec50b73019d5cae342d64ed",
+      "mergeCommit": {
+        "oid": "9dab0e191c85d2043a5a5c835fae0abed30625da"
+      }
     },
     {
       "number": 211,
@@ -13918,7 +14892,16 @@
       "mergedAt": "2020-03-24T21:26:14Z",
       "mergedBy": "chris-wood",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9dab0e191c85d2043a5a5c835fae0abed30625da",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/require-trial-decryption",
+      "headRefOid": "f9ec40b7d40313da6a4da55abb5d9fca39e56696",
+      "mergeCommit": {
+        "oid": "4f57a871f670c2b291652ed5bca4c77ec5913f19"
+      }
     },
     {
       "number": 212,
@@ -14004,7 +14987,14 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9dab0e191c85d2043a5a5c835fae0abed30625da",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/outer-binder",
+      "headRefOid": "0c351a6651eb9b2319b5c3e97b82a2226417e713",
+      "mergeCommit": null
     },
     {
       "number": 213,
@@ -14023,7 +15013,16 @@
       "mergedAt": "2020-04-13T15:04:03Z",
       "mergedBy": "chris-wood",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "4f57a871f670c2b291652ed5bca4c77ec5913f19",
+      "headRepository": "Lekensteyn/draft-ietf-tls-esni",
+      "headRefName": "pwu/readme-fixes",
+      "headRefOid": "0106d1fe3ee5b249ff67fe883fa64c05d3a43e65",
+      "mergeCommit": {
+        "oid": "fef6612491aca10725d7ca7f9e1b7a3af8af5aa0"
+      }
     },
     {
       "number": 221,
@@ -14056,7 +15055,16 @@
           "updatedAt": "2020-04-24T18:54:58Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "fef6612491aca10725d7ca7f9e1b7a3af8af5aa0",
+      "headRepository": "d1vyank/draft-ietf-tls-esni",
+      "headRefName": "master",
+      "headRefOid": "bdab7ede73b13362fff475c8f7783e8578ade1a6",
+      "mergeCommit": {
+        "oid": "6858521382b4c14d6ce1ef4d0b211eab90a45b63"
+      }
     },
     {
       "number": 222,
@@ -14089,7 +15097,16 @@
           "updatedAt": "2020-04-23T21:26:26Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "fef6612491aca10725d7ca7f9e1b7a3af8af5aa0",
+      "headRepository": "d1vyank/draft-ietf-tls-esni",
+      "headRefName": "nits",
+      "headRefOid": "c0fff68851844847d14165fa0d1c1b6e75df5e0a",
+      "mergeCommit": {
+        "oid": "188c6a13fe29f468762542aea79f33ccc08170e6"
+      }
     },
     {
       "number": 224,
@@ -14130,7 +15147,16 @@
           "updatedAt": "2020-05-04T20:38:25Z"
         }
       ],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "6858521382b4c14d6ce1ef4d0b211eab90a45b63",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/hpke-codepoints",
+      "headRefOid": "e7c73326b7c507ef455a0edea3eb24fac73594ce",
+      "mergeCommit": {
+        "oid": "1b80857a4c0c7c64c6b2deba4f58574209a25a92"
+      }
     },
     {
       "number": 225,
@@ -14269,24 +15295,42 @@
             }
           ]
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1b80857a4c0c7c64c6b2deba4f58574209a25a92",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/padding",
+      "headRefOid": "fd78562ba6c9b8f6dd088ce51539dd2af461a04e",
+      "mergeCommit": {
+        "oid": "2f891d33205621199ef8e946a6416a9bee470006"
+      }
     },
     {
       "number": 226,
       "id": "MDExOlB1bGxSZXF1ZXN0NDEyNTE0MTY4",
       "title": "Provide guidance on ECHOConfig extension usage.",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/226",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This addresses #216.\r\n\r\ncc @davidben, @bemasc, @mikebishop, @sftcd, @enygren",
       "createdAt": "2020-05-02T22:01:51Z",
-      "updatedAt": "2020-05-04T18:55:14Z",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
+      "updatedAt": "2020-05-07T18:43:33Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1b80857a4c0c7c64c6b2deba4f58574209a25a92",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/ext-policy",
+      "headRefOid": "de1eb1297d5f9375ae15586a8cb38cd2eb32ab98",
+      "closedAt": "2020-05-07T18:43:32Z",
+      "mergedAt": "2020-05-07T18:43:32Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "f238f70420dbbab6085f959ce970e77d34e506e3"
+      },
       "comments": [
         {
           "author": "MikeBishop",
@@ -14294,6 +15338,13 @@
           "body": "This looks fine, though I'll note that since an HTTPSSVC record is public and the outer ClientHello record is public, it's not unreasonable to pull values from there to put in the public fields since the observer already knows (or can get) them.  Restricting them to come only from the ECHOConfig seems unnecessary.\r\n\r\nI think the key observation in this PR is that the outer ClientHello isn't _really_ offering to establish a TLS connection -- it's a not-crazy-looking wrapper for the actual ClientHello inside the ECHO extension, and the vehicle for the recovery flow.  The only things a server can legitimately do are respond to the inner ClientHello or do a recovery handshake.  Thus, most of the things you might set on the outer ClientHello are irrelevant; they can be chosen to look innocuous, chosen at random, or copied from the inner ClientHello as the implementation chooses.",
           "createdAt": "2020-05-04T18:55:14Z",
           "updatedAt": "2020-05-04T18:55:14Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@davidben, does this seem reasonable to you?",
+          "createdAt": "2020-05-05T18:32:16Z",
+          "updatedAt": "2020-05-05T18:32:16Z"
         }
       ],
       "reviews": [
@@ -14326,25 +15377,25 @@
               "originalPosition": 16,
               "body": "features or protections",
               "createdAt": "2020-05-03T23:27:53Z",
-              "updatedAt": "2020-05-03T23:58:19Z"
+              "updatedAt": "2020-05-05T20:29:15Z"
             },
             {
               "originalPosition": 19,
               "body": "Comma",
               "createdAt": "2020-05-03T23:28:17Z",
-              "updatedAt": "2020-05-03T23:58:19Z"
+              "updatedAt": "2020-05-05T20:29:15Z"
             },
             {
               "originalPosition": 38,
               "body": "SHOULD? ",
               "createdAt": "2020-05-03T23:28:58Z",
-              "updatedAt": "2020-05-03T23:58:19Z"
+              "updatedAt": "2020-05-05T20:29:15Z"
             },
             {
               "originalPosition": 43,
               "body": "Except, as we have discussed, the length, though I guess that is a part of the outer, too.",
               "createdAt": "2020-05-03T23:30:20Z",
-              "updatedAt": "2020-05-03T23:58:19Z"
+              "updatedAt": "2020-05-05T20:29:15Z"
             }
           ]
         },
@@ -14364,7 +15415,7 @@
               "originalPosition": 43,
               "body": "Yep, I'm considering that part of the outer.",
               "createdAt": "2020-05-03T23:55:10Z",
-              "updatedAt": "2020-05-03T23:58:19Z"
+              "updatedAt": "2020-05-05T20:29:15Z"
             }
           ]
         },
@@ -14384,7 +15435,7 @@
               "originalPosition": 16,
               "body": "Isn't protection a feature?",
               "createdAt": "2020-05-03T23:55:40Z",
-              "updatedAt": "2020-05-03T23:58:19Z"
+              "updatedAt": "2020-05-05T20:29:15Z"
             }
           ]
         },
@@ -14404,7 +15455,7 @@
               "originalPosition": 19,
               "body": "Will fix here and elsewhere!",
               "createdAt": "2020-05-03T23:57:22Z",
-              "updatedAt": "2020-05-03T23:58:19Z"
+              "updatedAt": "2020-05-05T20:29:15Z"
             }
           ]
         },
@@ -14424,9 +15475,114 @@
               "originalPosition": 38,
               "body": "I read them both the same, so that works for me.",
               "createdAt": "2020-05-03T23:57:40Z",
-              "updatedAt": "2020-05-03T23:58:19Z"
+              "updatedAt": "2020-05-05T20:29:15Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MTE0MzQ3",
+          "commit": {
+            "abbreviatedOid": "27dcc7b"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T20:03:20Z",
+          "updatedAt": "2020-05-05T20:05:39Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "functionality?",
+              "createdAt": "2020-05-05T20:03:20Z",
+              "updatedAt": "2020-05-05T20:29:15Z"
+            },
+            {
+              "originalPosition": 66,
+              "body": "Or, I guess, as ECHOConfigV2, right?",
+              "createdAt": "2020-05-05T20:05:05Z",
+              "updatedAt": "2020-05-05T20:29:15Z"
+            },
+            {
+              "originalPosition": 73,
+              "body": "I'm not sure there is a need to be this directive here. Why not leave this for future work.\r\n\r\nAlso, hypothetically, suppose that the extension was like \"make the nonce twice as long\"\r\n\r\n",
+              "createdAt": "2020-05-05T20:05:34Z",
+              "updatedAt": "2020-05-05T20:29:15Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MTE5MzMz",
+          "commit": {
+            "abbreviatedOid": "27dcc7b"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T20:11:05Z",
+          "updatedAt": "2020-05-05T20:11:06Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Functionality is a bit more general -- let's go with that!",
+              "createdAt": "2020-05-05T20:11:06Z",
+              "updatedAt": "2020-05-05T20:29:15Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MTIyNjY1",
+          "commit": {
+            "abbreviatedOid": "27dcc7b"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T20:16:04Z",
+          "updatedAt": "2020-05-05T20:16:04Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "Yeah, I'll add that: \"as ECHOConfig extensions, or an entirely new version of ECHOConfig.\"",
+              "createdAt": "2020-05-05T20:16:04Z",
+              "updatedAt": "2020-05-05T20:29:15Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MTMzMDI2",
+          "commit": {
+            "abbreviatedOid": "de1eb12"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T20:32:14Z",
+          "updatedAt": "2020-05-05T20:32:15Z",
+          "comments": [
+            {
+              "originalPosition": 73,
+              "body": "That's fair (and a good point). It is a bit... restrictive. I just removed the sentence.",
+              "createdAt": "2020-05-05T20:32:15Z",
+              "updatedAt": "2020-05-05T20:32:15Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA3NzM4NDA3",
+          "commit": {
+            "abbreviatedOid": "de1eb12"
+          },
+          "author": "davidben",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "Seems reasonable.",
+          "createdAt": "2020-05-07T18:41:03Z",
+          "updatedAt": "2020-05-07T18:41:03Z",
+          "comments": []
         }
       ]
     },
@@ -14435,19 +15591,75 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDEyNTE2Mzc3",
       "title": "Clarify \"do not stick out\" signals.",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/227",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Addresses #215.\r\n\r\ncc @grittygrease ",
       "createdAt": "2020-05-02T22:23:28Z",
-      "updatedAt": "2020-05-02T22:23:32Z",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
+      "updatedAt": "2020-05-05T20:09:07Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1b80857a4c0c7c64c6b2deba4f58574209a25a92",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/signals",
+      "headRefOid": "6285d8fc9f4268146fdc6a4ae71f2589021c8641",
+      "closedAt": "2020-05-05T20:09:07Z",
+      "mergedAt": "2020-05-05T20:09:07Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "1337c6915b0de26ddb98c4c44324d2572dead76f"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MTE2MTQw",
+          "commit": {
+            "abbreviatedOid": "30f0e72"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-05-05T20:06:03Z",
+          "updatedAt": "2020-05-05T20:06:36Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "```suggestion\r\nsignal indicating use or negotiation of ECHO. Clients MAY GREASE the\r\n```",
+              "createdAt": "2020-05-05T20:06:04Z",
+              "updatedAt": "2020-05-05T20:08:57Z"
+            },
+            {
+              "originalPosition": 21,
+              "body": "This sentence is pretty long. Also, I would not use \"suspicious\" but rather \"unusual\" or \"meaningful\"",
+              "createdAt": "2020-05-05T20:06:32Z",
+              "updatedAt": "2020-05-05T20:08:57Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MTE3NTQ5",
+          "commit": {
+            "abbreviatedOid": "63dccdc"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T20:08:15Z",
+          "updatedAt": "2020-05-05T20:08:15Z",
+          "comments": [
+            {
+              "originalPosition": 21,
+              "body": "Will fix!",
+              "createdAt": "2020-05-05T20:08:15Z",
+              "updatedAt": "2020-05-05T20:08:57Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 228,
@@ -14480,24 +15692,42 @@
           "updatedAt": "2020-05-02T22:45:05Z",
           "comments": []
         }
-      ]
+      ],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1b80857a4c0c7c64c6b2deba4f58574209a25a92",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/optional-digests",
+      "headRefOid": "3fac6b33e11b9e7e88de96b6c2ca55eaba337598",
+      "mergeCommit": {
+        "oid": "02b26097b42890c7273216c196b33d4050565920"
+      }
     },
     {
       "number": 230,
       "id": "MDExOlB1bGxSZXF1ZXN0NDEyNTE4NDc0",
       "title": "Add information about per-client tracking via unique ECHOConfig structures",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/230",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Addresses #146.",
       "createdAt": "2020-05-02T22:45:49Z",
-      "updatedAt": "2020-05-05T18:30:03Z",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
+      "updatedAt": "2020-05-05T20:10:26Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1b80857a4c0c7c64c6b2deba4f58574209a25a92",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/tracking",
+      "headRefOid": "e3df7ba582baa1cfdfd6e910d1b47bba0cc8ea4e",
+      "closedAt": "2020-05-05T20:10:26Z",
+      "mergedAt": "2020-05-05T20:10:25Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "e8f1fa948d271428e33493e962680fee4adca5e0"
+      },
       "comments": [],
       "reviews": [
         {
@@ -14516,13 +15746,13 @@
               "originalPosition": 9,
               "body": "A paragraph break here might be good. You jump from description of the attack to a description of mitigating factors without segue. ",
               "createdAt": "2020-05-03T23:23:19Z",
-              "updatedAt": "2020-05-05T18:30:03Z"
+              "updatedAt": "2020-05-05T20:10:17Z"
             },
             {
               "originalPosition": 13,
               "body": "I don't think the v6 example is good. And none of these are especially strong, except perhaps the DNS one. \r\n\r\nFor me, the question is how targeted the delivery could be, and whether the client can then do anything about that. For instance, a client might decide to flush its ECHO config cache if it moves and wants to be unlinkable.",
               "createdAt": "2020-05-03T23:27:07Z",
-              "updatedAt": "2020-05-05T18:30:03Z"
+              "updatedAt": "2020-05-05T20:10:17Z"
             }
           ]
         },
@@ -14542,7 +15772,7 @@
               "originalPosition": 13,
               "body": "@martinthomson I'll remove the last sentence, not because of v6 (which I do think is a good example), but because it can probably bite us in the future when someone does turn it into a threat. :)\r\n\r\nOn the latter points, how about the following:\r\n\r\nThe cost of this type of attack scales linearly with the desired number of target clients. DNS caching behavior makes targeting individual users for extended periods of time, e.g., using per-client ECHOConfig structures delivered via HTTPSSVC RRs with high TTLs, challenging. Moreover, clients can flush any ECHOConfig state upon changing networks to mitigate potential linkability problems.",
               "createdAt": "2020-05-04T00:02:27Z",
-              "updatedAt": "2020-05-05T18:30:03Z"
+              "updatedAt": "2020-05-05T20:10:17Z"
             }
           ]
         },
@@ -14562,7 +15792,7 @@
               "originalPosition": 15,
               "body": "Is the thinking here that the client might have some ECHOConfig state outside the DNS cache, or is this just saying the client could flush its DNS cache on network change? An attacker that can distribute per-client ECHOConfigs in DNS could just as easily distribute per-client A/AAAA records in DNS. (Well, A may be hard due to address scarcity, but AAAA should be doable.) So if you're concerned about this attack, you probably want to treat this as a DNS-wide issue and drop the entire DNS cache.",
               "createdAt": "2020-05-05T17:32:07Z",
-              "updatedAt": "2020-05-05T18:30:03Z"
+              "updatedAt": "2020-05-05T20:10:17Z"
             }
           ]
         },
@@ -14582,7 +15812,7 @@
               "originalPosition": 15,
               "body": "Indeed -- in practice it'll likely be the entire cache. I didn't want to include other state (V4 or V6) to make any assumption on what the cache might contain, be it the DNS cache or something else. Is this just too generic for your taste?",
               "createdAt": "2020-05-05T17:42:41Z",
-              "updatedAt": "2020-05-05T18:30:03Z"
+              "updatedAt": "2020-05-05T20:10:17Z"
             }
           ]
         },
@@ -14602,7 +15832,7 @@
               "originalPosition": 15,
               "body": "Mostly a clarifying question. Though perhaps we should say \"flushing any DNS state\" instead of flushing any ECHOConfig state\". Or perhaps \"flushing any DNS or ECHOConfig state\". Or maybe we leave it along because too many words. :-)",
               "createdAt": "2020-05-05T17:52:31Z",
-              "updatedAt": "2020-05-05T18:30:03Z"
+              "updatedAt": "2020-05-05T20:10:17Z"
             }
           ]
         },
@@ -14622,7 +15852,7 @@
               "originalPosition": 15,
               "body": "I'm fine with \"flushing any DNS or ECHOConfig state\"!",
               "createdAt": "2020-05-05T18:00:46Z",
-              "updatedAt": "2020-05-05T18:30:03Z"
+              "updatedAt": "2020-05-05T20:10:17Z"
             }
           ]
         },
@@ -14642,9 +15872,42 @@
               "originalPosition": 15,
               "body": "SGTM",
               "createdAt": "2020-05-05T18:20:10Z",
-              "updatedAt": "2020-05-05T18:30:03Z"
+              "updatedAt": "2020-05-05T20:10:17Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MTE2ODY5",
+          "commit": {
+            "abbreviatedOid": "bb6c1a3"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-05T20:07:13Z",
+          "updatedAt": "2020-05-05T20:07:14Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\r\nRRs with high TTLs, challenging. Clients can help mitigate this problem by\r\n```",
+              "createdAt": "2020-05-05T20:07:13Z",
+              "updatedAt": "2020-05-05T20:10:17Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDA2MTE2OTEy",
+          "commit": {
+            "abbreviatedOid": "bb6c1a3"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-05-05T20:07:16Z",
+          "updatedAt": "2020-05-05T20:07:16Z",
+          "comments": []
         }
       ]
     },
@@ -14665,7 +15928,16 @@
       "mergedAt": "2020-05-04T20:38:31Z",
       "mergedBy": "chris-wood",
       "comments": [],
-      "reviews": []
+      "reviews": [],
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "2f891d33205621199ef8e946a6416a9bee470006",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/hpke-nits",
+      "headRefOid": "a5a9ce65e9e196c4e4584fd88c0768fbb8f1688b",
+      "mergeCommit": {
+        "oid": "f00e1f070cd55813ac56fc9f6c4ac22ab5cb5b56"
+      }
     }
   ]
 }
