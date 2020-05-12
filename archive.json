@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-05-07T18:44:16.805557+00:00",
+  "timestamp": "2020-05-12T00:00:51.516990+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -4710,6 +4710,60 @@
       "body": "<img width=\"909\" alt=\"Screen Shot 2020-05-02 at 3 33 05 PM\" src=\"https://user-images.githubusercontent.com/2172048/80893782-3fae8980-8c8a-11ea-8bca-cb5fc1e33685.png\">\r\n",
       "createdAt": "2020-05-02T22:33:24Z",
       "updatedAt": "2020-05-03T14:04:49Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 232,
+      "id": "MDU6SXNzdWU2MTQzMjI5ODM=",
+      "title": "Bikeshed: finalize on naming of \"ECHO\"",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/232",
+      "state": "OPEN",
+      "author": "enygren",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "While cutsy, the name \"ECHO\" for \"Encrypted Client Hello\" seems like it could cause problems and significant confusion.  To those not actively involved in the working group, \"ECHO\" has very different connotations.  Some potential risks include:\r\n* Other IETF standards have some form of \"ECHO\" functionality.  When bouncing this question off someone else, they responded with \"TLS ECHO, like ICMP ECHO, except totally not\"\r\n* The immediate guess people may have on hearing about a TLS ECHO functionality would be to think \"oh, like to echo back a message for heartbeat purposes?\".  Given the potential risk for confusion with heartbeat (especially given \"Heartbleed\") this has some risk of giving TLS ECHO a bad rap from the start due to confusion.\r\n* This functionality is going to have high profile with product managers and perhaps even government regulators and public policy.  Applying a name that has confusing lay-connotations is going to muddle conversations.\r\n* This has a risk of confusion when used in other contexts.  For example, \"echoconfig\" as a SVCB parameter key has potential risk for confusing people reading the config and lacking context.\r\n* ECHO is going to be harder to do searches for, both in Internet and intranet search engines.\r\n\r\nJust calling it \"ECH\" or \"EHELLO\" may be safer?\r\n\r\n(If this changes, SVCB will also need to change the \"echoconfig\".)",
+      "createdAt": "2020-05-07T20:27:33Z",
+      "updatedAt": "2020-05-07T21:47:52Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "enygren",
+          "authorAssociation": "NONE",
+          "body": "One reason for \"EHELLO\" is that if we support Split Mode with the ClientHelloInner being TLS 1.2 then it also provides protection for the ServerHello as well.",
+          "createdAt": "2020-05-07T20:31:28Z",
+          "updatedAt": "2020-05-07T20:31:28Z"
+        },
+        {
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "ETCH",
+          "createdAt": "2020-05-07T21:46:15Z",
+          "updatedAt": "2020-05-07T21:46:15Z"
+        },
+        {
+          "author": "enygren",
+          "authorAssociation": "NONE",
+          "body": "ETCH == \"Encrypted TLS Client Hello\"?    (That also sounds like a fine option.)",
+          "createdAt": "2020-05-07T21:47:52Z",
+          "updatedAt": "2020-05-07T21:47:52Z"
+        }
+      ]
+    },
+    {
+      "number": 233,
+      "id": "MDU6SXNzdWU2MTUzNDQ4NDk=",
+      "title": "Trial decryption after HelloRetryRequest",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/233",
+      "state": "OPEN",
+      "author": "ocheron",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "In a normal ECHO handshake with HelloRetryRequest there are 4 ClientHellos sent: ClientHelloOuter1, ClientHelloInner1, ClientHelloOuter2, ClientHelloInner2.\r\n\r\nEncryption of ClientHelloInner2 is bound to echo_hrr_key so the server must have the ECHOConfig used for ClientHelloInner1 in order to process ECHO the second time.\r\nAnd by the time the client receives encrypted handshake traffic it is not useful to signal if ClientHelloInner1 was successfully decrypted, what matters is to know if ECHO is globally successful or not.\r\n\r\nSo one aspect that I find not explained enough is whether the server replying with HRR should use ClientHelloInner1 in the transcript, or instead always takes ClientHelloOuter1 (data on the wire) regardless of the first decryption status. The ECHO status accept/reject can be conveyed based on distinction ClientHello2 inner/outer only.\r\n\r\nThis point impacts the number of transcripts the client may have to try, i.e. can be sure the combination (ClientHelloInner1, ClientHelloOuter2) is never valid.",
+      "createdAt": "2020-05-10T08:39:16Z",
+      "updatedAt": "2020-05-10T08:39:16Z",
       "closedAt": null,
       "comments": []
     }
