@@ -116,7 +116,7 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
      10.8.  Active Attack Mitigations  . . . . . . . . . . . . . . .  23
        10.8.1.  Client Reaction Attack Mitigation  . . . . . . . . .  24
-       10.8.2.  HelloRetryRequest Hijack Mitigation  . . . . . . . .  25
+       10.8.2.  HelloRetryRequest Hijack Mitigation  . . . . . . . .  24
        10.8.3.  Resumption PSK Oracle Mitigation . . . . . . . . . .  26
    11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  26
      11.1.  Update of the TLS ExtensionType Registry . . . . . . . .  26
@@ -1278,10 +1278,10 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 10.8.  Active Attack Mitigations
 
    This section describes rationale for ECHO properties and mechanics as
-   mitigations against active attacks.
-
-
-
+   mitigations against active attacks.  In all attacks below, the
+   attacker is on-path between the target client and server.  The goal
+   of the attacker is to learn private information in the inner
+   ClientHello, such as the true SNI value.
 
 
 
@@ -1292,10 +1292,9 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 10.8.1.  Client Reaction Attack Mitigation
 
-   In this attack, the attacker sits between the client and server and
-   aims relies on how clients react to SNI and certificate mismatch as
-   an oracle.  In particular, the attacker intercepts a legitimate
-   ClientHello and replies with a ServerHello, Certificate,
+   This attack relies on how clients react to SNI and certificate
+   mismatch as an oracle.  In particular, the attacker intercepts a
+   legitimate ClientHello and replies with a ServerHello, Certificate,
    CertificateVerify, and Finished messages, wherein the Certificate
    message contains a "test" certificate for the domain name it wishes
    to query.  If the client decrypted the Certificate and failed
@@ -1330,14 +1329,15 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    needed for encrypting the Certificate message.  Thus, the client will
    fail to decrypt before any verification check occurs.
 
+10.8.2.  HelloRetryRequest Hijack Mitigation
 
-
-
-
-
-
-
-
+   This attack aims to exploit server HRR state management to recover
+   information about a legitimate ClientHello using its own
+   adversarially-controlled ClientHello.  To begin, the attacker
+   intercepts and forwards a legitimate ClientHello with an
+   "encrypted_client_hello" (echo) extension to the server, which
+   triggers a HelloRetryRequest in return.  Rather than forward the
+   retry to the client, the attacker, attempts to generates its own
 
 
 
@@ -1346,15 +1346,8 @@ Rescorla, et al.        Expires 13 November 2020               [Page 24]
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
-10.8.2.  HelloRetryRequest Hijack Mitigation
-
-   In this attack, the attacker sits between the client and server.  It
-   forwards a legitimate ClientHello with an echo
-   (encrypted_client_hello) extension to the server, which triggers a
-   HelloRetryRequest in return.  Rather than forward the retry to the
-   client, the attacker, attempts to generates its own ClientHello in
-   response based on the contents of the first ClientHello and
-   HelloRetryRequest exchange.
+   ClientHello in response based on the contents of the first
+   ClientHello and HelloRetryRequest exchange.
 
     Client                         Attacker                      Server
       ClientHello
@@ -1397,6 +1390,13 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
 
+
+
+
+
+
+
+
 Rescorla, et al.        Expires 13 November 2020               [Page 25]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
@@ -1404,17 +1404,18 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 10.8.3.  Resumption PSK Oracle Mitigation
 
-   In this attack, the attacker sits between the client and server.  To
-   begin, it first interacts with a server to obtain a resumption ticket
-   for a given test domain, such as "test.com".  Later, upon receipt of
-   a legitimate ClientHello without a PSK binder, it computes a PSK
-   binder using its own ticket and forwards the resulting ClientHello.
-   Assume the server then validates the PSK binder on the outer
-   ClientHello and chooses connection parameters based on the inner
-   ClientHello.  A server which then validates information in the outer
-   ClientHello ticket against information in the inner ClientHello, such
-   as the SNI, introduces an oracle that can be used to test the
-   encrypted SNI value of specific ClientHello messages.
+   This attack uses resumption PSKs as an oracle for dictionary attacks
+   against a given ClientHello's true SNI.  To begin, the attacker first
+   interacts with a server to obtain a resumption ticket for a given
+   test domain, such as "test.com".  Later, upon receipt of a legitimate
+   ClientHello without a PSK binder, it computes a PSK binder using its
+   own ticket and forwards the resulting ClientHello.  Assume the server
+   then validates the PSK binder on the outer ClientHello and chooses
+   connection parameters based on the inner ClientHello.  A server which
+   then validates information in the outer ClientHello ticket against
+   information in the inner ClientHello, such as the SNI, introduces an
+   oracle that can be used to test the encrypted SNI value of specific
+   ClientHello messages.
 
           Client                    Attacker                    Server
 
@@ -1423,9 +1424,11 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
                                                 <-------->
 
           ClientHello
-          + key_share  -------->  (intercept)
+          + key_share
+          + echo       -------->  (intercept)
                                      ClientHello
                                      + key_share
+                                     + echo
                                      + pre_shared_key
                                                 -------->
                                                                 Alert
@@ -1447,9 +1450,6 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    in the existing registry for ExtensionType (defined in [RFC8446]),
    with "TLS 1.3" column values being set to "CH, EE", and "Recommended"
    column being set to "Yes".
-
-
-
 
 
 

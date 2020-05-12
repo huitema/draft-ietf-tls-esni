@@ -1386,7 +1386,7 @@ anonymity set during the lifetime of a particular resource record value.<a href=
 <dd id="section-4-7.12">
   A list of extensions that the client can take into consideration when
 generating a ClientHello message. The purpose of the field is to provide room
-for additional functionality in the future. See <a href="#config-extensions" class="xref">Section 12</a> for 
+for additional functionality in the future. See <a href="#config-extensions" class="xref">Section 12</a> for
 guidance on what type of extensions are appropriate for this structure.<a href="#section-4-7.12" class="pilcrow">¶</a>
 </dd>
 <dd class="break"></dd>
@@ -2217,19 +2217,20 @@ mechanism for clients aimed at reducing potential information leakage.<a href="#
         <h3 id="name-active-attack-mitigations">
 <a href="#section-10.8" class="section-number selfRef">10.8. </a><a href="#name-active-attack-mitigations" class="section-name selfRef">Active Attack Mitigations</a>
         </h3>
-<p id="section-10.8-1">This section describes rationale for ECHO properties and mechanics as mitigations 
-against active attacks.<a href="#section-10.8-1" class="pilcrow">¶</a></p>
+<p id="section-10.8-1">This section describes rationale for ECHO properties and mechanics as mitigations
+against active attacks. In all attacks below, the attacker is on-path between
+the target client and server. The goal of the attacker is to learn private information
+in the inner ClientHello, such as the true SNI value.<a href="#section-10.8-1" class="pilcrow">¶</a></p>
 <div id="flow-client-reaction">
 <section id="section-10.8.1">
           <h4 id="name-client-reaction-attack-miti">
 <a href="#section-10.8.1" class="section-number selfRef">10.8.1. </a><a href="#name-client-reaction-attack-miti" class="section-name selfRef">Client Reaction Attack Mitigation</a>
           </h4>
-<p id="section-10.8.1-1">In this attack, the attacker sits between the client and server and aims relies on
-how clients react to SNI and certificate mismatch as an oracle. In particular, the attacker 
-intercepts a legitimate ClientHello and replies with a ServerHello, Certificate, 
-CertificateVerify, and Finished messages, wherein the Certificate message contains 
-a "test" certificate for the domain name it wishes to query. If the client decrypted
-the Certificate and failed verification (or leaked information about its verification 
+<p id="section-10.8.1-1">This attack relies on how clients react to SNI and certificate mismatch as an oracle.
+In particular, the attacker intercepts a legitimate ClientHello and replies with a
+ServerHello, Certificate, CertificateVerify, and Finished messages, wherein the Certificate
+message contains a "test" certificate for the domain name it wishes to query. If the client
+decrypted the Certificate and failed verification (or leaked information about its verification
 process by a timing side channel), the attacker learns that its test certificate name
 was incorrect. As an example, suppose the client's SNI value in its inner ClientHello is
 "example.com," and the attacker replied with a Certificate for "test.com". If the client
@@ -2270,12 +2271,13 @@ to decrypt before any verification check occurs.<a href="#section-10.8.1-3" clas
           <h4 id="name-helloretryrequest-hijack-mi">
 <a href="#section-10.8.2" class="section-number selfRef">10.8.2. </a><a href="#name-helloretryrequest-hijack-mi" class="section-name selfRef">HelloRetryRequest Hijack Mitigation</a>
           </h4>
-<p id="section-10.8.2-1">In this attack, the attacker sits between the client and server. It forwards
-a legitimate ClientHello with an echo (encrypted_client_hello) extension to
-the server, which triggers a HelloRetryRequest in return. Rather than forward
-the retry to the client, the attacker, attempts to generates its own ClientHello 
-in response based on the contents of the first ClientHello and HelloRetryRequest
-exchange.<a href="#section-10.8.2-1" class="pilcrow">¶</a></p>
+<p id="section-10.8.2-1">This attack aims to exploit server HRR state management to recover information about
+a legitimate ClientHello using its own adversarially-controlled ClientHello.
+To begin, the attacker intercepts and forwards a legitimate ClientHello with an
+"encrypted_client_hello" (echo) extension to the server, which triggers a HelloRetryRequest
+in return. Rather than forward the retry to the client, the attacker, attempts to
+generates its own ClientHello in response based on the contents of the first ClientHello
+and HelloRetryRequest exchange.<a href="#section-10.8.2-1" class="pilcrow">¶</a></p>
 <span id="name-helloretryrequest-hijack-at"></span><div id="flow-diagram-hrr-hijack">
 <figure id="figure-4">
             <div class="artwork art-text alignLeft" id="section-10.8.2-2.1">
@@ -2312,10 +2314,10 @@ generate a valid encryption of the second inner ClientHello. The server will
 attempt decryption using echo_hrr_key, detect failure, and fail the connection.<a href="#section-10.8.2-3" class="pilcrow">¶</a></p>
 <p id="section-10.8.2-4">If the second ClientHello were not bound to the first, it might be possible
 for the server to act as an oracle if it required parameters from the first
-ClientHello to match that of the second ClientHello. For example, imagine 
-the client's original SNI value in the inner ClientHello is "example.com", 
+ClientHello to match that of the second ClientHello. For example, imagine
+the client's original SNI value in the inner ClientHello is "example.com",
 and the attacker's hijacked SNI value in its inner ClientHello is "test.com".
-A server which checks these for equality and changes behavior based on the 
+A server which checks these for equality and changes behavior based on the
 result can be used as an oracle to learn the client's SNI.<a href="#section-10.8.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2324,16 +2326,16 @@ result can be used as an oracle to learn the client's SNI.<a href="#section-10.8
           <h4 id="name-resumption-psk-oracle-mitig">
 <a href="#section-10.8.3" class="section-number selfRef">10.8.3. </a><a href="#name-resumption-psk-oracle-mitig" class="section-name selfRef">Resumption PSK Oracle Mitigation</a>
           </h4>
-<p id="section-10.8.3-1">In this attack, the attacker sits between the client and server. To begin,
-it first interacts with a server to obtain a resumption ticket for a given 
-test domain, such as "test.com". Later, upon receipt of a legitimate
-ClientHello without a PSK binder, it computes a PSK binder using its 
-own ticket and forwards the resulting ClientHello. Assume the server then
-validates the PSK binder on the outer ClientHello and chooses connection 
-parameters based on the inner ClientHello. A server which then validates 
-information in the outer ClientHello ticket against information in the 
-inner ClientHello, such as the SNI, introduces an oracle that can be used
-to test the encrypted SNI value of specific ClientHello messages.<a href="#section-10.8.3-1" class="pilcrow">¶</a></p>
+<p id="section-10.8.3-1">This attack uses resumption PSKs as an oracle for dictionary attacks against
+a given ClientHello's true SNI. To begin, the attacker first interacts
+with a server to obtain a resumption ticket for a given test domain, such
+as "test.com". Later, upon receipt of a legitimate ClientHello without a PSK
+binder, it computes a PSK binder using its own ticket and forwards the resulting
+ClientHello. Assume the server then validates the PSK binder on the outer
+ClientHello and chooses connection parameters based on the inner ClientHello.
+A server which then validates information in the outer ClientHello ticket against
+information in the inner ClientHello, such as the SNI, introduces an oracle that
+can be used to test the encrypted SNI value of specific ClientHello messages.<a href="#section-10.8.3-1" class="pilcrow">¶</a></p>
 <span id="name-message-flow-for-resumption"></span><div id="tls-resumption-psk">
 <figure id="figure-5">
             <div class="artwork art-text alignLeft" id="section-10.8.3-2.1">
@@ -2345,9 +2347,11 @@ to test the encrypted SNI value of specific ClientHello messages.<a href="#secti
                                              &lt;--------&gt;
 
        ClientHello
-       + key_share  --------&gt;  (intercept)
+       + key_share
+       + echo       --------&gt;  (intercept)
                                   ClientHello
                                   + key_share
+                                  + echo
                                   + pre_shared_key
                                              --------&gt;
                                                              Alert
@@ -2403,10 +2407,10 @@ existing registry for Alerts (defined in <span>[<a href="#RFC8446" class="xref">
 <a href="#section-12" class="section-number selfRef">12. </a><a href="#name-echoconfig-extension-guidan" class="section-name selfRef">ECHOConfig Extension Guidance</a>
       </h2>
 <p id="section-12-1">Any future information or hints that influence the outer ClientHello SHOULD be
-specified as ECHOConfig extensions, or in an entirely new version of ECHOConfig. 
-This is primarily because the outer ClientHello exists only in support of ECHO. 
-Namely, it is both an envelope for the encrypted inner ClientHello and enabler for 
-authenticated key mismatch signals (see <a href="#server-behavior" class="xref">Section 8</a>). In contrast, the inner 
+specified as ECHOConfig extensions, or in an entirely new version of ECHOConfig.
+This is primarily because the outer ClientHello exists only in support of ECHO.
+Namely, it is both an envelope for the encrypted inner ClientHello and enabler for
+authenticated key mismatch signals (see <a href="#server-behavior" class="xref">Section 8</a>). In contrast, the inner
 ClientHello is the true ClientHello used upon ECHO negotiation.<a href="#section-12-1" class="pilcrow">¶</a></p>
 </section>
 </div>
