@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-05-12T00:00:51.516990+00:00",
+  "timestamp": "2020-05-15T16:29:21.128046+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -15992,6 +15992,32 @@
       "mergeCommit": {
         "oid": "f00e1f070cd55813ac56fc9f6c4ac22ab5cb5b56"
       }
+    },
+    {
+      "number": 234,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDE2NDEyMjk1",
+      "title": "Describe known active attacks",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/234",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses #229.\r\n\r\nThis is for motivating some of our design decisions (and documenting what we know along the way). I meant to do this a while ago, but never got around to it. In particular, it describes why we have the following three bindings:\r\n\r\n1. Transcript to ECHO secret (to prevent client reaction attacks).\r\n2. CH1 to CH2 (to prevent HRR oracles).\r\n3. ClientHello to resumption PSK binder (to prevent resumption oracles).\r\n\r\nI'm *sure* the language and presentation can be improved, so suggestions to that effect are very much welcome!\r\n\r\ncc @martinthomson, @davidben, @dmcardle, @jhoyla, @kazuho, @karthikbhargavan, @grittygrease ",
+      "createdAt": "2020-05-12T00:09:56Z",
+      "updatedAt": "2020-05-12T00:11:47Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f238f70420dbbab6085f959ce970e77d34e506e3",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/active-attacks",
+      "headRefOid": "7eb76ae9d605f6b2766510da65e78025b0f6e1d1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
