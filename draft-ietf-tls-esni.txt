@@ -7,9 +7,8 @@ Internet-Draft                                                RTFM, Inc.
 Intended status: Experimental                                     K. Oku
 Expires: 21 November 2020                                         Fastly
                                                              N. Sullivan
-                                                              Cloudflare
                                                                C.A. Wood
-                                                             Apple, Inc.
+                                                              Cloudflare
                                                              20 May 2020
 
 
@@ -43,21 +42,6 @@ Copyright Notice
    Copyright (c) 2020 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
-
-
-
-
-
-
-
-
-
-
-Rescorla, et al.        Expires 21 November 2020                [Page 1]
-
-Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
-
-
    This document is subject to BCP 78 and the IETF Trust's Legal
    Provisions Relating to IETF Documents (https://trustee.ietf.org/
    license-info) in effect on the date of publication of this document.
@@ -66,6 +50,13 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    extracted from this document must include Simplified BSD License text
    as described in Section 4.e of the Trust Legal Provisions and are
    provided without warranty as described in the Simplified BSD License.
+
+
+
+Rescorla, et al.        Expires 21 November 2020                [Page 1]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
 
 Table of Contents
 
@@ -106,14 +97,6 @@ Table of Contents
        10.5.8.  Supporting multiple protocols  . . . . . . . . . . .  23
      10.6.  Misrouting . . . . . . . . . . . . . . . . . . . . . . .  23
      10.7.  Padding Policy . . . . . . . . . . . . . . . . . . . . .  23
-
-
-
-Rescorla, et al.        Expires 21 November 2020                [Page 2]
-
-Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
-
-
    11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  23
      11.1.  Update of the TLS ExtensionType Registry . . . . . . . .  24
      11.2.  Update of the TLS Alert Registry . . . . . . . . . . . .  24
@@ -123,6 +106,14 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
      13.2.  Informative References . . . . . . . . . . . . . . . . .  25
    Appendix A.  Alternative SNI Protection Designs . . . . . . . . .  26
      A.1.  TLS-layer . . . . . . . . . . . . . . . . . . . . . . . .  26
+
+
+
+Rescorla, et al.        Expires 21 November 2020                [Page 2]
+
+Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
+
+
        A.1.1.  TLS in Early Data . . . . . . . . . . . . . . . . . .  26
        A.1.2.  Combined Tickets  . . . . . . . . . . . . . . . . . .  27
      A.2.  Application-layer . . . . . . . . . . . . . . . . . . . .  27
@@ -162,6 +153,15 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    [I-D.ietf-tls-sni-encryption] provides a description of the problem
    space and some of the proposed techniques.  One of the more difficult
    problems is "Do not stick out" ([I-D.ietf-tls-sni-encryption],
+   Section 3.4): if only sensitive/private services use SNI encryption,
+   then SNI encryption is a signal that a client is going to such a
+   service.  For this reason, much recent work has focused on concealing
+   the fact that SNI is being protected.  Unfortunately, the result
+   often has undesirable performance consequences, incomplete coverage,
+   or both.
+
+
+
 
 
 
@@ -169,13 +169,6 @@ Rescorla, et al.        Expires 21 November 2020                [Page 3]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
-
-   Section 3.4): if only sensitive/private services use SNI encryption,
-   then SNI encryption is a signal that a client is going to such a
-   service.  For this reason, much recent work has focused on concealing
-   the fact that SNI is being protected.  Unfortunately, the result
-   often has undesirable performance consequences, incomplete coverage,
-   or both.
 
    The design in this document takes a different approach: it assumes
    that private origins will co-locate with or hide behind a provider
@@ -215,6 +208,13 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
                        Figure 1: Shared Mode Topology
 
+   In Shared Mode, the provider is the origin server for all the domains
+   whose DNS records point to it and clients form a TLS connection
+   directly to that provider, which has access to the plaintext of the
+   connection.
+
+
+
 
 
 
@@ -225,11 +225,6 @@ Rescorla, et al.        Expires 21 November 2020                [Page 4]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
-
-   In Shared Mode, the provider is the origin server for all the domains
-   whose DNS records point to it and clients form a TLS connection
-   directly to that provider, which has access to the plaintext of the
-   connection.
 
                    +--------------------+       +---------------------+
                    |                    |       |                     |
@@ -275,17 +270,17 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    ClientHelloInner and either terminate the connection (in Shared Mode)
    or forward it to the backend server (in Split Mode).
 
+   Note that both ClientHelloInner and ClientHelloOuter are both valid,
+   complete ClientHello messages.  ClientHelloOuter carries an encrypted
+   representation of ClientHelloInner in a "encrypted_client_hello"
+   extension, defined in Section 5.
+
 
 
 Rescorla, et al.        Expires 21 November 2020                [Page 5]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
-
-   Note that both ClientHelloInner and ClientHelloOuter are both valid,
-   complete ClientHello messages.  ClientHelloOuter carries an encrypted
-   representation of ClientHelloInner in a "encrypted_client_hello"
-   extension, defined in Section 5.
 
 4.  Encrypted ClientHello Configuration
 
@@ -329,6 +324,11 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
    The ECHOConfig structure contains the following fields:
 
+   version  The version of the structure.  For this specification, that
+      value SHALL be 0xff03.  Clients MUST ignore any ECHOConfig
+      structure with a version they do not understand.
+
+
 
 
 
@@ -337,10 +337,6 @@ Rescorla, et al.        Expires 21 November 2020                [Page 6]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
-
-   version  The version of the structure.  For this specification, that
-      value SHALL be 0xff03.  Clients MUST ignore any ECHOConfig
-      structure with a version they do not understand.
 
    contents  An opaque byte string whose contents depend on the version
       of the structure.  For this specification, the contents are an
@@ -386,6 +382,10 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    Clients MUST parse the extension list and check for unsupported
    mandatory extensions.  If an unsupported mandatory extension is
    present, clients MUST reject the ECHOConfig value.
+
+
+
+
 
 
 
@@ -1571,9 +1571,9 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
    Christopher A. Wood
-   Apple, Inc.
+   Cloudflare
 
-   Email: cawood@apple.com
+   Email: caw@heapingbits.net
 
 
 
