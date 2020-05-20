@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-05-15T16:29:21.128046+00:00",
+  "timestamp": "2020-05-20T15:59:00.563978+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -16018,6 +16018,56 @@
       "mergeCommit": null,
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 235,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDE4Njg3Nzc4",
+      "title": "Suggest size of GREASE encrypted_ch extension value.",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/235",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This assumes the GREASE threat model is a misbehaving and lazy middlebox. That is, we aim to prevent ossification. It does nothing more to prevent an active attacker from learning whether or not a particular connection used GREASE. (That problem is probably better suited to something like MASQUE.)\r\n\r\ncc @davidben @ekr @martinthomson",
+      "createdAt": "2020-05-15T16:29:25Z",
+      "updatedAt": "2020-05-20T15:58:32Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "f238f70420dbbab6085f959ce970e77d34e506e3",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/grease-size",
+      "headRefOid": "cab69382afbc78bfd4df71f3004d1bc47017b303",
+      "closedAt": "2020-05-20T15:58:32Z",
+      "mergedAt": "2020-05-20T15:58:32Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "5005670f318da0a19868a8858dc4c473e8bc3825"
+      },
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Merging for now. We can come back later and address followup extensions if needed!",
+          "createdAt": "2020-05-20T15:58:28Z",
+          "updatedAt": "2020-05-20T15:58:28Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDEyODA2NDQ1",
+          "commit": {
+            "abbreviatedOid": "cab6938"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-05-15T16:44:03Z",
+          "updatedAt": "2020-05-15T16:44:03Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
