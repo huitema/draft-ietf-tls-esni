@@ -4,14 +4,13 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>Encrypted Server Name Indication for TLS 1.3</title>
+<title>Encrypted ClientHello for TLS 1.3</title>
 <meta content="Eric Rescorla" name="author">
 <meta content="Kazuho Oku" name="author">
 <meta content="Nick Sullivan" name="author">
 <meta content="Christopher A. Wood" name="author">
 <meta content="
-       This document defines a simple mechanism for encrypting the
-Server Name Indication for TLS 1.3. 
+       This document defines a mechanism for encrypting a TLS 1.3 ClientHello. 
     " name="description">
 <meta content="xml2rfc 2.44.0" name="generator">
 <meta content="Internet-Draft" name="keyword">
@@ -830,7 +829,7 @@ table.left {
 <table class="ears">
 <thead><tr>
 <td class="left">Internet-Draft</td>
-<td class="center">TLS 1.3 SNI Encryption</td>
+<td class="center">TLS 1.3 Encrypted ClientHello</td>
 <td class="right">May 2020</td>
 </tr></thead>
 <tfoot><tr>
@@ -875,11 +874,10 @@ table.left {
 </dd>
 </dl>
 </div>
-<h1 id="title">Encrypted Server Name Indication for TLS 1.3</h1>
+<h1 id="title">Encrypted ClientHello for TLS 1.3</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document defines a simple mechanism for encrypting the
-Server Name Indication for TLS 1.3.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines a mechanism for encrypting a TLS 1.3 ClientHello.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -942,7 +940,7 @@ Server Name Indication for TLS 1.3.<a href="#section-abstract-1" class="pilcrow"
                 <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="xref">3.1</a>.  <a href="#name-topologies" class="xref">Topologies</a><a href="#section-toc.1-1.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-clienthello-encryption" class="xref">ClientHello Encryption</a><a href="#section-toc.1-1.3.2.2.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="xref">3.2</a>.  <a href="#name-encrypted-clienthello-ech" class="xref">Encrypted ClientHello (ECH)</a><a href="#section-toc.1-1.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
 </ul>
 </li>
@@ -953,7 +951,7 @@ Server Name Indication for TLS 1.3.<a href="#section-abstract-1" class="pilcrow"
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-the-encrypted_client_hello-" class="xref">The "encrypted_client_hello" extension</a><a href="#section-toc.1-1.5.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-the-echo_nonce-extension" class="xref">The "echo_nonce" extension</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-the-ech_nonce-extension" class="xref">The "ech_nonce" extension</a><a href="#section-toc.1-1.6.1" class="pilcrow">¶</a></p>
 <ul class="toc ulEmpty">
 <li class="toc ulEmpty" id="section-toc.1-1.6.2.1">
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-incorporating-outer-extensi" class="xref">Incorporating Outer Extensions</a><a href="#section-toc.1-1.6.2.1.1" class="pilcrow">¶</a></p>
@@ -973,10 +971,10 @@ Server Name Indication for TLS 1.3.<a href="#section-abstract-1" class="pilcrow"
                 <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="xref">7.3</a>.  <a href="#name-handling-the-server-respons" class="xref">Handling the server response</a><a href="#section-toc.1-1.7.2.3.1" class="pilcrow">¶</a></p>
 <ul class="toc ulEmpty">
 <li class="toc ulEmpty" id="section-toc.1-1.7.2.3.2.1">
-                    <p id="section-toc.1-1.7.2.3.2.1.1"><a href="#section-7.3.1" class="xref">7.3.1</a>.  <a href="#name-accepted-echo" class="xref">Accepted ECHO</a><a href="#section-toc.1-1.7.2.3.2.1.1" class="pilcrow">¶</a></p>
+                    <p id="section-toc.1-1.7.2.3.2.1.1"><a href="#section-7.3.1" class="xref">7.3.1</a>.  <a href="#name-accepted-ech" class="xref">Accepted ECH</a><a href="#section-toc.1-1.7.2.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.7.2.3.2.2">
-                    <p id="section-toc.1-1.7.2.3.2.2.1"><a href="#section-7.3.2" class="xref">7.3.2</a>.  <a href="#name-rejected-echo" class="xref">Rejected ECHO</a><a href="#section-toc.1-1.7.2.3.2.2.1" class="pilcrow">¶</a></p>
+                    <p id="section-toc.1-1.7.2.3.2.2.1"><a href="#section-7.3.2" class="xref">7.3.2</a>.  <a href="#name-rejected-ech" class="xref">Rejected ECH</a><a href="#section-toc.1-1.7.2.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.7.2.3.2.3">
                     <p id="section-toc.1-1.7.2.3.2.3.1"><a href="#section-7.3.3" class="xref">7.3.3</a>.  <a href="#name-helloretryrequest" class="xref">HelloRetryRequest</a><a href="#section-toc.1-1.7.2.3.2.3.1" class="pilcrow">¶</a></p>
@@ -1080,7 +1078,7 @@ Server Name Indication for TLS 1.3.<a href="#section-abstract-1" class="pilcrow"
 </ul>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.12">
-            <p id="section-toc.1-1.12.1"><a href="#section-12" class="xref">12</a>. <a href="#name-echoconfig-extension-guidan" class="xref">ECHOConfig Extension Guidance</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="xref">12</a>. <a href="#name-echconfig-extension-guidanc" class="xref">ECHConfig Extension Guidance</a><a href="#section-toc.1-1.12.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.13">
             <p id="section-toc.1-1.13.1"><a href="#section-13" class="xref">13</a>. <a href="#name-references" class="xref">References</a><a href="#section-toc.1-1.13.1" class="pilcrow">¶</a></p>
@@ -1138,44 +1136,40 @@ Server Name Indication for TLS 1.3.<a href="#section-abstract-1" class="pilcrow"
 <p id="section-1-1">DISCLAIMER: This is very early a work-in-progress design and has not
 yet seen significant (or really any) security analysis. It should not
 be used as a basis for building production systems.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Although TLS 1.3 <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> encrypts most of the
-handshake, including the server certificate, there are several other
-channels that allow an on-path attacker to determine the domain name the
-client is trying to connect to, including:<a href="#section-1-2" class="pilcrow">¶</a></p>
-<ul>
-<li id="section-1-3.1">Cleartext client DNS queries.<a href="#section-1-3.1" class="pilcrow">¶</a>
-</li>
-<li id="section-1-3.2">Visible server IP addresses, assuming the the server is not doing
-domain-based virtual hosting.<a href="#section-1-3.2" class="pilcrow">¶</a>
-</li>
-<li id="section-1-3.3">Cleartext Server Name Indication (SNI) <span>[<a href="#RFC6066" class="xref">RFC6066</a>]</span> in ClientHello messages.<a href="#section-1-3.3" class="pilcrow">¶</a>
-</li>
-</ul>
-<p id="section-1-4">DoH <span>[<a href="#I-D.ietf-doh-dns-over-https" class="xref">I-D.ietf-doh-dns-over-https</a>]</span> and DPRIVE <span>[<a href="#RFC7858" class="xref">RFC7858</a>]</span> <span>[<a href="#RFC8094" class="xref">RFC8094</a>]</span>
+<p id="section-1-2">Although TLS 1.3 <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span> encrypts most of the handshake, including the
+server certificate, there are several ways in which an on-path attacker can
+learn private information about the connection. The cleartext Server Name Indication
+(SNI) extension in ClientHello messages, which leaks the target domain for a given
+connection, is perhaps the most sensitive information unencrypted in TLS 1.3.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">The target domain may also be visible through other channels, such as cleartext
+client DNS queries, visible server IP addresses (assuming the server does not
+use domain-based virtual hosting), or other indirect mechanisms such as traffic analysis.
+DoH <span>[<a href="#I-D.ietf-doh-dns-over-https" class="xref">I-D.ietf-doh-dns-over-https</a>]</span> and DPRIVE <span>[<a href="#RFC7858" class="xref">RFC7858</a>]</span> <span>[<a href="#RFC8094" class="xref">RFC8094</a>]</span>
 provide mechanisms for clients to conceal DNS lookups from network inspection,
 and many TLS servers host multiple domains on the same IP address.
-In such environments, SNI is an explicit signal used to determine the server's
-identity. Indirect mechanisms such as traffic analysis also exist.<a href="#section-1-4" class="pilcrow">¶</a></p>
-<p id="section-1-5">The TLS WG has extensively studied the problem of protecting SNI, but
-has been unable to develop a completely generic
-solution. <span>[<a href="#I-D.ietf-tls-sni-encryption" class="xref">I-D.ietf-tls-sni-encryption</a>]</span> provides a description
+In such environments, the SNI remains the primary explicit signal used to
+determine the server's identity.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">The TLS WG has extensively studied the problem of protecting the SNI, but
+has been unable to develop a completely generic solution.
+<span>[<a href="#I-D.ietf-tls-sni-encryption" class="xref">I-D.ietf-tls-sni-encryption</a>]</span> provides a description
 of the problem space and some of the proposed techniques. One of the
 more difficult problems is "Do not stick out"
-(<span>[<a href="#I-D.ietf-tls-sni-encryption" class="xref">I-D.ietf-tls-sni-encryption</a>]</span>, Section 3.4): if only sensitive/private
+(<span>[<a href="#I-D.ietf-tls-sni-encryption" class="xref">I-D.ietf-tls-sni-encryption</a>]</span>, Section 3.4): if only sensitive or private
 services use SNI encryption, then SNI encryption is a signal that
-a client is going to such a service. For this reason,
-much recent work has focused on
-concealing the fact that SNI is being protected. Unfortunately,
+a client is going to such a service. For this reason, much recent work
+has focused on concealing the fact that the SNI is being protected. Unfortunately,
 the result often has undesirable performance consequences, incomplete
-coverage, or both.<a href="#section-1-5" class="pilcrow">¶</a></p>
-<p id="section-1-6">The design in this document takes a different approach: it assumes
-that private origins will co-locate with or hide behind a provider (CDN, app server,
-etc.) which is able to activate encrypted SNI, by encrypting the entire
-ClientHello (ECHO), for all of the domains it hosts.
-As a result, the use of ECHO to protect the SNI does not indicate that the
-client is attempting to reach a private origin, but only that it is
-going to a particular service provider, which the observer could
-already tell from the IP address.<a href="#section-1-6" class="pilcrow">¶</a></p>
+coverage, or both.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">The design in this document takes a different approach: it assumes
+that private origins will co-locate with or hide behind a provider (CDN, application
+server, etc.) which can protect SNIs for all of the domains it hosts. As a result,
+SNI protection does not indicate that the client is attempting to reach a private
+origin, but only that it is going to a particular service provider, which the observer
+could already tell from the visible IP address.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<p id="section-1-6">The design in this document introduces a new extension, called Encrypted Client
+Hello (ECH), which allows clients to encrypt the entirety of their ClientHello
+to a supporting server. This protects the SNI and other potentially sensitive fields,
+such as the ALPN list.<a href="#section-1-6" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1250,25 +1244,25 @@ backend server, which is the true origin server. The provider does
 not have access to the plaintext of the connection.<a href="#section-3.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="clienthello-encryption">
+<div id="encrypted-clienthello-ech">
 <section id="section-3.2">
-        <h3 id="name-clienthello-encryption">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-clienthello-encryption" class="section-name selfRef">ClientHello Encryption</a>
+        <h3 id="name-encrypted-clienthello-ech">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-encrypted-clienthello-ech" class="section-name selfRef">Encrypted ClientHello (ECH)</a>
         </h3>
-<p id="section-3.2-1">ECHO works by encrypting the entire ClientHello, including
+<p id="section-3.2-1">ECH works by encrypting the entire ClientHello, including
 the SNI and any additional extensions such as ALPN.
 This requires that each provider publish a public key and
 metadata which is used for ClientHello encryption for all the domains for
 which it serves directly or indirectly (via Split Mode). This document
 defines the format of the SNI encryption public key and metadata,
-referred to as an ECHO configuration, and delegates DNS publication
+referred to as an ECH configuration, and delegates DNS publication
 details to <span>[<a href="#HTTPSSVC" class="xref">HTTPSSVC</a>]</span>, though other
 delivery mechanisms are possible. In particular, if some of the
 clients of a private server are applications rather than Web browsers,
 those applications might have the public key and metadata
 preconfigured.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">When a client wants to form a TLS connection to any of the domains
-served by an ECHO-supporting provider, it constructs a ClientHello in
+served by an ECH-supporting provider, it constructs a ClientHello in
 the regular fashion containing the true SNI value (ClientHelloInner)
 and then encrypts it using the public key for the provider.  It then
 constructs a new ClientHello (ClientHelloOuter) with an innocuous SNI
@@ -1286,13 +1280,13 @@ in <a href="#encrypted-client-hello" class="xref">Section 5</a>.<a href="#sectio
 </div>
 </section>
 </div>
-<div id="echo-configuration">
+<div id="ech-configuration">
 <section id="section-4">
       <h2 id="name-encrypted-clienthello-confi">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-encrypted-clienthello-confi" class="section-name selfRef">Encrypted ClientHello Configuration</a>
       </h2>
 <p id="section-4-1">ClientHello encryption configuration information is conveyed with the
-following ECHOConfigs structure.<a href="#section-4-1" class="pilcrow">¶</a></p>
+following ECHConfigs structure.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-4-2">
 <pre>
     opaque HpkePublicKey&lt;1..2^16-1&gt;;
@@ -1314,39 +1308,39 @@ following ECHOConfigs structure.<a href="#section-4-1" class="pilcrow">¶</a></p
 
         uint16 maximum_name_length;
         Extension extensions&lt;0..2^16-1&gt;;
-    } ECHOConfigContents;
+    } ECHConfigContents;
 
     struct {
         uint16 version;
         uint16 length;
-        select (ECHOConfig.version) {
-          case 0xff03: ECHOConfigContents;
+        select (ECHConfig.version) {
+          case 0xff03: ECHConfigContents;
         }
-    } ECHOConfig;
+    } ECHConfig;
 
-    ECHOConfig ECHOConfigs&lt;1..2^16-1&gt;;
+    ECHConfig ECHConfigs&lt;1..2^16-1&gt;;
 </pre><a href="#section-4-2" class="pilcrow">¶</a>
 </div>
-<p id="section-4-3">The ECHOConfigs structure contains one or more ECHOConfig structures in
+<p id="section-4-3">The ECHConfigs structure contains one or more ECHConfig structures in
 decreasing order of preference. This allows a server to support multiple
-versions of ECHO and multiple sets of ECHO parameters.<a href="#section-4-3" class="pilcrow">¶</a></p>
-<p id="section-4-4">The ECHOConfig structure contains the following fields:<a href="#section-4-4" class="pilcrow">¶</a></p>
+versions of ECH and multiple sets of ECH parameters.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-4">The ECHConfig structure contains the following fields:<a href="#section-4-4" class="pilcrow">¶</a></p>
 <dl class="dlParallel" id="section-4-5">
         <dt id="section-4-5.1">version</dt>
 <dd id="section-4-5.2">
   The version of the structure. For this specification, that value
-SHALL be 0xff03. Clients MUST ignore any ECHOConfig structure with a
+SHALL be 0xff03. Clients MUST ignore any ECHConfig structure with a
 version they do not understand.<a href="#section-4-5.2" class="pilcrow">¶</a>
 </dd>
 <dd class="break"></dd>
 <dt id="section-4-5.3">contents</dt>
 <dd id="section-4-5.4">
   An opaque byte string whose contents depend on the version of the structure.
-For this specification, the contents are an ECHOConfigContents structure.<a href="#section-4-5.4" class="pilcrow">¶</a>
+For this specification, the contents are an ECHConfigContents structure.<a href="#section-4-5.4" class="pilcrow">¶</a>
 </dd>
 <dd class="break"></dd>
 </dl>
-<p id="section-4-6">The ECHOConfigContents structure contains the following fields:<a href="#section-4-6" class="pilcrow">¶</a></p>
+<p id="section-4-6">The ECHConfigContents structure contains the following fields:<a href="#section-4-6" class="pilcrow">¶</a></p>
 <dl class="dlParallel" id="section-4-7">
         <dt id="section-4-7.1">public_name</dt>
 <dd id="section-4-7.2">
@@ -1364,7 +1358,7 @@ encrypt the ClientHello.<a href="#section-4-7.4" class="pilcrow">¶</a>
 <dt id="section-4-7.5">kem_id</dt>
 <dd id="section-4-7.6">
   The HPKE <span>[<a href="#I-D.irtf-cfrg-hpke" class="xref">I-D.irtf-cfrg-hpke</a>]</span> KEM identifier corresponding to public_key.
-Clients MUST ignore any ECHOConfig structure with a key using a KEM they do not support.<a href="#section-4-7.6" class="pilcrow">¶</a>
+Clients MUST ignore any ECHConfig structure with a key using a KEM they do not support.<a href="#section-4-7.6" class="pilcrow">¶</a>
 </dd>
 <dd class="break"></dd>
 <dt id="section-4-7.7">cipher_suites</dt>
@@ -1396,10 +1390,10 @@ apply: extensions MAY appear in any order, but there MUST NOT be more than one
 extension of the same type in the extensions block. An extension can be tagged as
 mandatory by using an extension type codepoint with the high order bit set to 1.
 A client which receives a mandatory extension they do not understand MUST reject
-the ECHOConfig content.<a href="#section-4-8" class="pilcrow">¶</a></p>
+the ECHConfig content.<a href="#section-4-8" class="pilcrow">¶</a></p>
 <p id="section-4-9">Clients MUST parse the extension list and check for unsupported mandatory
 extensions. If an unsupported mandatory extension is present, clients MUST
-reject the ECHOConfig value.<a href="#section-4-9" class="pilcrow">¶</a></p>
+reject the ECHConfig value.<a href="#section-4-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="encrypted-client-hello">
@@ -1432,12 +1426,12 @@ ClientEncryptedCH structure:<a href="#section-5-3" class="pilcrow">¶</a></p>
         <dt id="section-5-5.1">suite</dt>
 <dd id="section-5-5.2">
   The HpkeCipherSuite cipher suite used to encrypt ClientHelloInner. This MUST
-match a value provided in the corresponding ECHOConfig.cipher_suites list.<a href="#section-5-5.2" class="pilcrow">¶</a>
+match a value provided in the corresponding ECHConfig.cipher_suites list.<a href="#section-5-5.2" class="pilcrow">¶</a>
 </dd>
 <dd class="break"></dd>
 <dt id="section-5-5.3">record_digest</dt>
 <dd id="section-5-5.4">
-  A cryptographic hash of the ECHOConfig structure from which the ECHO
+  A cryptographic hash of the ECHConfig structure from which the ECH
 key was obtained, i.e., from the first byte of "version" to the end
 of the structure.  This hash is computed using the hash function
 associated with <code>suite</code>, i.e., the corresponding HPKE KDF algorithm hash.<a href="#section-5-5.4" class="pilcrow">¶</a>
@@ -1456,55 +1450,55 @@ HPKE with the selected KEM, KDF, and AEAD algorithm and key generated as describ
 </dd>
 <dd class="break"></dd>
 </dl>
-<p id="section-5-6">If the server accepts ECHO, it does not send this extension.
-If it rejects ECHO, then it sends the following structure in
+<p id="section-5-6">If the server accepts ECH, it does not send this extension.
+If it rejects ECH, then it sends the following structure in
 EncryptedExtensions:<a href="#section-5-6" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-5-7">
 <pre>
    struct {
-       ECHOConfigs retry_configs;
+       ECHConfigs retry_configs;
    } ServerEncryptedCH;
 </pre><a href="#section-5-7" class="pilcrow">¶</a>
 </div>
 <dl class="dlParallel" id="section-5-8">
         <dt id="section-5-8.1">retry_configs</dt>
 <dd id="section-5-8.2">
-  An ECHOConfigs structure containing one or more ECHOConfig structures in
+  An ECHConfigs structure containing one or more ECHConfig structures in
 decreasing order of preference that the client should use on subsequent
 connections to encrypt the ClientHelloInner structure.<a href="#section-5-8.2" class="pilcrow">¶</a>
 </dd>
 <dd class="break"></dd>
 </dl>
-<p id="section-5-9">This protocol also defines the "echo_required" alert, which is sent by the
+<p id="section-5-9">This protocol also defines the "ech_required" alert, which is sent by the
 client when it offered an "encrypted_client_hello" extension which was not
 accepted by the server.<a href="#section-5-9" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="echo-nonce">
+<div id="ech-nonce">
 <section id="section-6">
-      <h2 id="name-the-echo_nonce-extension">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-the-echo_nonce-extension" class="section-name selfRef">The "echo_nonce" extension</a>
+      <h2 id="name-the-ech_nonce-extension">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-the-ech_nonce-extension" class="section-name selfRef">The "ech_nonce" extension</a>
       </h2>
-<p id="section-6-1">When using ECHO, the client MUST also add an extension of type
-"echo_nonce" to the ClientHelloInner (but not to the outer
+<p id="section-6-1">When using ECH, the client MUST also add an extension of type
+"ech_nonce" to the ClientHelloInner (but not to the outer
 ClientHello). This nonce ensures that the server's encrypted
 Certificate can only be read by the entity which sent this
 ClientHello. This extension is defined as follows:<a href="#section-6-1" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-6-2">
 <pre>
    enum {
-       echo_nonce(0xffce), (65535)
+       ech_nonce(0xffce), (65535)
    } ExtensionType;
 
    struct {
        uint8 nonce[16];
-   } ECHONonce;
+   } ECHNonce;
 </pre><a href="#section-6-2" class="pilcrow">¶</a>
 </div>
 <dl class="dlParallel" id="section-6-3">
         <dt id="section-6-3.1">nonce</dt>
 <dd id="section-6-3.2">
-  A 16-byte nonce exported from the HPKE encryption context. See <a href="#send-echo" class="xref">Section 7.1</a>
+  A 16-byte nonce exported from the HPKE encryption context. See <a href="#send-ech" class="xref">Section 7.1</a>
 for details about its computation.<a href="#section-6-3.2" class="pilcrow">¶</a>
 </dd>
 <dd class="break"></dd>
@@ -1512,8 +1506,8 @@ for details about its computation.<a href="#section-6-3.2" class="pilcrow">¶</a
 <p id="section-6-4">Finally, requirements in <a href="#client-behavior" class="xref">Section 7</a> and <a href="#server-behavior" class="xref">Section 8</a> require
 implementations to track, alongside each PSK established by a previous
 connection, whether the connection negotiated this extension with the
-"echo_accept" response type. If so, this is referred to as an "ECHO PSK".
-Otherwise, it is a "non-ECHO PSK". This may be implemented by adding a new field
+"ech_accept" response type. If so, this is referred to as an "ECH PSK".
+Otherwise, it is a "non-ECH PSK". This may be implemented by adding a new field
 to client and server session states.<a href="#section-6-4" class="pilcrow">¶</a></p>
 <div id="outer-extensions">
 <section id="section-6.1">
@@ -1568,44 +1562,44 @@ and ClientHelloOuter even if they have identical values.<a href="#section-6.1-6"
       <h2 id="name-client-behavior">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-client-behavior" class="section-name selfRef">Client Behavior</a>
       </h2>
-<div id="send-echo">
+<div id="send-ech">
 <section id="section-7.1">
         <h3 id="name-sending-an-encrypted-client">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-sending-an-encrypted-client" class="section-name selfRef">Sending an encrypted ClientHello</a>
         </h3>
 <p id="section-7.1-1">In order to send an encrypted ClientHello, the client first determines if it
-supports the server's chosen KEM, as identified by ECHOConfig.kem_id. If one
+supports the server's chosen KEM, as identified by ECHConfig.kem_id. If one
 is supported, the client MUST select an appropriate HpkeCipherSuite from the list of
 suites offered by the server. If the client does not support the corresponding
 KEM or is unable to select an appropriate group or HpkeCipherSuite, it SHOULD ignore
-that ECHOConfig value and MAY attempt to use another value provided by
-the server. The client MUST NOT send ECHO using HPKE algorithms not advertised
+that ECHConfig value and MAY attempt to use another value provided by
+the server. The client MUST NOT send ECH using HPKE algorithms not advertised
 by the server.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
-<p id="section-7.1-2">Given a compatible ECHOConfig with fields public_key and kem_id, carrying the HpkePublicKey
+<p id="section-7.1-2">Given a compatible ECHConfig with fields public_key and kem_id, carrying the HpkePublicKey
 and KEM identifier corresponding to the server, clients compute an HPKE encryption
 context as follows:<a href="#section-7.1-2" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-7.1-3">
 <pre>
-pkR = HPKE.KEM.Unmarshal(ECHOConfig.public_key)
-enc, context = SetupBaseS(pkR, "tls13-echo")
-echo_nonce = context.Export("tls13-echo-nonce", 16)
-echo_hrr_key = context.Export("tls13-echo-hrr-key", 16)
+pkR = HPKE.KEM.Unmarshal(ECHConfig.public_key)
+enc, context = SetupBaseS(pkR, "tls13-ech")
+ech_nonce = context.Export("tls13-ech-nonce", 16)
+ech_hrr_key = context.Export("tls13-ech-hrr-key", 16)
 </pre><a href="#section-7.1-3" class="pilcrow">¶</a>
 </div>
 <p id="section-7.1-4">Note that the HPKE algorithm identifiers are those which match the client's
-chosen preference from ECHOConfig.cipher_suites. The client MAY replace any large,
+chosen preference from ECHConfig.cipher_suites. The client MAY replace any large,
 duplicated extensions in ClientHelloInner with the corresponding "outer_extensions"
 extension, as described in <a href="#outer-extensions" class="xref">Section 6.1</a>.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
 <p id="section-7.1-5">The client then generates a ClientHelloInner value. In addition to the normal
 values, ClientHelloInner MUST also contain:<a href="#section-7.1-5" class="pilcrow">¶</a></p>
 <ul>
-<li id="section-7.1-6.1">an "echo_nonce" extension<a href="#section-7.1-6.1" class="pilcrow">¶</a>
+<li id="section-7.1-6.1">an "ech_nonce" extension<a href="#section-7.1-6.1" class="pilcrow">¶</a>
 </li>
 <li id="section-7.1-6.2">TLS padding <span>[<a href="#RFC7685" class="xref">RFC7685</a>]</span> (see <a href="#padding" class="xref">Section 7.2</a>)<a href="#section-7.1-6.2" class="pilcrow">¶</a>
 </li>
 </ul>
 <p id="section-7.1-7">When offering an encrypted ClientHello, the client MUST NOT offer to resume any
-non-ECHO PSKs. It additionally MUST NOT offer to resume any sessions for TLS 1.2
+non-ECH PSKs. It additionally MUST NOT offer to resume any sessions for TLS 1.2
 or below.<a href="#section-7.1-7" class="pilcrow">¶</a></p>
 <p id="section-7.1-8">The encrypted ClientHello value is then computed as:<a href="#section-7.1-8" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-7.1-9">
@@ -1619,7 +1613,7 @@ indicated above. In particular,<a href="#section-7.1-10" class="pilcrow">¶</a><
 <ul>
 <li id="section-7.1-11.1">suite contains the client's chosen HpkeCipherSuite;<a href="#section-7.1-11.1" class="pilcrow">¶</a>
 </li>
-<li id="section-7.1-11.2">record_digest contains the digest of the corresponding ECHOConfig structure;<a href="#section-7.1-11.2" class="pilcrow">¶</a>
+<li id="section-7.1-11.2">record_digest contains the digest of the corresponding ECHConfig structure;<a href="#section-7.1-11.2" class="pilcrow">¶</a>
 </li>
 <li id="section-7.1-11.3">enc contains the encapsulated key as output by SetupBaseS; and<a href="#section-7.1-11.3" class="pilcrow">¶</a>
 </li>
@@ -1627,7 +1621,7 @@ indicated above. In particular,<a href="#section-7.1-10" class="pilcrow">¶</a><
 ciphertext (encrypted_ch_inner).<a href="#section-7.1-11.4" class="pilcrow">¶</a>
 </li>
 </ul>
-<p id="section-7.1-12">The client MUST place the value of ECHOConfig.public_name in the
+<p id="section-7.1-12">The client MUST place the value of ECHConfig.public_name in the
 ClientHelloOuter "server_name" extension. The ClientHelloOuter MUST NOT
 contain a "cached_info" extension <span>[<a href="#RFC7924" class="xref">RFC7924</a>]</span> with a CachedObject
 entry whose CachedInformationType is "cert", since this indication
@@ -1654,11 +1648,11 @@ profiles. The target padding length of most ClientHello extensions can be comput
 in this way.<a href="#section-7.2-2" class="pilcrow">¶</a></p>
 <p id="section-7.2-3">In contrast, clients do not know the longest SNI value in the client-facing server's
 anonymity set without server input. For the "server_name" extension with length D,
-clients SHOULD use the server's length hint L (ECHOCOnfig.maximum_name_length) when
+clients SHOULD use the server's length hint L (ECHCOnfig.maximum_name_length) when
 computing the padding as follows:<a href="#section-7.2-3" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-7.2-4">
           <li id="section-7.2-4.1">If L &gt; D, add L - D bytes of padding. This rounds to the server's advertised
-hint, i.e., ECHOConfig.maximum_name_length.<a href="#section-7.2-4.1" class="pilcrow">¶</a>
+hint, i.e., ECHConfig.maximum_name_length.<a href="#section-7.2-4.1" class="pilcrow">¶</a>
 </li>
 <li id="section-7.2-4.2">Otherwise, add 32 - (D % 32) bytes of padding. This rounds D up to the nearest
 multiple of 32 bytes.<a href="#section-7.2-4.2" class="pilcrow">¶</a>
@@ -1676,37 +1670,37 @@ handshake message also needs to be padded using TLS record layer padding.<a href
         <h3 id="name-handling-the-server-respons">
 <a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-handling-the-server-respons" class="section-name selfRef">Handling the server response</a>
         </h3>
-<p id="section-7.3-1">As described in <a href="#server-behavior" class="xref">Section 8</a>, the server MAY either accept ECHO
+<p id="section-7.3-1">As described in <a href="#server-behavior" class="xref">Section 8</a>, the server MAY either accept ECH
 and use ClientHelloInner or reject it and use ClientHelloOuter. However,
 there is no indication in ServerHello of which one the server has done
 and the client must therefore use trial decryption in order to determine
 this.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<div id="accepted-echo">
+<div id="accepted-ech">
 <section id="section-7.3.1">
-          <h4 id="name-accepted-echo">
-<a href="#section-7.3.1" class="section-number selfRef">7.3.1. </a><a href="#name-accepted-echo" class="section-name selfRef">Accepted ECHO</a>
+          <h4 id="name-accepted-ech">
+<a href="#section-7.3.1" class="section-number selfRef">7.3.1. </a><a href="#name-accepted-ech" class="section-name selfRef">Accepted ECH</a>
           </h4>
 <p id="section-7.3.1-1">If the server used ClientHelloInner, the client proceeds with the
 connection as usual, authenticating the connection for the origin
 server.<a href="#section-7.3.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="rejected-echo">
+<div id="rejected-ech">
 <section id="section-7.3.2">
-          <h4 id="name-rejected-echo">
-<a href="#section-7.3.2" class="section-number selfRef">7.3.2. </a><a href="#name-rejected-echo" class="section-name selfRef">Rejected ECHO</a>
+          <h4 id="name-rejected-ech">
+<a href="#section-7.3.2" class="section-number selfRef">7.3.2. </a><a href="#name-rejected-ech" class="section-name selfRef">Rejected ECH</a>
           </h4>
 <p id="section-7.3.2-1">If the server used ClientHelloOuter, the client proceeds with the handshake,
-authenticating for ECHOConfig.public_name as described in
+authenticating for ECHConfig.public_name as described in
 <a href="#auth-public-name" class="xref">Section 7.3.2.1</a>. If authentication or the handshake fails, the client
 MUST return a failure to the calling application. It MUST NOT use the retry
 keys.<a href="#section-7.3.2-1" class="pilcrow">¶</a></p>
 <p id="section-7.3.2-2">Otherwise, when the handshake completes successfully with the public name
-authenticated, the client MUST abort the connection with an "echo_required"
+authenticated, the client MUST abort the connection with an "ech_required"
 alert. It then processes the "retry_keys" field from the server's
 "encrypted_client_hello" extension.<a href="#section-7.3.2-2" class="pilcrow">¶</a></p>
 <p id="section-7.3.2-3">If one of the values contains a version supported by the client, it can regard
-the ECHO keys as securely replaced by the server. It SHOULD retry the
+the ECH keys as securely replaced by the server. It SHOULD retry the
 handshake with a new transport connection, using that value to encrypt the
 ClientHello. The value may only be applied to the retry connection. The client
 MUST continue to use the previously-advertised keys for subsequent
@@ -1714,27 +1708,27 @@ connections. This avoids introducing pinning concerns or a tracking vector,
 should a malicious server present client-specific retry keys to identify
 clients.<a href="#section-7.3.2-3" class="pilcrow">¶</a></p>
 <p id="section-7.3.2-4">If none of the values provided in "retry_keys" contains a supported version,
-the client can regard ECHO as securely disabled by the server. As below, it
-SHOULD then retry the handshake with a new transport connection and ECHO
+the client can regard ECH as securely disabled by the server. As below, it
+SHOULD then retry the handshake with a new transport connection and ECH
 disabled.<a href="#section-7.3.2-4" class="pilcrow">¶</a></p>
 <p id="section-7.3.2-5">If the field contains any other value, the client MUST abort the connection
 with an "illegal_parameter" alert.<a href="#section-7.3.2-5" class="pilcrow">¶</a></p>
 <p id="section-7.3.2-6">If the server negotiates an earlier version of TLS, or if it does not
 provide an "encrypted_client_hello" extension in EncryptedExtensions, the
 client proceeds with the handshake, authenticating for
-ECHOConfigContents.public_name as described in <a href="#auth-public-name" class="xref">Section 7.3.2.1</a>. If an earlier
+ECHConfigContents.public_name as described in <a href="#auth-public-name" class="xref">Section 7.3.2.1</a>. If an earlier
 version was negotiated, the client MUST NOT enable the False Start optimization
 <span>[<a href="#RFC7918" class="xref">RFC7918</a>]</span> for this handshake. If authentication or the handshake fails, the
 client MUST return a failure to the calling application. It MUST NOT treat this
-as a secure signal to disable ECHO.<a href="#section-7.3.2-6" class="pilcrow">¶</a></p>
+as a secure signal to disable ECH.<a href="#section-7.3.2-6" class="pilcrow">¶</a></p>
 <p id="section-7.3.2-7">Otherwise, when the handshake completes successfully with the public name
-authenticated, the client MUST abort the connection with an "echo_required"
-alert. The client can then regard ECHO as securely disabled by the server. It
-SHOULD retry the handshake with a new transport connection and ECHO disabled.<a href="#section-7.3.2-7" class="pilcrow">¶</a></p>
-<p id="section-7.3.2-8">[[TODO: Key replacement is significantly less scary than saying that ECHO-naive
-  servers bounce ECHO off. Is it worth defining a strict mode toggle in the ECHO
+authenticated, the client MUST abort the connection with an "ech_required"
+alert. The client can then regard ECH as securely disabled by the server. It
+SHOULD retry the handshake with a new transport connection and ECH disabled.<a href="#section-7.3.2-7" class="pilcrow">¶</a></p>
+<p id="section-7.3.2-8">[[TODO: Key replacement is significantly less scary than saying that ECH-naive
+  servers bounce ECH off. Is it worth defining a strict mode toggle in the ECH
   keys, for a deployment to indicate it is ready for that? ]]<a href="#section-7.3.2-8" class="pilcrow">¶</a></p>
-<p id="section-7.3.2-9">Clients SHOULD implement a limit on retries caused by "echo_retry_request" or
+<p id="section-7.3.2-9">Clients SHOULD implement a limit on retries caused by "ech_retry_request" or
 servers which do not acknowledge the "encrypted_client_hello" extension. If the
 client does not retry in either scenario, it MUST report an error to the
 calling application.<a href="#section-7.3.2-9" class="pilcrow">¶</a></p>
@@ -1745,17 +1739,17 @@ calling application.<a href="#section-7.3.2-9" class="pilcrow">¶</a></p>
             </h5>
 <p id="section-7.3.2.1-1">When the server cannot decrypt or does not process the "encrypted_client_hello"
 extension, it continues with the handshake using the cleartext "server_name"
-extension instead (see <a href="#server-behavior" class="xref">Section 8</a>). Clients that offer ECHO then
+extension instead (see <a href="#server-behavior" class="xref">Section 8</a>). Clients that offer ECH then
 authenticate the connection with the public name, as follows:<a href="#section-7.3.2.1-1" class="pilcrow">¶</a></p>
 <ul>
 <li id="section-7.3.2.1-2.1">If the server resumed a session or negotiated a session that did not use a
 certificate for authentication, the client MUST abort the connection with an
-"illegal_parameter" alert. This case is invalid because <a href="#send-echo" class="xref">Section 7.1</a> requires
-the client to only offer ECHO-established sessions, and <a href="#server-behavior" class="xref">Section 8</a>
-requires the server to decline ECHO-established sessions if it did not accept
-ECHO.<a href="#section-7.3.2.1-2.1" class="pilcrow">¶</a>
+"illegal_parameter" alert. This case is invalid because <a href="#send-ech" class="xref">Section 7.1</a> requires
+the client to only offer ECH-established sessions, and <a href="#server-behavior" class="xref">Section 8</a>
+requires the server to decline ECH-established sessions if it did not accept
+ECH.<a href="#section-7.3.2.1-2.1" class="pilcrow">¶</a>
 </li>
-<li id="section-7.3.2.1-2.2">The client MUST verify that the certificate is valid for ECHOConfigContents.public_name.
+<li id="section-7.3.2.1-2.2">The client MUST verify that the certificate is valid for ECHConfigContents.public_name.
 If invalid, it MUST abort the connection with the appropriate alert.<a href="#section-7.3.2.1-2.2" class="pilcrow">¶</a>
 </li>
 <li id="section-7.3.2.1-2.3">If the server requests a client certificate, the client MUST respond with an
@@ -1788,16 +1782,16 @@ actually be invalid for one or the other ClientHello, in which case a
 fresh ClientHello MUST be generated, ignoring the instructions in HelloRetryRequest.
 Otherwise, the usual rules for HelloRetryRequest processing apply.<a href="#section-7.3.3-1" class="pilcrow">¶</a></p>
 <p id="section-7.3.3-2">Clients bind encryption of the second ClientHelloInner to encryption of the first
-ClientHelloInner via the derived echo_hrr_key by modifying HPKE setup as follows:<a href="#section-7.3.3-2" class="pilcrow">¶</a></p>
+ClientHelloInner via the derived ech_hrr_key by modifying HPKE setup as follows:<a href="#section-7.3.3-2" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-7.3.3-3">
 <pre>
-pkR = HPKE.KEM.Unmarshal(ECHOConfig.public_key)
-enc, context = SetupPSKS(pkR, "tls13-echo-hrr", echo_hrr_key, "")
-echo_nonce = context.Export("tls13-echo-hrr-nonce", 16)
+pkR = HPKE.KEM.Unmarshal(ECHConfig.public_key)
+enc, context = SetupPSKS(pkR, "tls13-ech-hrr", ech_hrr_key, "")
+ech_nonce = context.Export("tls13-ech-hrr-nonce", 16)
 </pre><a href="#section-7.3.3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-7.3.3-4">Clients then encrypt the second ClientHelloInner using this new HPKE context.
-In doing so, the encrypted value is also authenticated by echo_hrr_key. The rationale
+In doing so, the encrypted value is also authenticated by ech_hrr_key. The rationale
 for this is described in <a href="#flow-hrr-hijack" class="xref">Section 10.8.2</a>.<a href="#section-7.3.3-4" class="pilcrow">¶</a></p>
 <p id="section-7.3.3-5">Client-facing servers perform the corresponding process when decrypting second
 ClientHelloInner messages. In particular, upon receipt of a second ClientHello
@@ -1805,9 +1799,9 @@ message with a ClientEncryptedCH value, servers setup their HPKE context and
 decrypt ClientEncryptedCH as follows:<a href="#section-7.3.3-5" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-7.3.3-6">
 <pre>
-context = SetupPSKR(ClientEncryptedCH.enc, skR, "tls13-echo-hrr", echo_hrr_key, "")
+context = SetupPSKR(ClientEncryptedCH.enc, skR, "tls13-ech-hrr", ech_hrr_key, "")
 ClientHelloInner = context.Open("", ClientEncryptedCH.encrypted_ch)
-echo_nonce = context.Export("tls13-echo-hrr-nonce", 16)
+ech_nonce = context.Export("tls13-ech-hrr-nonce", 16)
 </pre><a href="#section-7.3.3-6" class="pilcrow">¶</a>
 </div>
 <p id="section-7.3.3-7">[[OPEN ISSUE: Should we be using the PSK input or the info input?
@@ -1822,7 +1816,7 @@ actually this needs to be secret? Analysis needed.]]<a href="#section-7.3.3-7" c
         <h3 id="name-grease-extensions">
 <a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-grease-extensions" class="section-name selfRef">GREASE extensions</a>
         </h3>
-<p id="section-7.4-1">If the client attempts to connect to a server and does not have an ECHOConfig
+<p id="section-7.4-1">If the client attempts to connect to a server and does not have an ECHConfig
 structure available for the server, it SHOULD send a GREASE
 <span>[<a href="#RFC8701" class="xref">RFC8701</a>]</span> "encrypted_client_hello" extension as follows:<a href="#section-7.4-1" class="pilcrow">¶</a></p>
 <ul>
@@ -1839,7 +1833,7 @@ output by the HPKE KEM.<a href="#section-7.4-2.3" class="pilcrow">¶</a>
 </li>
 <li id="section-7.4-2.4">Set the "encrypted_ch" field to a randomly-generated string of L bytes, where
 L is the size of the ClientHelloInner message the client would use given an
-ECHOConfig structure, padded according to <a href="#padding" class="xref">Section 7.2</a>.<a href="#section-7.4-2.4" class="pilcrow">¶</a>
+ECHConfig structure, padded according to <a href="#padding" class="xref">Section 7.2</a>.<a href="#section-7.4-2.4" class="pilcrow">¶</a>
 </li>
 </ul>
 <p id="section-7.4-3">If the server sends an "encrypted_client_hello" extension, the client
@@ -1847,7 +1841,7 @@ MUST check the extension syntactically and abort the connection with a
 "decode_error" alert if it is invalid.<a href="#section-7.4-3" class="pilcrow">¶</a></p>
 <p id="section-7.4-4">Offering a GREASE extension is not considered offering an encrypted ClientHello for
 purposes of requirements in <a href="#client-behavior" class="xref">Section 7</a>. In particular, the client MAY
-offer to resume sessions established without ECHO.<a href="#section-7.4-4" class="pilcrow">¶</a></p>
+offer to resume sessions established without ECH.<a href="#section-7.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1860,59 +1854,59 @@ offer to resume sessions established without ECHO.<a href="#section-7.4-4" class
 <p id="section-8-1">Upon receiving an "encrypted_client_hello" extension, the client-facing
 server MUST check that it is able to negotiate TLS 1.3 or greater. If not,
 it MUST abort the connection with a "handshake_failure" alert.<a href="#section-8-1" class="pilcrow">¶</a></p>
-<p id="section-8-2">The ClientEncryptedCH value is said to match a known ECHOConfig if there exists
-an ECHOConfig that can be used to successfully decrypt ClientEncryptedCH.encrypted_ch.
+<p id="section-8-2">The ClientEncryptedCH value is said to match a known ECHConfig if there exists
+an ECHConfig that can be used to successfully decrypt ClientEncryptedCH.encrypted_ch.
 This matching procedure should be done using one of the following two checks:<a href="#section-8-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-8-3">
-        <li id="section-8-3.1">Compare ClientEncryptedCH.record_digest against cryptographic hashes of known ECHOConfig
+        <li id="section-8-3.1">Compare ClientEncryptedCH.record_digest against cryptographic hashes of known ECHConfig
 and choose the one that matches.<a href="#section-8-3.1" class="pilcrow">¶</a>
 </li>
-<li id="section-8-3.2">Use trial decryption of ClientEncryptedCH.encrypted_ch with known ECHOConfig and choose
+<li id="section-8-3.2">Use trial decryption of ClientEncryptedCH.encrypted_ch with known ECHConfig and choose
 the one that succeeds.<a href="#section-8-3.2" class="pilcrow">¶</a>
 </li>
 </ol>
-<p id="section-8-4">Some uses of ECHO, such as local discovery mode, may omit the ClientEncryptedCH.record_digest
+<p id="section-8-4">Some uses of ECH, such as local discovery mode, may omit the ClientEncryptedCH.record_digest
 since it can be used as a tracking vector. In such cases, trial decryption should be
-used for matching ClientEncryptedCH to known ECHOConfig. Unless specified by the application
+used for matching ClientEncryptedCH to known ECHConfig. Unless specified by the application
 using (D)TLS or externally configured on both sides, implementations MUST use the first method.<a href="#section-8-4" class="pilcrow">¶</a></p>
-<p id="section-8-5">If the ClientEncryptedCH value does not match any known ECHOConfig
+<p id="section-8-5">If the ClientEncryptedCH value does not match any known ECHConfig
 structure, it MUST ignore the extension and proceed with the connection,
 with the following added behavior:<a href="#section-8-5" class="pilcrow">¶</a></p>
 <ul>
 <li id="section-8-6.1">It MUST include the "encrypted_client_hello" extension with the
-"retry_keys" field set to one or more ECHOConfig structures with
-up-to-date keys. Servers MAY supply multiple ECHOConfig values of
+"retry_keys" field set to one or more ECHConfig structures with
+up-to-date keys. Servers MAY supply multiple ECHConfig values of
 different versions. This allows a server to support multiple
 versions at once.<a href="#section-8-6.1" class="pilcrow">¶</a>
 </li>
 <li id="section-8-6.2">The server MUST ignore all PSK identities in the ClientHello which correspond
-to ECHO PSKs. ECHO PSKs offered by the client are associated with the ECHO
-name. The server was unable to decrypt then ECHO name, so it should not resume
+to ECH PSKs. ECH PSKs offered by the client are associated with the ECH
+name. The server was unable to decrypt then ECH name, so it should not resume
 them when using the cleartext SNI name. This restriction allows a client to
 reject resumptions in <a href="#auth-public-name" class="xref">Section 7.3.2.1</a>.<a href="#section-8-6.2" class="pilcrow">¶</a>
 </li>
 </ul>
 <p id="section-8-7">Note that an unrecognized ClientEncryptedCH.record_digest value may be
-a GREASE ECHO extension (see <a href="#grease-extensions" class="xref">Section 7.4</a>), so it is necessary
+a GREASE ECH extension (see <a href="#grease-extensions" class="xref">Section 7.4</a>), so it is necessary
 for servers to proceed with the connection and rely on the client to abort if
-ECHO was required. In particular, the unrecognized value alone does not
-indicate a misconfigured ECHO advertisement (<a href="#misconfiguration" class="xref">Section 9.1</a>). Instead,
-servers can measure occurrences of the "echo_required" alert to detect this
+ECH was required. In particular, the unrecognized value alone does not
+indicate a misconfigured ECH advertisement (<a href="#misconfiguration" class="xref">Section 9.1</a>). Instead,
+servers can measure occurrences of the "ech_required" alert to detect this
 case.<a href="#section-8-7" class="pilcrow">¶</a></p>
-<p id="section-8-8">If the ClientEncryptedCH value matches a known ECHOConfig, the server
+<p id="section-8-8">If the ClientEncryptedCH value matches a known ECHConfig, the server
 then decrypts ClientEncryptedCH.encrypted_ch, using the private key skR
-corresponding to ECHOConfig, as follows:<a href="#section-8-8" class="pilcrow">¶</a></p>
+corresponding to ECHConfig, as follows:<a href="#section-8-8" class="pilcrow">¶</a></p>
 <div class="artwork art-text alignLeft" id="section-8-9">
 <pre>
-context = SetupBaseR(ClientEncryptedCH.enc, skR, "tls13-echo")
+context = SetupBaseR(ClientEncryptedCH.enc, skR, "tls13-ech")
 ClientHelloInner = context.Open("", ClientEncryptedCH.encrypted_ch)
-echo_nonce = context.Export("tls13-echo-nonce", 16)
-echo_hrr_key = context.Export("tls13-echo-hrr-key", 16)
+ech_nonce = context.Export("tls13-ech-nonce", 16)
+ech_hrr_key = context.Export("tls13-ech-hrr-key", 16)
 </pre><a href="#section-8-9" class="pilcrow">¶</a>
 </div>
 <p id="section-8-10">If decryption fails, the server MUST abort the connection with
-a "decrypt_error" alert. Moreover, if there is no "echo_nonce"
-extension, or if its value does not match the derived echo_nonce,
+a "decrypt_error" alert. Moreover, if there is no "ech_nonce"
+extension, or if its value does not match the derived ech_nonce,
 the server MUST abort the connection with a "decrypt_error" alert.
 Next, the server MUST scan ClientHelloInner for any "outer_extension"
 extensions and substitute their values with the values in ClientHelloOuter.
@@ -1925,8 +1919,8 @@ it executes the steps in the following section, or forwards
 the TLS connection to the backend server (if in Split Mode). In
 the latter case, it does not make any changes to the TLS
 messages, but just blindly forwards them.<a href="#section-8-11" class="pilcrow">¶</a></p>
-<p id="section-8-12">If the server sends a NewSessionTicket message, the corresponding ECHO PSK MUST
-be ignored by all other servers in the deployment when not negotiating ECHO,
+<p id="section-8-12">If the server sends a NewSessionTicket message, the corresponding ECH PSK MUST
+be ignored by all other servers in the deployment when not negotiating ECH,
 including servers which do not implement this specification.<a href="#section-8-12" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1935,15 +1929,15 @@ including servers which do not implement this specification.<a href="#section-8-
       <h2 id="name-compatibility-issues">
 <a href="#section-9" class="section-number selfRef">9. </a><a href="#name-compatibility-issues" class="section-name selfRef">Compatibility Issues</a>
       </h2>
-<p id="section-9-1">Unlike most TLS extensions, placing the SNI value in an ECHO extension
+<p id="section-9-1">Unlike most TLS extensions, placing the SNI value in an ECH extension
 is not interoperable with existing servers, which expect the value in
 the existing cleartext extension. Thus server operators SHOULD ensure
-servers understand a given set of ECHO keys before advertising them.
+servers understand a given set of ECH keys before advertising them.
 Additionally, servers SHOULD retain support for any
 previously-advertised keys for the duration of their validity<a href="#section-9-1" class="pilcrow">¶</a></p>
 <p id="section-9-2">However, in more complex deployment scenarios, this may be difficult
 to fully guarantee. Thus this protocol was designed to be robust in case
-of inconsistencies between systems that advertise ECHO keys and servers, at the
+of inconsistencies between systems that advertise ECH keys and servers, at the
 cost of extra round-trips due to a retry. Two specific scenarios are detailed
 below.<a href="#section-9-2" class="pilcrow">¶</a></p>
 <div id="misconfiguration">
@@ -1951,23 +1945,23 @@ below.<a href="#section-9-2" class="pilcrow">¶</a></p>
         <h3 id="name-misconfiguration-and-deploy">
 <a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-misconfiguration-and-deploy" class="section-name selfRef">Misconfiguration and Deployment Concerns</a>
         </h3>
-<p id="section-9.1-1">It is possible for ECHO advertisements and servers to become inconsistent. This
+<p id="section-9.1-1">It is possible for ECH advertisements and servers to become inconsistent. This
 may occur, for instance, from DNS misconfiguration, caching issues, or an
 incomplete rollout in a multi-server deployment. This may also occur if a server
-loses its ECHO keys, or if a deployment of ECHO must be rolled back on the
+loses its ECH keys, or if a deployment of ECH must be rolled back on the
 server.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
 <p id="section-9.1-2">The retry mechanism repairs inconsistencies, provided the server is
 authoritative for the public name. If server and advertised keys mismatch,
-the server will respond with echo_retry_requested. If the server does not understand the
+the server will respond with ech_retry_requested. If the server does not understand the
 "encrypted_client_hello" extension at all, it will ignore it as required by <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>;
 Section 4.1.2. Provided the server can present a certificate valid for the public name,
 the client can safely retry with updated settings, as described in <a href="#handle-server-response" class="xref">Section 7.3</a>.<a href="#section-9.1-2" class="pilcrow">¶</a></p>
-<p id="section-9.1-3">Unless ECHO is disabled as a result of successfully establishing a connection to
+<p id="section-9.1-3">Unless ECH is disabled as a result of successfully establishing a connection to
 the public name, the client MUST NOT fall back to using unencrypted ClientHellos, as this allows
 a network attacker to disclose the contents of this ClientHello, including the SNI.
 It MAY attempt to use another server from the DNS results, if one is provided.<a href="#section-9.1-3" class="pilcrow">¶</a></p>
 <p id="section-9.1-4">Client-facing servers with non-uniform cryptographic configurations across backend
-origin servers segment the ECHO anonymity set based on these configurations. For example,
+origin servers segment the ECH anonymity set based on these configurations. For example,
 if a client-facing server hosts k backend origin servers, and exactly one of those
 backend origin servers supports a different set of cryptographic algorithms than the
 other (k - 1) servers, it may be possible to identify this single server based on
@@ -1982,13 +1976,13 @@ the contents of the ServerHello as this message is not encrypted.<a href="#secti
 <p id="section-9.2-1">A more serious problem is MITM proxies which do not support this
 extension. <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>, Section 9.3 requires that
 such proxies remove any extensions they do not understand. The handshake will
-then present a certificate based on the public name, without echoing the
+then present a certificate based on the public name, without eching the
 "encrypted_client_hello" extension to the client.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
 <p id="section-9.2-2">Depending on whether the client is configured to accept the proxy's certificate
 as authoritative for the public name, this may trigger the retry logic described
 in <a href="#handle-server-response" class="xref">Section 7.3</a> or result in a connection failure. A proxy which
-is not authoritative for the public name cannot forge a signal to disable ECHO.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
-<p id="section-9.2-3">A non-conformant MITM proxy which instead forwards the ECHO extension,
+is not authoritative for the public name cannot forge a signal to disable ECH.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+<p id="section-9.2-3">A non-conformant MITM proxy which instead forwards the ECH extension,
 substituting its own KeyShare value, will result in
 the client-facing server recognizing the key, but failing to decrypt
 the SNI. This causes a hard failure. Clients SHOULD NOT attempt to repair the
@@ -2008,16 +2002,16 @@ connection in this case.<a href="#section-9.2-3" class="pilcrow">¶</a></p>
 <a href="#section-10.1" class="section-number selfRef">10.1. </a><a href="#name-why-is-cleartext-dns-ok" class="section-name selfRef">Why is cleartext DNS OK?</a>
         </h3>
 <p id="section-10.1-1">In comparison to <span>[<a href="#I-D.kazuho-protected-sni" class="xref">I-D.kazuho-protected-sni</a>]</span>, wherein DNS Resource
-Records are signed via a server private key, ECHO records have no
+Records are signed via a server private key, ECH records have no
 authenticity or provenance information. This means that any attacker
 which can inject DNS responses or poison DNS caches, which is a common
 scenario in client access networks, can supply clients with fake
-ECHO records (so that the client encrypts data to them) or strip the
-ECHO record from the response. However, in the face of an attacker that
+ECH records (so that the client encrypts data to them) or strip the
+ECH record from the response. However, in the face of an attacker that
 controls DNS, no encryption scheme can work because the attacker
 can replace the IP address, thus blocking client connections, or
 substituting a unique IP address which is 1:1 with the DNS name that
-was looked up (modulo DNS wildcards). Thus, allowing the ECHO records in
+was looked up (modulo DNS wildcards). Thus, allowing the ECH records in
 the clear does not make the situation significantly worse.<a href="#section-10.1-1" class="pilcrow">¶</a></p>
 <p id="section-10.1-2">Clearly, DNSSEC (if the client validates and hard fails) is a defense against
 this form of attack, but DoH/DPRIVE are also defenses against DNS attacks
@@ -2031,15 +2025,15 @@ less useful without encryption of DNS queries in transit via DoH or DPRIVE mecha
         <h3 id="name-client-tracking">
 <a href="#section-10.2" class="section-number selfRef">10.2. </a><a href="#name-client-tracking" class="section-name selfRef">Client Tracking</a>
         </h3>
-<p id="section-10.2-1">A malicious client-facing server could distribute unique, per-client ECHOConfig
+<p id="section-10.2-1">A malicious client-facing server could distribute unique, per-client ECHConfig
 structures as a way of tracking clients across subsequent connections. On-path
 adversaries which know about these unique keys could also track clients in this
 way by observing TLS connection attempts.<a href="#section-10.2-1" class="pilcrow">¶</a></p>
 <p id="section-10.2-2">The cost of this type of attack scales linearly with the desired number of target
 clients. Moreover, DNS caching behavior makes targeting individual users for extended
-periods of time, e.g., using per-client ECHOConfig structures delivered via HTTPSSVC
+periods of time, e.g., using per-client ECHConfig structures delivered via HTTPSSVC
 RRs with high TTLs, challenging. Clients can help mitigate this problem by
-flushing any DNS or ECHOConfig state upon changing networks.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
+flushing any DNS or ECHConfig state upon changing networks.<a href="#section-10.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="optional-record-digests-and-trial-decryption">
@@ -2052,7 +2046,7 @@ servers do not want to reveal information about the client-facing server in the
 "encrypted_client_hello" extension. In such settings, servers must perform trial
 decrypt upon receipt of an empty record digest, which may exacerbate DoS attacks.
 Specifically, an adversary may send malicious ClientHello messages, i.e., those
-which will not decrypt with any known ECHO key, in order to force wasteful decryption.
+which will not decrypt with any known ECH key, in order to force wasteful decryption.
 Servers that support this feature should, for example, implement some form of rate
 limiting mechanism to limit the damage caused by such attacks.<a href="#section-10.3-1" class="pilcrow">¶</a></p>
 </section>
@@ -2062,7 +2056,7 @@ limiting mechanism to limit the damage caused by such attacks.<a href="#section-
         <h3 id="name-related-privacy-leaks">
 <a href="#section-10.4" class="section-number selfRef">10.4. </a><a href="#name-related-privacy-leaks" class="section-name selfRef">Related Privacy Leaks</a>
         </h3>
-<p id="section-10.4-1">ECHO requires encrypted DNS to be an effective privacy protection mechanism.
+<p id="section-10.4-1">ECH requires encrypted DNS to be an effective privacy protection mechanism.
 However, verifying the server's identity from the Certificate message, particularly
 when using the X509 CertificateType, may result in additional network traffic
 that may reveal the server identity. Examples of this traffic may include requests
@@ -2086,7 +2080,7 @@ certificate validation.<a href="#section-10.4-2" class="pilcrow">¶</a></p>
         </h3>
 <p id="section-10.5-1"><span>[<a href="#I-D.ietf-tls-sni-encryption" class="xref">I-D.ietf-tls-sni-encryption</a>]</span> lists several requirements for SNI
 encryption. In this section, we re-iterate these requirements and assess
-the ECHO design against them.<a href="#section-10.5-1" class="pilcrow">¶</a></p>
+the ECH design against them.<a href="#section-10.5-1" class="pilcrow">¶</a></p>
 <div id="mitigate-against-replay-attacks">
 <section id="section-10.5.1">
           <h4 id="name-mitigate-against-replay-att">
@@ -2094,7 +2088,7 @@ the ECHO design against them.<a href="#section-10.5-1" class="pilcrow">¶</a></p
           </h4>
 <p id="section-10.5.1-1">Since servers process either ClientHelloInner or ClientHelloOuter, and ClientHelloInner
 contains an HPKE-derived nonce, it is not possible for an attacker to "cut and paste"
-the ECHO value in a different Client Hello and learn information from ClientHelloInner.
+the ECH value in a different Client Hello and learn information from ClientHelloInner.
 This is because the attacker lacks access to the HPKE-derived nonce used to derive the
 handshake secrets.<a href="#section-10.5.1-1" class="pilcrow">¶</a></p>
 </section>
@@ -2107,9 +2101,9 @@ handshake secrets.<a href="#section-10.5.1-1" class="pilcrow">¶</a></p>
 <p id="section-10.5.2-1">This design depends upon DNS as a vehicle for semi-static public key distribution.
 Server operators may partition their private keys however they see fit provided
 each server behind an IP address has the corresponding private key to decrypt
-a key. Thus, when one ECHO key is provided, sharing is optimally bound by the number
+a key. Thus, when one ECH key is provided, sharing is optimally bound by the number
 of hosts that share an IP address. Server operators may further limit sharing
-by publishing different DNS records containing ECHOConfig values with different
+by publishing different DNS records containing ECHConfig values with different
 keys using a short TTL.<a href="#section-10.5.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2129,15 +2123,15 @@ valid TCP connections an attacker can open.<a href="#section-10.5.3-1" class="pi
           <h4 id="name-do-not-stick-out">
 <a href="#section-10.5.4" class="section-number selfRef">10.5.4. </a><a href="#name-do-not-stick-out" class="section-name selfRef">Do not stick out</a>
           </h4>
-<p id="section-10.5.4-1">The only explicit signal indicating possible use of ECHO is the ClientHello
+<p id="section-10.5.4-1">The only explicit signal indicating possible use of ECH is the ClientHello
 "encrypted_client_hello" extension. Server handshake messages do not contain any
-signal indicating use or negotiation of ECHO. Clients MAY GREASE the
+signal indicating use or negotiation of ECH. Clients MAY GREASE the
 "encrypted_client_hello" extension, as described in <a href="#grease-extensions" class="xref">Section 7.4</a>, which
-helps ensure the ecosystem handles ECHO correctly. Moreover, as more clients
-enable ECHO support, e.g., as normal part of Web browser functionality, with keys
-supplied by shared hosting providers, the presence of ECHO extensions becomes less
+helps ensure the ecosystem handles ECH correctly. Moreover, as more clients
+enable ECH support, e.g., as normal part of Web browser functionality, with keys
+supplied by shared hosting providers, the presence of ECH extensions becomes less
 unusual and part of typical client behavior. In other words, if all Web browsers
-start using ECHO, the presence of this value will not signal unusual behavior
+start using ECH, the presence of this value will not signal unusual behavior
 to passive eavesdroppers.<a href="#section-10.5.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2146,7 +2140,7 @@ to passive eavesdroppers.<a href="#section-10.5.4-1" class="pilcrow">¶</a></p>
           <h4 id="name-forward-secrecy">
 <a href="#section-10.5.5" class="section-number selfRef">10.5.5. </a><a href="#name-forward-secrecy" class="section-name selfRef">Forward secrecy</a>
           </h4>
-<p id="section-10.5.5-1">This design is not forward secret because the server's ECHO key is static.
+<p id="section-10.5.5-1">This design is not forward secret because the server's ECH key is static.
 However, the window of exposure is bound by the key lifetime. It is
 RECOMMENDED that servers rotate keys frequently.<a href="#section-10.5.5-1" class="pilcrow">¶</a></p>
 </section>
@@ -2165,11 +2159,11 @@ directly to backend origin servers, thereby avoiding unnecessary MiTM attacks.<a
           <h4 id="name-split-server-spoofing">
 <a href="#section-10.5.7" class="section-number selfRef">10.5.7. </a><a href="#name-split-server-spoofing" class="section-name selfRef">Split server spoofing</a>
           </h4>
-<p id="section-10.5.7-1">Assuming ECHO records retrieved from DNS are authenticated, e.g., via DNSSEC or fetched
+<p id="section-10.5.7-1">Assuming ECH records retrieved from DNS are authenticated, e.g., via DNSSEC or fetched
 from a trusted Recursive Resolver, spoofing a server operating in Split Mode
 is not possible. See <a href="#cleartext-dns" class="xref">Section 10.1</a> for more details regarding cleartext
 DNS.<a href="#section-10.5.7-1" class="pilcrow">¶</a></p>
-<p id="section-10.5.7-2">Authenticating the ECHOConfigs structure naturally authenticates the
+<p id="section-10.5.7-2">Authenticating the ECHConfigs structure naturally authenticates the
 included public name. This also authenticates any retry signals
 from the server because the client validates the server
 certificate against the public name before retrying.<a href="#section-10.5.7-2" class="pilcrow">¶</a></p>
@@ -2201,7 +2195,7 @@ with an encrypted SNI to any backend server and the TLS connection will
 still complete).  However, the client is still responsible for
 verifying the server's identity in its certificate.<a href="#section-10.6-1" class="pilcrow">¶</a></p>
 <p id="section-10.6-2">[[TODO: Some more analysis needed in this case, as it is a little
-odd, and probably some precise rules about handling ECHO and no
+odd, and probably some precise rules about handling ECH and no
 SNI uniformly?]]<a href="#section-10.6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2220,7 +2214,7 @@ mechanism for clients aimed at reducing potential information leakage.<a href="#
         <h3 id="name-active-attack-mitigations">
 <a href="#section-10.8" class="section-number selfRef">10.8. </a><a href="#name-active-attack-mitigations" class="section-name selfRef">Active Attack Mitigations</a>
         </h3>
-<p id="section-10.8-1">This section describes the rationale for ECHO properties and mechanics as defenses
+<p id="section-10.8-1">This section describes the rationale for ECH properties and mechanics as defenses
 against active attacks. In all the attacks below, the attacker is on-path between
 the target client and server. The goal of the attacker is to learn private information
 about the inner ClientHello, such as the true SNI value.<a href="#section-10.8-1" class="pilcrow">¶</a></p>
@@ -2249,7 +2243,7 @@ information.<a href="#section-10.8.1-1" class="pilcrow">¶</a></p>
  Client                         Attacker                      Server
    ClientHello
    + key_share
-   + echo        ------&gt;      (intercept)     -----&gt; X (drop)
+   + ech         ------&gt;      (intercept)     -----&gt; X (drop)
 
                              ServerHello
                              + key_share
@@ -2266,7 +2260,7 @@ information.<a href="#section-10.8.1-1" class="pilcrow">¶</a></p>
 <a href="#name-client-reaction-attack" class="selfRef">Client reaction attack</a>
             </figcaption></figure>
 </div>
-<p id="section-10.8.1-3">The "echo_nonce" extension in the inner ClientHello prevents this attack. In particular,
+<p id="section-10.8.1-3">The "ech_nonce" extension in the inner ClientHello prevents this attack. In particular,
 since the attacker does not have access to this value, it cannot produce the right transcript
 and handshake keys needed for encrypting the Certificate message. Thus, the client will fail
 to decrypt the Certificate and abort the connection.<a href="#section-10.8.1-3" class="pilcrow">¶</a></p>
@@ -2280,7 +2274,7 @@ to decrypt the Certificate and abort the connection.<a href="#section-10.8.1-3" 
 <p id="section-10.8.2-1">This attack aims to exploit server HRR state management to recover information about
 a legitimate ClientHello using its own attacker-controlled ClientHello.
 To begin, the attacker intercepts and forwards a legitimate ClientHello with an
-"encrypted_client_hello" (echo) extension to the server, which triggers a
+"encrypted_client_hello" (ech) extension to the server, which triggers a
 legitimate HelloRetryRequest in return. Rather than forward the retry to the client,
 the attacker, attempts to generate its own ClientHello in response based on the
 contents of the first ClientHello and HelloRetryRequest exchange with the result
@@ -2295,14 +2289,14 @@ client's chosen SNI to the attacker.<a href="#section-10.8.2-1" class="pilcrow">
  Client                         Attacker                      Server
    ClientHello
    + key_share
-   + echo        ------&gt;       (forward)        -------&gt;
+   + ech         ------&gt;       (forward)        -------&gt;
                                                    HelloRetryRequest
                                                          + key_share
                               (intercept)       &lt;-------
 
                               ClientHello
                               + key_share'
-                              + echo'           -------&gt;
+                              + ech'           -------&gt;
                                                          ServerHello
                                                          + key_share
                                                {EncryptedExtensions}
@@ -2319,9 +2313,9 @@ client's chosen SNI to the attacker.<a href="#section-10.8.2-1" class="pilcrow">
             </figcaption></figure>
 </div>
 <p id="section-10.8.2-3">This attack is mitigated by binding the first and second ClientHello messages together.
-In particular, since the attacker does not possess the echo_hrr_key, it cannot
+In particular, since the attacker does not possess the ech_hrr_key, it cannot
 generate a valid encryption of the second inner ClientHello. The server will
-attempt decryption using echo_hrr_key, detect failure, and fail the connection.<a href="#section-10.8.2-3" class="pilcrow">¶</a></p>
+attempt decryption using ech_hrr_key, detect failure, and fail the connection.<a href="#section-10.8.2-3" class="pilcrow">¶</a></p>
 <p id="section-10.8.2-4">If the second ClientHello were not bound to the first, it might be possible
 for the server to act as an oracle if it required parameters from the first
 ClientHello to match that of the second ClientHello. For example, imagine
@@ -2358,10 +2352,10 @@ can be used to test the encrypted SNI value of specific ClientHello messages.<a 
 
        ClientHello
        + key_share
-       + echo       --------&gt;  (intercept)
+       + ech        --------&gt;  (intercept)
                                   ClientHello
                                   + key_share
-                                  + echo
+                                  + ech
                                   + pre_shared_key
                                              --------&gt;
                                                              Alert
@@ -2372,10 +2366,10 @@ can be used to test the encrypted SNI value of specific ClientHello messages.<a 
 <a href="#name-message-flow-for-resumption" class="selfRef">Message flow for resumption and PSK</a>
             </figcaption></figure>
 </div>
-<p id="section-10.8.3-3">ECHO mitigates against this attack by requiring servers not mix-and-match
+<p id="section-10.8.3-3">ECH mitigates against this attack by requiring servers not mix-and-match
 information from the inner and outer ClientHello. For example, if the server
 accepts the inner ClientHello, it does not validate binders in the outer
-ClientHello. This means that ECHO PSKs are used within the HPKE encryption
+ClientHello. This means that ECH PSKs are used within the HPKE encryption
 envelope.<a href="#section-10.8.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2404,7 +2398,7 @@ in the existing registry for ExtensionType (defined in
         <h3 id="name-update-of-the-tls-alert-reg">
 <a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-update-of-the-tls-alert-reg" class="section-name selfRef">Update of the TLS Alert Registry</a>
         </h3>
-<p id="section-11.2-1">IANA is requested to create an entry, echo_required(121) in the
+<p id="section-11.2-1">IANA is requested to create an entry, ech_required(121) in the
 existing registry for Alerts (defined in <span>[<a href="#RFC8446" class="xref">RFC8446</a>]</span>), with the
 "DTLS-OK" column being set to "Y".<a href="#section-11.2-1" class="pilcrow">¶</a></p>
 </section>
@@ -2413,15 +2407,15 @@ existing registry for Alerts (defined in <span>[<a href="#RFC8446" class="xref">
 </div>
 <div id="config-extensions">
 <section id="section-12">
-      <h2 id="name-echoconfig-extension-guidan">
-<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-echoconfig-extension-guidan" class="section-name selfRef">ECHOConfig Extension Guidance</a>
+      <h2 id="name-echconfig-extension-guidanc">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-echconfig-extension-guidanc" class="section-name selfRef">ECHConfig Extension Guidance</a>
       </h2>
 <p id="section-12-1">Any future information or hints that influence the outer ClientHello SHOULD be
-specified as ECHOConfig extensions, or in an entirely new version of ECHOConfig.
-This is primarily because the outer ClientHello exists only in support of ECHO.
+specified as ECHConfig extensions, or in an entirely new version of ECHConfig.
+This is primarily because the outer ClientHello exists only in support of ECH.
 Namely, it is both an envelope for the encrypted inner ClientHello and enabler for
 authenticated key mismatch signals (see <a href="#server-behavior" class="xref">Section 8</a>). In contrast, the inner
-ClientHello is the true ClientHello used upon ECHO negotiation.<a href="#section-12-1" class="pilcrow">¶</a></p>
+ClientHello is the true ClientHello used upon ECH negotiation.<a href="#section-12-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <section id="section-13">
@@ -2448,10 +2442,6 @@ ClientHello is the true ClientHello used upon ECHO negotiation.<a href="#section
 <dt id="RFC2119">[RFC2119]</dt>
 <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc2119">https://www.rfc-editor.org/info/rfc2119</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC6066">[RFC6066]</dt>
-<dd>
-<span class="refAuthor">Eastlake 3rd, D.</span>, <span class="refTitle">"Transport Layer Security (TLS) Extensions: Extension Definitions"</span>, <span class="seriesInfo">RFC 6066</span>, <span class="seriesInfo">DOI 10.17487/RFC6066</span>, <time datetime="2011-01">January 2011</time>, <span>&lt;<a href="https://www.rfc-editor.org/info/rfc6066">https://www.rfc-editor.org/info/rfc6066</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7685">[RFC7685]</dt>
 <dd>
@@ -2593,7 +2583,7 @@ SNI induces no additional round trip and operates below the application layer.<a
 <p id="section-appendix.b-1">The design described here only provides encryption for the SNI, but
 not for other extensions, such as ALPN. Another potential design
 would be to encrypt all of the extensions using the same basic
-structure as we use here for ECHO. That design has the following
+structure as we use here for ECH. That design has the following
 advantages:<a href="#section-appendix.b-1" class="pilcrow">¶</a></p>
 <ul>
 <li id="section-appendix.b-2.1">It protects all the extensions from ordinary eavesdroppers<a href="#section-appendix.b-2.1" class="pilcrow">¶</a>
@@ -2629,7 +2619,7 @@ result in a ClientHello which is just unacceptable to the server
       </h2>
 <p id="section-appendix.c-1">This document draws extensively from ideas in <span>[<a href="#I-D.kazuho-protected-sni" class="xref">I-D.kazuho-protected-sni</a>]</span>, but
 is a much more limited mechanism because it depends on the DNS for the
-protection of the ECHO key. Richard Barnes, Christian Huitema, Patrick McManus,
+protection of the ECH key. Richard Barnes, Christian Huitema, Patrick McManus,
 Matthew Prince, Nick Sullivan, Martin Thomson, and David Benjamin also provided
 important ideas and contributions.<a href="#section-appendix.c-1" class="pilcrow">¶</a></p>
 </section>
