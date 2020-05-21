@@ -116,10 +116,10 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
      10.8.  Active Attack Mitigations  . . . . . . . . . . . . . . .  23
        10.8.1.  Client Reaction Attack Mitigation  . . . . . . . . .  24
-       10.8.2.  HelloRetryRequest Hijack Mitigation  . . . . . . . .  24
+       10.8.2.  HelloRetryRequest Hijack Mitigation  . . . . . . . .  25
        10.8.3.  Resumption PSK Oracle Mitigation . . . . . . . . . .  26
    11. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  26
-     11.1.  Update of the TLS ExtensionType Registry . . . . . . . .  26
+     11.1.  Update of the TLS ExtensionType Registry . . . . . . . .  27
      11.2.  Update of the TLS Alert Registry . . . . . . . . . . . .  27
    12. ECHOConfig Extension Guidance . . . . . . . . . . . . . . . .  27
    13. References  . . . . . . . . . . . . . . . . . . . . . . . . .  27
@@ -1304,7 +1304,10 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    is "example.com," and the attacker replied with a Certificate for
    "test.com".  If the client produces a verification failure alert
    because of the mismatch faster than it would due to the Certificate
-   signature validation, information about the name leaks.
+   signature validation, information about the name leaks.  Note that
+   the attacker can also withhold the CertificateVerify message.  In
+   that scenario, a client which first verifies the Certificate would
+   then respond similarly and leak the same information.
 
     Client                         Attacker                      Server
       ClientHello
@@ -1329,15 +1332,12 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    needed for encrypting the Certificate message.  Thus, the client will
    fail to decrypt the Certificate and abort the connection.
 
-10.8.2.  HelloRetryRequest Hijack Mitigation
 
-   This attack aims to exploit server HRR state management to recover
-   information about a legitimate ClientHello using its own
-   adversarially-controlled ClientHello.  To begin, the attacker
-   intercepts and forwards a legitimate ClientHello with an
-   "encrypted_client_hello" (echo) extension to the server, which
-   triggers a HelloRetryRequest in return.  Rather than forward the
-   retry to the client, the attacker, attempts to generates its own
+
+
+
+
+
 
 
 
@@ -1346,9 +1346,21 @@ Rescorla, et al.        Expires 22 November 2020               [Page 24]
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 
-   ClientHello in response based on the contents of the first
-   ClientHello and HelloRetryRequest exchange with the result that the
-   server encrypts the certificate to the attacker.
+10.8.2.  HelloRetryRequest Hijack Mitigation
+
+   This attack aims to exploit server HRR state management to recover
+   information about a legitimate ClientHello using its own attacker-
+   controlled ClientHello.  To begin, the attacker intercepts and
+   forwards a legitimate ClientHello with an "encrypted_client_hello"
+   (echo) extension to the server, which triggers a legitimate
+   HelloRetryRequest in return.  Rather than forward the retry to the
+   client, the attacker, attempts to generate its own ClientHello in
+   response based on the contents of the first ClientHello and
+   HelloRetryRequest exchange with the result that the server encrypts
+   the Certificate to the attacker.  If the server used the SNI from the
+   first ClientHello and the key share from the second (attacker-
+   controlled) ClientHello, the Certificate produced would leak the
+   client's chosen SNI to the attacker.
 
     Client                         Attacker                      Server
       ClientHello
@@ -1382,18 +1394,6 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
    If the second ClientHello were not bound to the first, it might be
    possible for the server to act as an oracle if it required parameters
    from the first ClientHello to match that of the second ClientHello.
-   For example, imagine the client's original SNI value in the inner
-   ClientHello is "example.com", and the attacker's hijacked SNI value
-   in its inner ClientHello is "test.com".  A server which checks these
-   for equality and changes behavior based on the result can be used as
-   an oracle to learn the client's SNI.
-
-
-
-
-
-
-
 
 
 
@@ -1401,6 +1401,12 @@ Rescorla, et al.        Expires 22 November 2020               [Page 25]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
+
+   For example, imagine the client's original SNI value in the inner
+   ClientHello is "example.com", and the attacker's hijacked SNI value
+   in its inner ClientHello is "test.com".  A server which checks these
+   for equality and changes behavior based on the result can be used as
+   an oracle to learn the client's SNI.
 
 10.8.3.  Resumption PSK Oracle Mitigation
 
@@ -1444,12 +1450,6 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
 11.  IANA Considerations
 
-11.1.  Update of the TLS ExtensionType Registry
-
-   IANA is requested to create an entry, encrypted_client_hello(0xffce),
-   in the existing registry for ExtensionType (defined in [RFC8446]),
-   with "TLS 1.3" column values being set to "CH, EE", and "Recommended"
-   column being set to "Yes".
 
 
 
@@ -1457,6 +1457,13 @@ Rescorla, et al.        Expires 22 November 2020               [Page 26]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
+
+11.1.  Update of the TLS ExtensionType Registry
+
+   IANA is requested to create an entry, encrypted_client_hello(0xffce),
+   in the existing registry for ExtensionType (defined in [RFC8446]),
+   with "TLS 1.3" column values being set to "CH, EE", and "Recommended"
+   column being set to "Yes".
 
 11.2.  Update of the TLS Alert Registry
 
@@ -1498,13 +1505,6 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
               cfrg-hpke-04, 8 May 2020, <http://www.ietf.org/internet-
               drafts/draft-irtf-cfrg-hpke-04.txt>.
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
-
-
-
 
 
 
@@ -1513,6 +1513,11 @@ Rescorla, et al.        Expires 22 November 2020               [Page 27]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
    [RFC6066]  Eastlake 3rd, D., "Transport Layer Security (TLS)
               Extensions: Extension Definitions", RFC 6066,
@@ -1556,11 +1561,6 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
               <http://www.ietf.org/internet-drafts/draft-ietf-tls-sni-
               encryption-09.txt>.
 
-   [I-D.kazuho-protected-sni]
-              Oku, K., "TLS Extensions for Protecting SNI", Work in
-              Progress, Internet-Draft, draft-kazuho-protected-sni-00,
-              18 July 2017, <http://www.ietf.org/internet-drafts/draft-
-              kazuho-protected-sni-00.txt>.
 
 
 
@@ -1569,6 +1569,12 @@ Rescorla, et al.        Expires 22 November 2020               [Page 28]
 
 Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 
+
+   [I-D.kazuho-protected-sni]
+              Oku, K., "TLS Extensions for Protecting SNI", Work in
+              Progress, Internet-Draft, draft-kazuho-protected-sni-00,
+              18 July 2017, <http://www.ietf.org/internet-drafts/draft-
+              kazuho-protected-sni-00.txt>.
 
    [RFC7301]  Friedl, S., Popov, A., Langley, A., and E. Stephan,
               "Transport Layer Security (TLS) Application-Layer Protocol
@@ -1610,12 +1616,6 @@ A.1.1.  TLS in Early Data
    necessary.  Afterwards, all records to and from backend servers are
    forwarded by the client-facing server - unmodified.  This avoids
    double encryption of TLS records.
-
-
-
-
-
-
 
 
 
