@@ -1293,18 +1293,18 @@ Internet-Draft           TLS 1.3 SNI Encryption                 May 2020
 10.8.1.  Client Reaction Attack Mitigation
 
    This attack uses the client's reaction to an incorrect certificate as
-   an oracle.  In particular, the attacker intercepts a legitimate
-   ClientHello and replies with a ServerHello, Certificate,
-   CertificateVerify, and Finished messages, wherein the Certificate
-   message contains a "test" certificate for the domain name it wishes
-   to query.  If the client decrypted the Certificate and failed
-   verification (or leaked information about its verification process by
-   a timing side channel), the attacker learns that its test certificate
-   name was incorrect.  As an example, suppose the client's SNI value in
-   its inner ClientHello is "example.com," and the attacker replied with
-   a Certificate for "test.com".  If the client produces a verification
-   failure alert because of the mismatch faster than it would due to the
-   Certificate signature validation, information about the name leaks.
+   an oracle.  The attacker intercepts a legitimate ClientHello and
+   replies with a ServerHello, Certificate, CertificateVerify, and
+   Finished messages, wherein the Certificate message contains a "test"
+   certificate for the domain name it wishes to query.  If the client
+   decrypted the Certificate and failed verification (or leaked
+   information about its verification process by a timing side channel),
+   the attacker learns that its test certificate name was incorrect.  As
+   an example, suppose the client's SNI value in its inner ClientHello
+   is "example.com," and the attacker replied with a Certificate for
+   "test.com".  If the client produces a verification failure alert
+   because of the mismatch faster than it would due to the Certificate
+   signature validation, information about the name leaks.
 
     Client                         Attacker                      Server
       ClientHello
