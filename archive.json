@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-05-20T15:59:00.563978+00:00",
+  "timestamp": "2020-05-21T12:54:29.205778+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -3603,7 +3603,7 @@
       "labels": [],
       "body": "The draft has provisions for GREASE ESNI extensions, per \"Do not stick out\". However, this is not very effective if an attacker can distinguish a GREASE ESNI extension from a real one.\r\n\r\n#154 tried to address this, but it doesn't work if the (public) ESNI record is known. There's also a simpler attack: replay the ClientHello with one byte of ciphertext corrupted. ESNI currently distinguishes key mismatch from decrypt failure, with the latter resulting in an alert. We can fix that by saying decrypt failure should behave like key mismatch. This still leaves record_digest.\r\n\r\nThe natural fix is to drop record_digest in favor of trial decryption. The cost is the server must perform a DH operation per known key. The number of keys the server needs depends on its DNS TTLs and key rotation. (I think it's 1 + ceil(dns_ttl / time_between_rotation), plus some leeway[*].)\r\n\r\nInstead, we can keep a key name, but make the space dense. Suppose we replace it with a B-bit \"key phase\". The server picks a random starting key phase. Then, each time it rotates the keys, it increments the phase, with wraparound. The server then gets 2<sup>B</sup> keys for free. If it needs more, it still needs trial decryption but gains a 2<sup>B</sup> multiplicative factor in the cost. On the flip side, an individual GREASE extension with a random key phase has a 1/2<sup>B</sup> chance of colliding with a particular ESNI key.\r\n\r\nI'm not sure we actually need that many live keys, so B = 2 is probably plenty. Or even B = 1 if we say you should just rotate slower than your DNS TTL.\r\n\r\n[*] Note the robustness mechanism means that server doesn't need to cover _all_ clients with stale keys. The retry is expensive, so the server still needs to cover _almost all_ of them, but it can cut off the long tail.",
       "createdAt": "2019-07-24T18:37:10Z",
-      "updatedAt": "2020-04-27T22:03:06Z",
+      "updatedAt": "2020-05-20T16:00:53Z",
       "closedAt": null,
       "comments": [
         {
@@ -3626,6 +3626,13 @@
           "body": "As per today's call, we're going to revisit the GREASE threat model and then reconvene if further work is needed.",
           "createdAt": "2020-04-27T22:02:57Z",
           "updatedAt": "2020-04-27T22:02:57Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm moving to closes this issue as resolved by #235. If we need to do something against connection blocking adversaries, perhaps we should look into MASQUE for that.",
+          "createdAt": "2020-05-20T16:00:52Z",
+          "updatedAt": "2020-05-20T16:00:52Z"
         }
       ]
     },
@@ -11356,18 +11363,33 @@
       "id": "MDExOlB1bGxSZXF1ZXN0MjcyODcxMDIy",
       "title": "Switch to record_digest_mac to prevent GREASE detection.",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/154",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "dvorak42",
-      "authorAssociation": "FIRST_TIME_CONTRIBUTOR",
+      "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Currently an attacker can distinguish a real ESNI extension and\r\nGREASE extension based on the error returned by replaying the\r\nclient's ClientHello with swapped out keyshares.",
       "createdAt": "2019-04-23T19:57:59Z",
-      "updatedAt": "2019-04-29T20:02:22Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-20T15:59:48Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "4f3ce56fdb4caea12c6480ca3a9a5ec6bfd074c1",
+      "headRepository": "dvorak42/draft-ietf-tls-esni",
+      "headRefName": "grease_mac",
+      "headRefOid": "bf4dee02a17f8afbb2828b50c320527be1e2d455",
+      "closedAt": "2020-05-20T15:59:48Z",
       "mergedAt": null,
       "mergedBy": null,
-      "comments": [],
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing in favor of #235!",
+          "createdAt": "2020-05-20T15:59:47Z",
+          "updatedAt": "2020-05-20T15:59:47Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3MjMwMjYwNzc3",
@@ -11515,14 +11537,7 @@
             }
           ]
         }
-      ],
-      "baseRepository": "tlswg/draft-ietf-tls-esni",
-      "baseRefName": "master",
-      "baseRefOid": "4f3ce56fdb4caea12c6480ca3a9a5ec6bfd074c1",
-      "headRepository": "dvorak42/draft-ietf-tls-esni",
-      "headRefName": "grease_mac",
-      "headRefOid": "bf4dee02a17f8afbb2828b50c320527be1e2d455",
-      "mergeCommit": null
+      ]
     },
     {
       "number": 157,
@@ -14962,17 +14977,24 @@
       "id": "MDExOlB1bGxSZXF1ZXN0MzkyNTY5NDA2",
       "title": "Bind CHOuter to CHInner",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/212",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This makes it so that changes to the outer CH do not affect the inner. If anything does change that might muck with the binder or decryption, then ECHO is ignored. (This should help GREASE.)",
       "createdAt": "2020-03-23T18:43:59Z",
-      "updatedAt": "2020-03-24T22:21:13Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-20T15:59:57Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "9dab0e191c85d2043a5a5c835fae0abed30625da",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/outer-binder",
+      "headRefOid": "0c351a6651eb9b2319b5c3e97b82a2226417e713",
+      "closedAt": "2020-05-20T15:59:57Z",
       "mergedAt": null,
       "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": [
         {
@@ -15041,14 +15063,7 @@
             }
           ]
         }
-      ],
-      "baseRepository": "tlswg/draft-ietf-tls-esni",
-      "baseRefName": "master",
-      "baseRefOid": "9dab0e191c85d2043a5a5c835fae0abed30625da",
-      "headRepository": "tlswg/draft-ietf-tls-esni",
-      "headRefName": "caw/outer-binder",
-      "headRefOid": "0c351a6651eb9b2319b5c3e97b82a2226417e713",
-      "mergeCommit": null
+      ]
     },
     {
       "number": 213,
@@ -16005,19 +16020,154 @@
       "labels": [],
       "body": "Addresses #229.\r\n\r\nThis is for motivating some of our design decisions (and documenting what we know along the way). I meant to do this a while ago, but never got around to it. In particular, it describes why we have the following three bindings:\r\n\r\n1. Transcript to ECHO secret (to prevent client reaction attacks).\r\n2. CH1 to CH2 (to prevent HRR oracles).\r\n3. ClientHello to resumption PSK binder (to prevent resumption oracles).\r\n\r\nI'm *sure* the language and presentation can be improved, so suggestions to that effect are very much welcome!\r\n\r\ncc @martinthomson, @davidben, @dmcardle, @jhoyla, @kazuho, @karthikbhargavan, @grittygrease ",
       "createdAt": "2020-05-12T00:09:56Z",
-      "updatedAt": "2020-05-12T00:11:47Z",
+      "updatedAt": "2020-05-21T12:54:14Z",
       "baseRepository": "tlswg/draft-ietf-tls-esni",
       "baseRefName": "master",
       "baseRefOid": "f238f70420dbbab6085f959ce970e77d34e506e3",
       "headRepository": "tlswg/draft-ietf-tls-esni",
       "headRefName": "caw/active-attacks",
-      "headRefOid": "7eb76ae9d605f6b2766510da65e78025b0f6e1d1",
+      "headRefOid": "6f52fa19585e4de87a8fb34f86070c9ba95d99df",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE1ODI4Mjk4",
+          "commit": {
+            "abbreviatedOid": "7eb76ae"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2020-05-21T01:53:59Z",
+          "updatedAt": "2020-05-21T02:04:24Z",
+          "comments": [
+            {
+              "originalPosition": 36,
+              "body": "```suggestion\r\nThis section describes the rationale for ECHO properties and mechanics as defenses\r\n```",
+              "createdAt": "2020-05-21T01:53:59Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            },
+            {
+              "originalPosition": 37,
+              "body": "```suggestion\r\nagainst active attacks. In all the attacks below, the attacker is on-path between\r\n```",
+              "createdAt": "2020-05-21T01:54:10Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            },
+            {
+              "originalPosition": 39,
+              "body": "```suggestion\r\nabout the inner ClientHello, such as the true SNI value.\r\n```",
+              "createdAt": "2020-05-21T01:54:24Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            },
+            {
+              "originalPosition": 43,
+              "body": "```suggestion\r\nThis attack uses the client's reaction to an incorrect certificate as an oracle.\r\n```",
+              "createdAt": "2020-05-21T01:54:52Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            },
+            {
+              "originalPosition": 44,
+              "body": "```suggestion\r\nThe attacker intercepts a legitimate ClientHello and replies with a\r\n```",
+              "createdAt": "2020-05-21T01:55:14Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            },
+            {
+              "originalPosition": 52,
+              "body": "This isn't the attack I was thinking of. Rather, you withhold CV and so any client which does cert verification first will fail.",
+              "createdAt": "2020-05-21T01:58:26Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            },
+            {
+              "originalPosition": 75,
+              "body": "```suggestion\r\nto decrypt the Certificate and abort the connection.\r\n```",
+              "createdAt": "2020-05-21T02:00:35Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            },
+            {
+              "originalPosition": 83,
+              "body": "I think you need to say something about how this had to legitimately be an HRR case. Or can the attacker force it?",
+              "createdAt": "2020-05-21T02:01:50Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            },
+            {
+              "originalPosition": 85,
+              "body": "Note that this only works if the server (arguably incorrectly) stores the SNI from CH1.",
+              "createdAt": "2020-05-21T02:02:27Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            },
+            {
+              "originalPosition": 85,
+              "body": "```suggestion\r\nand HelloRetryRequest exchange with the result that the server encrypts the certificate to the attacker.\r\n```",
+              "createdAt": "2020-05-21T02:02:57Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE1ODM1MTA2",
+          "commit": {
+            "abbreviatedOid": "7eb76ae"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-21T02:17:25Z",
+          "updatedAt": "2020-05-21T02:17:25Z",
+          "comments": [
+            {
+              "originalPosition": 52,
+              "body": "That seems like a different variation, so I'll just note it. Thanks!",
+              "createdAt": "2020-05-21T02:17:25Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE1ODM1MjE3",
+          "commit": {
+            "abbreviatedOid": "7eb76ae"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-21T02:17:49Z",
+          "updatedAt": "2020-05-21T02:17:49Z",
+          "comments": [
+            {
+              "originalPosition": 83,
+              "body": "Good point. I'll call out that assumption explicitly.",
+              "createdAt": "2020-05-21T02:17:49Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE1ODM1Mjcy",
+          "commit": {
+            "abbreviatedOid": "7eb76ae"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-21T02:18:00Z",
+          "updatedAt": "2020-05-21T02:18:00Z",
+          "comments": [
+            {
+              "originalPosition": 85,
+              "body": "Yep! I'll note that, too. ",
+              "createdAt": "2020-05-21T02:18:00Z",
+              "updatedAt": "2020-05-21T12:54:14Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 235,
