@@ -12,7 +12,7 @@ Expires: 27 November 2020                                         Fastly
                                                              26 May 2020
 
 
-                     Encrypted ClientHello for TLS
+                       TLS Encrypted Client Hello
                        draft-ietf-tls-esni-latest
 
 Abstract
@@ -55,7 +55,7 @@ Copyright Notice
 
 Rescorla, et al.        Expires 27 November 2020                [Page 1]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 Table of Contents
@@ -111,7 +111,7 @@ Table of Contents
 
 Rescorla, et al.        Expires 27 November 2020                [Page 2]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
      13.1.  Normative References . . . . . . . . . . . . . . . . . .  27
@@ -167,7 +167,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020                [Page 3]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    The design in this document takes a different approach: it assumes
@@ -223,7 +223,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020                [Page 4]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
                    +--------------------+       +---------------------+
@@ -279,7 +279,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020                [Page 5]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 4.  Encrypted ClientHello Configuration
@@ -335,7 +335,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020                [Page 6]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    contents  An opaque byte string whose contents depend on the version
@@ -391,7 +391,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020                [Page 7]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 5.  The "encrypted_client_hello" extension
@@ -447,7 +447,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020                [Page 8]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    This protocol also defines the "ech_required" alert, which is sent by
@@ -503,7 +503,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020                [Page 9]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    OuterExtensions MUST only be used in ClientHelloInner.  It consists
@@ -559,7 +559,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 10]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    pkR = HPKE.KEM.Unmarshal(ECHConfig.public_key)
@@ -615,7 +615,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 11]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 7.2.  Recommended Padding Scheme
@@ -671,7 +671,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 12]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 7.3.1.  Accepted ECH
@@ -727,7 +727,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 13]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    Otherwise, when the handshake completes successfully with the public
@@ -783,7 +783,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 14]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 7.3.3.  HelloRetryRequest
@@ -839,7 +839,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 15]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    *  Set the "suite" field to a supported HpkeCipherSuite.  The
@@ -895,7 +895,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 16]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    Some uses of ECH, such as local discovery mode, may omit the
@@ -951,7 +951,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 17]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    If decryption fails, the server MUST abort the connection with a
@@ -1007,7 +1007,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 18]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    The retry mechanism repairs inconsistencies, provided the server is
@@ -1063,7 +1063,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 19]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 10.  Security Considerations
@@ -1119,7 +1119,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 20]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    which will not decrypt with any known ECH key, in order to force
@@ -1175,7 +1175,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 21]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 10.5.2.  Avoid widely-deployed shared secrets
@@ -1231,7 +1231,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 22]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 10.5.7.  Split server spoofing
@@ -1287,7 +1287,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 23]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 10.8.1.  Client Reaction Attack Mitigation
@@ -1343,7 +1343,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 24]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 10.8.2.  HelloRetryRequest Hijack Mitigation
@@ -1399,7 +1399,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 25]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    For example, imagine the client's original SNI value in the inner
@@ -1455,7 +1455,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 26]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
 11.1.  Update of the TLS ExtensionType Registry
@@ -1511,7 +1511,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 27]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -1567,7 +1567,7 @@ Internet-Draft          TLS Encrypted ClientHello               May 2020
 
 Rescorla, et al.        Expires 27 November 2020               [Page 28]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    [RFC7301]  Friedl, S., Popov, A., Langley, A., and E. Stephan,
@@ -1623,7 +1623,7 @@ A.1.1.  TLS in Early Data
 
 Rescorla, et al.        Expires 27 November 2020               [Page 29]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    Problems with this approach are: (1) servers may not always be able
@@ -1679,7 +1679,7 @@ Appendix B.  Total Client Hello Encryption
 
 Rescorla, et al.        Expires 27 November 2020               [Page 30]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    *  If the encrypted block has its own KeyShare, it does not
@@ -1735,7 +1735,7 @@ Authors' Addresses
 
 Rescorla, et al.        Expires 27 November 2020               [Page 31]
 
-Internet-Draft          TLS Encrypted ClientHello               May 2020
+Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 
    Christopher A. Wood
