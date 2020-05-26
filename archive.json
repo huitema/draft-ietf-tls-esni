@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-05-21T12:54:29.205778+00:00",
+  "timestamp": "2020-05-26T21:14:23.235245+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -4348,7 +4348,7 @@
       "id": "MDU6SXNzdWU1OTYwMzA5MTk=",
       "title": "Clarify 1.2 connection support (don't break connections, but also don't protect the certificate)",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/214",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -4357,12 +4357,12 @@
       "labels": [],
       "body": "If the backend server does not include any signal for ECHO negotiation, either as a ServerHello extension or part of ServerHello.random, then it's possible to tunnel CHs to TLS 1.2 servers. This can be a feature, so let's consider whether or not it's in scope. (Note that we may discover that lack of server-side handshake message padding may make traffic analysis trivial.)\r\n\r\ncc @grittygrease ",
       "createdAt": "2020-04-07T17:24:36Z",
-      "updatedAt": "2020-04-27T23:34:12Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-21T21:40:57Z",
+      "closedAt": "2020-05-21T21:40:57Z",
       "comments": [
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Not sure that'd be worthwhile. Wouldn't the TLS server cert be sent in clear to the client? So the server-name will be visible anyway. I'm not sure if the remaining CH content is sufficient to justify the added complexity of having to handle a TLSv1.2 CH.",
           "createdAt": "2020-04-12T20:17:03Z",
           "updatedAt": "2020-04-12T20:17:03Z"
@@ -4376,7 +4376,7 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "Ah, so support for TLSv1.2 here implies a new middle->client encryption. My first reaction is that we're nearly inventing masque again, so maybe this is a feature to leave for that?",
           "createdAt": "2020-04-12T22:34:16Z",
           "updatedAt": "2020-04-12T22:34:16Z"
@@ -4439,10 +4439,31 @@
         },
         {
           "author": "sftcd",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "\nFWIW, I still think making complexity-inducing changes\nto better support TLSv1.2 (even in this reduced manner)\nwould be a bad plan. In large part because it'd take ages to figure it\nout. If someone could demonstrate a reduction\nin complexity and increase in security I might change my\nmind. Absent that, I continue to think we're better off\nexclusively supporting TLSv1.3.\n\nCheers,\nS.\n",
           "createdAt": "2020-04-27T23:34:12Z",
           "updatedAt": "2020-04-27T23:34:12Z"
+        },
+        {
+          "author": "davidben",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "The issue of not being able to clearly tell whether ServerHello used the outer or inner ClientHello does seem somewhat fatal. Deferring figuring this out to certificate verification is especially a nuisance, and I shudder at the thought having a coherent notion of constant-time X.509 verification.",
+          "createdAt": "2020-05-21T21:25:26Z",
+          "updatedAt": "2020-05-21T21:25:26Z"
+        },
+        {
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think we should continue to base this on the assumption that the server does TLS 1.3. Trying to analyze the question of how this integrates with TLS 1.2  -- especially given that we have concerns about the naive integration -- seems prohibitive.",
+          "createdAt": "2020-05-21T21:27:31Z",
+          "updatedAt": "2020-05-21T21:27:31Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "On reflection, I tend to agree. On platforms I'm familiar with, constant-time certificate verification would be intractable. I'm closing this issue with the recommendation that we stick to the document's intent: ESNI for TLS 1.3. ",
+          "createdAt": "2020-05-21T21:40:57Z",
+          "updatedAt": "2020-05-21T21:40:57Z"
         }
       ]
     },
@@ -4707,7 +4728,7 @@
       "id": "MDU6SXNzdWU2MTEyODgwNDU=",
       "title": "Describe HRR cut-and-paste 1 in Security Considerations.",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/229",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -4716,24 +4737,32 @@
       "labels": [],
       "body": "<img width=\"909\" alt=\"Screen Shot 2020-05-02 at 3 33 05 PM\" src=\"https://user-images.githubusercontent.com/2172048/80893782-3fae8980-8c8a-11ea-8bca-cb5fc1e33685.png\">\r\n",
       "createdAt": "2020-05-02T22:33:24Z",
-      "updatedAt": "2020-05-03T14:04:49Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-21T13:08:20Z",
+      "closedAt": "2020-05-21T13:08:19Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Addressed in #234.",
+          "createdAt": "2020-05-21T13:08:19Z",
+          "updatedAt": "2020-05-21T13:08:19Z"
+        }
+      ]
     },
     {
       "number": 232,
       "id": "MDU6SXNzdWU2MTQzMjI5ODM=",
       "title": "Bikeshed: finalize on naming of \"ECHO\"",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/232",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "enygren",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "While cutsy, the name \"ECHO\" for \"Encrypted Client Hello\" seems like it could cause problems and significant confusion.  To those not actively involved in the working group, \"ECHO\" has very different connotations.  Some potential risks include:\r\n* Other IETF standards have some form of \"ECHO\" functionality.  When bouncing this question off someone else, they responded with \"TLS ECHO, like ICMP ECHO, except totally not\"\r\n* The immediate guess people may have on hearing about a TLS ECHO functionality would be to think \"oh, like to echo back a message for heartbeat purposes?\".  Given the potential risk for confusion with heartbeat (especially given \"Heartbleed\") this has some risk of giving TLS ECHO a bad rap from the start due to confusion.\r\n* This functionality is going to have high profile with product managers and perhaps even government regulators and public policy.  Applying a name that has confusing lay-connotations is going to muddle conversations.\r\n* This has a risk of confusion when used in other contexts.  For example, \"echoconfig\" as a SVCB parameter key has potential risk for confusing people reading the config and lacking context.\r\n* ECHO is going to be harder to do searches for, both in Internet and intranet search engines.\r\n\r\nJust calling it \"ECH\" or \"EHELLO\" may be safer?\r\n\r\n(If this changes, SVCB will also need to change the \"echoconfig\".)",
       "createdAt": "2020-05-07T20:27:33Z",
-      "updatedAt": "2020-05-07T21:47:52Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-21T19:49:50Z",
+      "closedAt": "2020-05-21T19:49:50Z",
       "comments": [
         {
           "author": "enygren",
@@ -4771,6 +4800,22 @@
       "body": "In a normal ECHO handshake with HelloRetryRequest there are 4 ClientHellos sent: ClientHelloOuter1, ClientHelloInner1, ClientHelloOuter2, ClientHelloInner2.\r\n\r\nEncryption of ClientHelloInner2 is bound to echo_hrr_key so the server must have the ECHOConfig used for ClientHelloInner1 in order to process ECHO the second time.\r\nAnd by the time the client receives encrypted handshake traffic it is not useful to signal if ClientHelloInner1 was successfully decrypted, what matters is to know if ECHO is globally successful or not.\r\n\r\nSo one aspect that I find not explained enough is whether the server replying with HRR should use ClientHelloInner1 in the transcript, or instead always takes ClientHelloOuter1 (data on the wire) regardless of the first decryption status. The ECHO status accept/reject can be conveyed based on distinction ClientHello2 inner/outer only.\r\n\r\nThis point impacts the number of transcripts the client may have to try, i.e. can be sure the combination (ClientHelloInner1, ClientHelloOuter2) is never valid.",
       "createdAt": "2020-05-10T08:39:16Z",
       "updatedAt": "2020-05-10T08:39:16Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 237,
+      "id": "MDU6SXNzdWU2MjI5MTg3NDM=",
+      "title": "Remove 1.3 from the title",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/237",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The design can apply to TLS 1.4 and beyond (presumably).",
+      "createdAt": "2020-05-22T03:12:25Z",
+      "updatedAt": "2020-05-22T03:12:25Z",
       "closedAt": null,
       "comments": []
     }
@@ -16013,25 +16058,35 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDE2NDEyMjk1",
       "title": "Describe known active attacks",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/234",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Addresses #229.\r\n\r\nThis is for motivating some of our design decisions (and documenting what we know along the way). I meant to do this a while ago, but never got around to it. In particular, it describes why we have the following three bindings:\r\n\r\n1. Transcript to ECHO secret (to prevent client reaction attacks).\r\n2. CH1 to CH2 (to prevent HRR oracles).\r\n3. ClientHello to resumption PSK binder (to prevent resumption oracles).\r\n\r\nI'm *sure* the language and presentation can be improved, so suggestions to that effect are very much welcome!\r\n\r\ncc @martinthomson, @davidben, @dmcardle, @jhoyla, @kazuho, @karthikbhargavan, @grittygrease ",
       "createdAt": "2020-05-12T00:09:56Z",
-      "updatedAt": "2020-05-21T12:54:14Z",
+      "updatedAt": "2020-05-21T13:07:55Z",
       "baseRepository": "tlswg/draft-ietf-tls-esni",
       "baseRefName": "master",
       "baseRefOid": "f238f70420dbbab6085f959ce970e77d34e506e3",
       "headRepository": "tlswg/draft-ietf-tls-esni",
       "headRefName": "caw/active-attacks",
-      "headRefOid": "6f52fa19585e4de87a8fb34f86070c9ba95d99df",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "df869d1ceac0fcfc951e710006cf078bb06dac3a",
+      "closedAt": "2020-05-21T13:07:55Z",
+      "mergedAt": "2020-05-21T13:07:55Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "1e7e0d9ef6fc33984240891b0f30cf139c45a193"
+      },
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for the feedback! I incorporated your suggestions and clarified a few more things. I'm merging as-is since they seemed mostly editorial.",
+          "createdAt": "2020-05-21T13:07:32Z",
+          "updatedAt": "2020-05-21T13:07:32Z"
+        }
+      ],
       "reviews": [
         {
           "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE1ODI4Mjk4",
@@ -16049,61 +16104,61 @@
               "originalPosition": 36,
               "body": "```suggestion\r\nThis section describes the rationale for ECHO properties and mechanics as defenses\r\n```",
               "createdAt": "2020-05-21T01:53:59Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             },
             {
               "originalPosition": 37,
               "body": "```suggestion\r\nagainst active attacks. In all the attacks below, the attacker is on-path between\r\n```",
               "createdAt": "2020-05-21T01:54:10Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             },
             {
               "originalPosition": 39,
               "body": "```suggestion\r\nabout the inner ClientHello, such as the true SNI value.\r\n```",
               "createdAt": "2020-05-21T01:54:24Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             },
             {
               "originalPosition": 43,
               "body": "```suggestion\r\nThis attack uses the client's reaction to an incorrect certificate as an oracle.\r\n```",
               "createdAt": "2020-05-21T01:54:52Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             },
             {
               "originalPosition": 44,
               "body": "```suggestion\r\nThe attacker intercepts a legitimate ClientHello and replies with a\r\n```",
               "createdAt": "2020-05-21T01:55:14Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             },
             {
               "originalPosition": 52,
               "body": "This isn't the attack I was thinking of. Rather, you withhold CV and so any client which does cert verification first will fail.",
               "createdAt": "2020-05-21T01:58:26Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             },
             {
               "originalPosition": 75,
               "body": "```suggestion\r\nto decrypt the Certificate and abort the connection.\r\n```",
               "createdAt": "2020-05-21T02:00:35Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             },
             {
               "originalPosition": 83,
               "body": "I think you need to say something about how this had to legitimately be an HRR case. Or can the attacker force it?",
               "createdAt": "2020-05-21T02:01:50Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             },
             {
               "originalPosition": 85,
               "body": "Note that this only works if the server (arguably incorrectly) stores the SNI from CH1.",
               "createdAt": "2020-05-21T02:02:27Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             },
             {
               "originalPosition": 85,
               "body": "```suggestion\r\nand HelloRetryRequest exchange with the result that the server encrypts the certificate to the attacker.\r\n```",
               "createdAt": "2020-05-21T02:02:57Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             }
           ]
         },
@@ -16123,7 +16178,7 @@
               "originalPosition": 52,
               "body": "That seems like a different variation, so I'll just note it. Thanks!",
               "createdAt": "2020-05-21T02:17:25Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             }
           ]
         },
@@ -16143,7 +16198,7 @@
               "originalPosition": 83,
               "body": "Good point. I'll call out that assumption explicitly.",
               "createdAt": "2020-05-21T02:17:49Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             }
           ]
         },
@@ -16163,7 +16218,7 @@
               "originalPosition": 85,
               "body": "Yep! I'll note that, too. ",
               "createdAt": "2020-05-21T02:18:00Z",
-              "updatedAt": "2020-05-21T12:54:14Z"
+              "updatedAt": "2020-05-21T13:06:11Z"
             }
           ]
         }
@@ -16218,6 +16273,141 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 236,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDIxNTQ1NDg5",
+      "title": "s/ECHO/ECH",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/236",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #232.",
+      "createdAt": "2020-05-21T19:44:27Z",
+      "updatedAt": "2020-05-22T03:12:05Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "1e7e0d9ef6fc33984240891b0f30cf139c45a193",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/ech",
+      "headRefOid": "4a37e99a9db136efe1941e2c54b962dbe6f72a77",
+      "closedAt": "2020-05-21T19:49:50Z",
+      "mergedAt": "2020-05-21T19:49:50Z",
+      "mergedBy": "ekr",
+      "mergeCommit": {
+        "oid": "c4d4b7f531f85d72f7bb50755d1106f51287bfdc"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE2NDgyNjAw",
+          "commit": {
+            "abbreviatedOid": "4a37e99"
+          },
+          "author": "tfpauly",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-21T20:51:08Z",
+          "updatedAt": "2020-05-21T20:51:09Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "TLS Encrypted ClientHello \u2014> TECH!\r\n\r\n(Kidding, kidding)",
+              "createdAt": "2020-05-21T20:51:09Z",
+              "updatedAt": "2020-05-21T20:51:09Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE2NTM4ODY0",
+          "commit": {
+            "abbreviatedOid": "4a37e99"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-21T22:36:29Z",
+          "updatedAt": "2020-05-21T22:36:30Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Hah!",
+              "createdAt": "2020-05-21T22:36:29Z",
+              "updatedAt": "2020-05-21T22:36:30Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE2NjE2NDY3",
+          "commit": {
+            "abbreviatedOid": "4a37e99"
+          },
+          "author": "martinthomson",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-22T02:52:55Z",
+          "updatedAt": "2020-05-22T02:52:56Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Seeing this, I think that you should remove 1.3 from the title.  Sure, this is 1.3 only, but I think that this design is fine for 1.4 also.  If it isn't, I'm sure we can deal with that eventually.  I don't want to find that we ship a 1.4 (or 4) that is compatible with this and have people tell me that it isn't compatible.",
+              "createdAt": "2020-05-22T02:52:56Z",
+              "updatedAt": "2020-05-22T02:52:56Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE2NjIxNjQw",
+          "commit": {
+            "abbreviatedOid": "4a37e99"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-22T03:12:04Z",
+          "updatedAt": "2020-05-22T03:12:05Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "That's a fair point. I'll make that change in a separate PR!",
+              "createdAt": "2020-05-22T03:12:05Z",
+              "updatedAt": "2020-05-22T03:12:05Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 238,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDIzNDY3MjE4",
+      "title": "Remove TLS 1.3 from the title, and re-categorize as a ST document.",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/238",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Seeing no pushback on the list, this moves the draft from Experimental to ST.",
+      "createdAt": "2020-05-26T21:14:10Z",
+      "updatedAt": "2020-05-26T21:14:10Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "c4d4b7f531f85d72f7bb50755d1106f51287bfdc",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/retitle-and-recategorize",
+      "headRefOid": "a4fc9e8f7932075cb9cebf18ad8c141922adfb87",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
