@@ -4,7 +4,7 @@
 
 tls                                                          E. Rescorla
 Internet-Draft                                                RTFM, Inc.
-Intended status: Standards Track                                  K. Oku
+Intended status: Experimental                                     K. Oku
 Expires: 28 November 2020                                         Fastly
                                                              N. Sullivan
                                                                C.A. Wood
