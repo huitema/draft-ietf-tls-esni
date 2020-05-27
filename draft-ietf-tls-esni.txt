@@ -312,7 +312,7 @@ Internet-Draft         TLS Encrypted Client Hello               May 2020
            uint16 version;
            uint16 length;
            select (ECHConfig.version) {
-             case 0xff03: ECHConfigContents;
+             case 0xff07: ECHConfigContents;
            }
        } ECHConfig;
 
@@ -325,7 +325,7 @@ Internet-Draft         TLS Encrypted Client Hello               May 2020
    The ECHConfig structure contains the following fields:
 
    version  The version of the structure.  For this specification, that
-      value SHALL be 0xff03.  Clients MUST ignore any ECHConfig
+      value SHALL be 0xff07.  Clients MUST ignore any ECHConfig
       structure with a version they do not understand.
 
 
@@ -400,7 +400,7 @@ Internet-Draft         TLS Encrypted Client Hello               May 2020
    "encrypted_client_hello" extension, defined as follows:
 
       enum {
-          encrypted_client_hello(TBD), (65535)
+          encrypted_client_hello(57), (65535)
       } ExtensionType;
 
    For clients (in ClientHello), this extension contains the following
@@ -463,7 +463,7 @@ Internet-Draft         TLS Encrypted Client Hello               May 2020
    ClientHello.  This extension is defined as follows:
 
       enum {
-          ech_nonce(0xffce), (65535)
+          ech_nonce(57), (65535)
       } ExtensionType;
 
       struct {
@@ -490,7 +490,7 @@ Internet-Draft         TLS Encrypted Client Hello               May 2020
    extensions, the client may use the "outer_extensions" extension.
 
       enum {
-          outer_extension(TBD), (65535)
+          outer_extension(58), (65535)
       } ExtensionType;
 
       struct {
@@ -1460,10 +1460,14 @@ Internet-Draft         TLS Encrypted Client Hello               May 2020
 
 11.1.  Update of the TLS ExtensionType Registry
 
-   IANA is requested to create an entry, encrypted_client_hello(0xffce),
-   in the existing registry for ExtensionType (defined in [RFC8446]),
-   with "TLS 1.3" column values being set to "CH, EE", and "Recommended"
-   column being set to "Yes".
+   IANA is requested to create the following two entries in the existing
+   registry for ExtensionType (defined in [RFC8446]):
+
+   1.  encrypted_client_hello(57), with "TLS 1.3" column values being
+       set to "CH, EE", and "Recommended" column being set to "Yes".
+
+   2.  outer_extension(58), with the "TLS 1.3" column values being set
+       to "CH", and "Recommended" column being set to "Yes".
 
 11.2.  Update of the TLS Alert Registry
 
@@ -1499,11 +1503,7 @@ Internet-Draft         TLS Encrypted Client Hello               May 2020
               internet-drafts/draft-ietf-tls-exported-authenticator-
               12.txt>.
 
-   [I-D.irtf-cfrg-hpke]
-              Barnes, R., Bhargavan, K., and C. Wood, "Hybrid Public Key
-              Encryption", Work in Progress, Internet-Draft, draft-irtf-
-              cfrg-hpke-04, 8 May 2020, <http://www.ietf.org/internet-
-              drafts/draft-irtf-cfrg-hpke-04.txt>.
+
 
 
 
@@ -1513,6 +1513,12 @@ Rescorla, et al.        Expires 28 November 2020               [Page 27]
 
 Internet-Draft         TLS Encrypted Client Hello               May 2020
 
+
+   [I-D.irtf-cfrg-hpke]
+              Barnes, R., Bhargavan, K., and C. Wood, "Hybrid Public Key
+              Encryption", Work in Progress, Internet-Draft, draft-irtf-
+              cfrg-hpke-04, 8 May 2020, <http://www.ietf.org/internet-
+              drafts/draft-irtf-cfrg-hpke-04.txt>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1556,12 +1562,6 @@ Internet-Draft         TLS Encrypted Client Hello               May 2020
               <http://www.ietf.org/internet-drafts/draft-ietf-tls-sni-
               encryption-09.txt>.
 
-   [I-D.kazuho-protected-sni]
-              Oku, K., "TLS Extensions for Protecting SNI", Work in
-              Progress, Internet-Draft, draft-kazuho-protected-sni-00,
-              18 July 2017, <http://www.ietf.org/internet-drafts/draft-
-              kazuho-protected-sni-00.txt>.
-
 
 
 
@@ -1569,6 +1569,12 @@ Rescorla, et al.        Expires 28 November 2020               [Page 28]
 
 Internet-Draft         TLS Encrypted Client Hello               May 2020
 
+
+   [I-D.kazuho-protected-sni]
+              Oku, K., "TLS Extensions for Protecting SNI", Work in
+              Progress, Internet-Draft, draft-kazuho-protected-sni-00,
+              18 July 2017, <http://www.ietf.org/internet-drafts/draft-
+              kazuho-protected-sni-00.txt>.
 
    [RFC7301]  Friedl, S., Popov, A., Langley, A., and E. Stephan,
               "Transport Layer Security (TLS) Application-Layer Protocol
@@ -1610,12 +1616,6 @@ A.1.1.  TLS in Early Data
    necessary.  Afterwards, all records to and from backend servers are
    forwarded by the client-facing server - unmodified.  This avoids
    double encryption of TLS records.
-
-
-
-
-
-
 
 
 
