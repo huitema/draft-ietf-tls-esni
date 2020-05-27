@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-05-26T21:14:23.235245+00:00",
+  "timestamp": "2020-05-27T12:18:38.816869+00:00",
   "repo": "tlswg/draft-ietf-tls-esni",
   "labels": [
     {
@@ -3593,7 +3593,7 @@
       "id": "MDU6SXNzdWU0NzI0MzU0Nzk=",
       "title": "GREASE ESNI extensions are easily distinguished from real ones",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/177",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "davidben",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -3603,8 +3603,8 @@
       "labels": [],
       "body": "The draft has provisions for GREASE ESNI extensions, per \"Do not stick out\". However, this is not very effective if an attacker can distinguish a GREASE ESNI extension from a real one.\r\n\r\n#154 tried to address this, but it doesn't work if the (public) ESNI record is known. There's also a simpler attack: replay the ClientHello with one byte of ciphertext corrupted. ESNI currently distinguishes key mismatch from decrypt failure, with the latter resulting in an alert. We can fix that by saying decrypt failure should behave like key mismatch. This still leaves record_digest.\r\n\r\nThe natural fix is to drop record_digest in favor of trial decryption. The cost is the server must perform a DH operation per known key. The number of keys the server needs depends on its DNS TTLs and key rotation. (I think it's 1 + ceil(dns_ttl / time_between_rotation), plus some leeway[*].)\r\n\r\nInstead, we can keep a key name, but make the space dense. Suppose we replace it with a B-bit \"key phase\". The server picks a random starting key phase. Then, each time it rotates the keys, it increments the phase, with wraparound. The server then gets 2<sup>B</sup> keys for free. If it needs more, it still needs trial decryption but gains a 2<sup>B</sup> multiplicative factor in the cost. On the flip side, an individual GREASE extension with a random key phase has a 1/2<sup>B</sup> chance of colliding with a particular ESNI key.\r\n\r\nI'm not sure we actually need that many live keys, so B = 2 is probably plenty. Or even B = 1 if we say you should just rotate slower than your DNS TTL.\r\n\r\n[*] Note the robustness mechanism means that server doesn't need to cover _all_ clients with stale keys. The retry is expensive, so the server still needs to cover _almost all_ of them, but it can cut off the long tail.",
       "createdAt": "2019-07-24T18:37:10Z",
-      "updatedAt": "2020-05-20T16:00:53Z",
-      "closedAt": null,
+      "updatedAt": "2020-05-27T12:18:22Z",
+      "closedAt": "2020-05-27T12:18:21Z",
       "comments": [
         {
           "author": "davidben",
@@ -3633,6 +3633,13 @@
           "body": "I'm moving to closes this issue as resolved by #235. If we need to do something against connection blocking adversaries, perhaps we should look into MASQUE for that.",
           "createdAt": "2020-05-20T16:00:52Z",
           "updatedAt": "2020-05-20T16:00:52Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing for now. @davidben, please re-open if you still think we should address this!",
+          "createdAt": "2020-05-27T12:18:21Z",
+          "updatedAt": "2020-05-27T12:18:21Z"
         }
       ]
     },
@@ -4808,16 +4815,24 @@
       "id": "MDU6SXNzdWU2MjI5MTg3NDM=",
       "title": "Remove 1.3 from the title",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/issues/237",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The design can apply to TLS 1.4 and beyond (presumably).",
       "createdAt": "2020-05-22T03:12:25Z",
-      "updatedAt": "2020-05-22T03:12:25Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2020-05-26T21:19:26Z",
+      "closedAt": "2020-05-26T21:19:25Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Done in #238.",
+          "createdAt": "2020-05-26T21:19:25Z",
+          "updatedAt": "2020-05-26T21:19:25Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -16388,20 +16403,102 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NDIzNDY3MjE4",
       "title": "Remove TLS 1.3 from the title, and re-categorize as a ST document.",
       "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/238",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Seeing no pushback on the list, this moves the draft from Experimental to ST.",
       "createdAt": "2020-05-26T21:14:10Z",
-      "updatedAt": "2020-05-26T21:14:10Z",
+      "updatedAt": "2020-05-26T21:17:19Z",
       "baseRepository": "tlswg/draft-ietf-tls-esni",
       "baseRefName": "master",
       "baseRefOid": "c4d4b7f531f85d72f7bb50755d1106f51287bfdc",
       "headRepository": "tlswg/draft-ietf-tls-esni",
       "headRefName": "caw/retitle-and-recategorize",
-      "headRefOid": "a4fc9e8f7932075cb9cebf18ad8c141922adfb87",
+      "headRefOid": "d86a8ea8f1c23a6d4e67f384c94dbad3dd3a4268",
+      "closedAt": "2020-05-26T21:17:19Z",
+      "mergedAt": "2020-05-26T21:17:19Z",
+      "mergedBy": "ekr",
+      "mergeCommit": {
+        "oid": "a522e66aab86f9db0ce73edb999339887fa5a8ff"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE4Njg0ODA0",
+          "commit": {
+            "abbreviatedOid": "a4fc9e8"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-26T21:15:34Z",
+          "updatedAt": "2020-05-26T21:15:34Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "If we are going to change the title, let's make it match the abbrev\r\n\r\n\"TLS Encrypted Client Hello\"",
+              "createdAt": "2020-05-26T21:15:34Z",
+              "updatedAt": "2020-05-26T21:16:44Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE4Njg0OTIx",
+          "commit": {
+            "abbreviatedOid": "a4fc9e8"
+          },
+          "author": "ekr",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-05-26T21:15:45Z",
+          "updatedAt": "2020-05-26T21:15:45Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NDE4Njg1MzA4",
+          "commit": {
+            "abbreviatedOid": "a4fc9e8"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-05-26T21:16:24Z",
+          "updatedAt": "2020-05-26T21:16:24Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Works for me!",
+              "createdAt": "2020-05-26T21:16:24Z",
+              "updatedAt": "2020-05-26T21:16:44Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 239,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDIzNDc1ODk1",
+      "title": "Specify encrypted_client_hello and outer_extension codepoints.",
+      "url": "https://github.com/tlswg/draft-ietf-tls-esni/pull/239",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Once we have some implementations that interop, we'll go ahead with early\r\ncodepoint allocation.\r\n\r\nThe new version matches -07, which will be the next draft version we submit.\r\n\r\ncc @martinthomson @grittygrease \r\n\r\nCloses #220.",
+      "createdAt": "2020-05-26T21:34:38Z",
+      "updatedAt": "2020-05-26T21:42:52Z",
+      "baseRepository": "tlswg/draft-ietf-tls-esni",
+      "baseRefName": "master",
+      "baseRefOid": "a522e66aab86f9db0ce73edb999339887fa5a8ff",
+      "headRepository": "tlswg/draft-ietf-tls-esni",
+      "headRefName": "caw/codepoints",
+      "headRefOid": "16070b4d44fdf7a350765ecbe65ef58fe495ba34",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
