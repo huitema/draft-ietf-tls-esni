@@ -1047,22 +1047,19 @@ for encrypting a ClientHello message under a server public key.<a href="#section
 </ul>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.10.2.6">
-                <p id="section-toc.1-1.10.2.6.1"><a href="#section-10.6" class="xref">10.6</a>.  <a href="#name-misrouting" class="xref">Misrouting</a><a href="#section-toc.1-1.10.2.6.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.10.2.6.1"><a href="#section-10.6" class="xref">10.6</a>.  <a href="#name-padding-policy" class="xref">Padding Policy</a><a href="#section-toc.1-1.10.2.6.1" class="pilcrow">¶</a></p>
 </li>
 <li class="toc ulEmpty" id="section-toc.1-1.10.2.7">
-                <p id="section-toc.1-1.10.2.7.1"><a href="#section-10.7" class="xref">10.7</a>.  <a href="#name-padding-policy" class="xref">Padding Policy</a><a href="#section-toc.1-1.10.2.7.1" class="pilcrow">¶</a></p>
-</li>
-<li class="toc ulEmpty" id="section-toc.1-1.10.2.8">
-                <p id="section-toc.1-1.10.2.8.1"><a href="#section-10.8" class="xref">10.8</a>.  <a href="#name-active-attack-mitigations" class="xref">Active Attack Mitigations</a><a href="#section-toc.1-1.10.2.8.1" class="pilcrow">¶</a></p>
+                <p id="section-toc.1-1.10.2.7.1"><a href="#section-10.7" class="xref">10.7</a>.  <a href="#name-active-attack-mitigations" class="xref">Active Attack Mitigations</a><a href="#section-toc.1-1.10.2.7.1" class="pilcrow">¶</a></p>
 <ul class="toc ulEmpty">
-<li class="toc ulEmpty" id="section-toc.1-1.10.2.8.2.1">
-                    <p id="section-toc.1-1.10.2.8.2.1.1"><a href="#section-10.8.1" class="xref">10.8.1</a>.  <a href="#name-client-reaction-attack-miti" class="xref">Client Reaction Attack Mitigation</a><a href="#section-toc.1-1.10.2.8.2.1.1" class="pilcrow">¶</a></p>
+<li class="toc ulEmpty" id="section-toc.1-1.10.2.7.2.1">
+                    <p id="section-toc.1-1.10.2.7.2.1.1"><a href="#section-10.7.1" class="xref">10.7.1</a>.  <a href="#name-client-reaction-attack-miti" class="xref">Client Reaction Attack Mitigation</a><a href="#section-toc.1-1.10.2.7.2.1.1" class="pilcrow">¶</a></p>
 </li>
-<li class="toc ulEmpty" id="section-toc.1-1.10.2.8.2.2">
-                    <p id="section-toc.1-1.10.2.8.2.2.1"><a href="#section-10.8.2" class="xref">10.8.2</a>.  <a href="#name-helloretryrequest-hijack-mi" class="xref">HelloRetryRequest Hijack Mitigation</a><a href="#section-toc.1-1.10.2.8.2.2.1" class="pilcrow">¶</a></p>
+<li class="toc ulEmpty" id="section-toc.1-1.10.2.7.2.2">
+                    <p id="section-toc.1-1.10.2.7.2.2.1"><a href="#section-10.7.2" class="xref">10.7.2</a>.  <a href="#name-helloretryrequest-hijack-mi" class="xref">HelloRetryRequest Hijack Mitigation</a><a href="#section-toc.1-1.10.2.7.2.2.1" class="pilcrow">¶</a></p>
 </li>
-<li class="toc ulEmpty" id="section-toc.1-1.10.2.8.2.3">
-                    <p id="section-toc.1-1.10.2.8.2.3.1"><a href="#section-10.8.3" class="xref">10.8.3</a>.  <a href="#name-resumption-psk-oracle-mitig" class="xref">Resumption PSK Oracle Mitigation</a><a href="#section-toc.1-1.10.2.8.2.3.1" class="pilcrow">¶</a></p>
+<li class="toc ulEmpty" id="section-toc.1-1.10.2.7.2.3">
+                    <p id="section-toc.1-1.10.2.7.2.3.1"><a href="#section-10.7.3" class="xref">10.7.3</a>.  <a href="#name-resumption-psk-oracle-mitig" class="xref">Resumption PSK Oracle Mitigation</a><a href="#section-toc.1-1.10.2.7.2.3.1" class="pilcrow">¶</a></p>
 </li>
 </ul>
 </li>
@@ -1728,13 +1725,10 @@ as a secure signal to disable ECH.<a href="#section-7.3.2-6" class="pilcrow">¶<
 authenticated, the client MUST abort the connection with an "ech_required"
 alert. The client can then regard ECH as securely disabled by the server. It
 SHOULD retry the handshake with a new transport connection and ECH disabled.<a href="#section-7.3.2-7" class="pilcrow">¶</a></p>
-<p id="section-7.3.2-8">[[TODO: Key replacement is significantly less scary than saying that ECH-naive
-  servers bounce ECH off. Is it worth defining a strict mode toggle in the ECH
-  keys, for a deployment to indicate it is ready for that? ]]<a href="#section-7.3.2-8" class="pilcrow">¶</a></p>
-<p id="section-7.3.2-9">Clients SHOULD implement a limit on retries caused by "ech_retry_request" or
+<p id="section-7.3.2-8">Clients SHOULD implement a limit on retries caused by "ech_retry_request" or
 servers which do not acknowledge the "encrypted_client_hello" extension. If the
 client does not retry in either scenario, it MUST report an error to the
-calling application.<a href="#section-7.3.2-9" class="pilcrow">¶</a></p>
+calling application.<a href="#section-7.3.2-8" class="pilcrow">¶</a></p>
 <div id="auth-public-name">
 <section id="section-7.3.2.1">
             <h5 id="name-authenticating-for-the-publ">
@@ -1795,7 +1789,7 @@ ech_nonce = context.Export("tls13-ech-hrr-nonce", 16)
 </div>
 <p id="section-7.3.3-4">Clients then encrypt the second ClientHelloInner using this new HPKE context.
 In doing so, the encrypted value is also authenticated by ech_hrr_key. The rationale
-for this is described in <a href="#flow-hrr-hijack" class="xref">Section 10.8.2</a>.<a href="#section-7.3.3-4" class="pilcrow">¶</a></p>
+for this is described in <a href="#flow-hrr-hijack" class="xref">Section 10.7.2</a>.<a href="#section-7.3.3-4" class="pilcrow">¶</a></p>
 <p id="section-7.3.3-5">Client-facing servers perform the corresponding process when decrypting second
 ClientHelloInner messages. In particular, upon receipt of a second ClientHello
 message with a ClientEncryptedCH value, servers setup their HPKE context and
@@ -2184,49 +2178,31 @@ Thus, it is compatible with multiple protocols.<a href="#section-10.5.8-1" class
 </div>
 </section>
 </div>
-<div id="misrouting">
-<section id="section-10.6">
-        <h3 id="name-misrouting">
-<a href="#section-10.6" class="section-number selfRef">10.6. </a><a href="#name-misrouting" class="section-name selfRef">Misrouting</a>
-        </h3>
-<p id="section-10.6-1">Note that the backend server has no way of knowing what the SNI was,
-but that does not lead to additional privacy exposure because the
-backend server also only has one identity. This does, however, change
-the situation slightly in that the backend server might previously have
-checked SNI and now cannot (and an attacker can route a connection
-with an encrypted SNI to any backend server and the TLS connection will
-still complete).  However, the client is still responsible for
-verifying the server's identity in its certificate.<a href="#section-10.6-1" class="pilcrow">¶</a></p>
-<p id="section-10.6-2">[[TODO: Some more analysis needed in this case, as it is a little
-odd, and probably some precise rules about handling ECH and no
-SNI uniformly?]]<a href="#section-10.6-2" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="padding-policy">
-<section id="section-10.7">
+<section id="section-10.6">
         <h3 id="name-padding-policy">
-<a href="#section-10.7" class="section-number selfRef">10.7. </a><a href="#name-padding-policy" class="section-name selfRef">Padding Policy</a>
+<a href="#section-10.6" class="section-number selfRef">10.6. </a><a href="#name-padding-policy" class="section-name selfRef">Padding Policy</a>
         </h3>
-<p id="section-10.7-1">Variations in the length of the ClientHelloInner ciphertext could leak information
+<p id="section-10.6-1">Variations in the length of the ClientHelloInner ciphertext could leak information
 about the corresponding plaintext. <a href="#padding" class="xref">Section 7.2</a> describes a RECOMMENDED padding
-mechanism for clients aimed at reducing potential information leakage.<a href="#section-10.7-1" class="pilcrow">¶</a></p>
+mechanism for clients aimed at reducing potential information leakage.<a href="#section-10.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="active-attack-mitigations">
-<section id="section-10.8">
+<section id="section-10.7">
         <h3 id="name-active-attack-mitigations">
-<a href="#section-10.8" class="section-number selfRef">10.8. </a><a href="#name-active-attack-mitigations" class="section-name selfRef">Active Attack Mitigations</a>
+<a href="#section-10.7" class="section-number selfRef">10.7. </a><a href="#name-active-attack-mitigations" class="section-name selfRef">Active Attack Mitigations</a>
         </h3>
-<p id="section-10.8-1">This section describes the rationale for ECH properties and mechanics as defenses
+<p id="section-10.7-1">This section describes the rationale for ECH properties and mechanics as defenses
 against active attacks. In all the attacks below, the attacker is on-path between
 the target client and server. The goal of the attacker is to learn private information
-about the inner ClientHello, such as the true SNI value.<a href="#section-10.8-1" class="pilcrow">¶</a></p>
+about the inner ClientHello, such as the true SNI value.<a href="#section-10.7-1" class="pilcrow">¶</a></p>
 <div id="flow-client-reaction">
-<section id="section-10.8.1">
+<section id="section-10.7.1">
           <h4 id="name-client-reaction-attack-miti">
-<a href="#section-10.8.1" class="section-number selfRef">10.8.1. </a><a href="#name-client-reaction-attack-miti" class="section-name selfRef">Client Reaction Attack Mitigation</a>
+<a href="#section-10.7.1" class="section-number selfRef">10.7.1. </a><a href="#name-client-reaction-attack-miti" class="section-name selfRef">Client Reaction Attack Mitigation</a>
           </h4>
-<p id="section-10.8.1-1">This attack uses the client's reaction to an incorrect certificate as an oracle.
+<p id="section-10.7.1-1">This attack uses the client's reaction to an incorrect certificate as an oracle.
 The attacker intercepts a legitimate ClientHello and replies with a
 ServerHello, Certificate, CertificateVerify, and Finished messages, wherein the Certificate
 message contains a "test" certificate for the domain name it wishes to query. If the client
@@ -2238,10 +2214,10 @@ produces a verification failure alert because of the mismatch faster than it wou
 the Certificate signature validation, information about the name leaks. Note that the
 attacker can also withhold the CertificateVerify message. In that scenario, a client
 which first verifies the Certificate would then respond similarly and leak the same
-information.<a href="#section-10.8.1-1" class="pilcrow">¶</a></p>
+information.<a href="#section-10.7.1-1" class="pilcrow">¶</a></p>
 <span id="name-client-reaction-attack"></span><div id="flow-diagram-client-reaction">
 <figure id="figure-3">
-            <div class="artwork art-text alignLeft" id="section-10.8.1-2.1">
+            <div class="artwork art-text alignLeft" id="section-10.7.1-2.1">
 <pre>
  Client                         Attacker                      Server
    ClientHello
@@ -2263,18 +2239,18 @@ information.<a href="#section-10.8.1-1" class="pilcrow">¶</a></p>
 <a href="#name-client-reaction-attack" class="selfRef">Client reaction attack</a>
             </figcaption></figure>
 </div>
-<p id="section-10.8.1-3">The "ech_nonce" extension in the inner ClientHello prevents this attack. In particular,
+<p id="section-10.7.1-3">The "ech_nonce" extension in the inner ClientHello prevents this attack. In particular,
 since the attacker does not have access to this value, it cannot produce the right transcript
 and handshake keys needed for encrypting the Certificate message. Thus, the client will fail
-to decrypt the Certificate and abort the connection.<a href="#section-10.8.1-3" class="pilcrow">¶</a></p>
+to decrypt the Certificate and abort the connection.<a href="#section-10.7.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="flow-hrr-hijack">
-<section id="section-10.8.2">
+<section id="section-10.7.2">
           <h4 id="name-helloretryrequest-hijack-mi">
-<a href="#section-10.8.2" class="section-number selfRef">10.8.2. </a><a href="#name-helloretryrequest-hijack-mi" class="section-name selfRef">HelloRetryRequest Hijack Mitigation</a>
+<a href="#section-10.7.2" class="section-number selfRef">10.7.2. </a><a href="#name-helloretryrequest-hijack-mi" class="section-name selfRef">HelloRetryRequest Hijack Mitigation</a>
           </h4>
-<p id="section-10.8.2-1">This attack aims to exploit server HRR state management to recover information about
+<p id="section-10.7.2-1">This attack aims to exploit server HRR state management to recover information about
 a legitimate ClientHello using its own attacker-controlled ClientHello.
 To begin, the attacker intercepts and forwards a legitimate ClientHello with an
 "encrypted_client_hello" (ech) extension to the server, which triggers a
@@ -2284,10 +2260,10 @@ contents of the first ClientHello and HelloRetryRequest exchange with the result
 that the server encrypts the Certificate to the attacker. If the server
 used the SNI from the first ClientHello and the key share from the second
 (attacker-controlled) ClientHello, the Certificate produced would leak the
-client's chosen SNI to the attacker.<a href="#section-10.8.2-1" class="pilcrow">¶</a></p>
+client's chosen SNI to the attacker.<a href="#section-10.7.2-1" class="pilcrow">¶</a></p>
 <span id="name-helloretryrequest-hijack-at"></span><div id="flow-diagram-hrr-hijack">
 <figure id="figure-4">
-            <div class="artwork art-text alignLeft" id="section-10.8.2-2.1">
+            <div class="artwork art-text alignLeft" id="section-10.7.2-2.1">
 <pre>
  Client                         Attacker                      Server
    ClientHello
@@ -2315,25 +2291,25 @@ client's chosen SNI to the attacker.<a href="#section-10.8.2-1" class="pilcrow">
 <a href="#name-helloretryrequest-hijack-at" class="selfRef">HelloRetryRequest hijack attack</a>
             </figcaption></figure>
 </div>
-<p id="section-10.8.2-3">This attack is mitigated by binding the first and second ClientHello messages together.
+<p id="section-10.7.2-3">This attack is mitigated by binding the first and second ClientHello messages together.
 In particular, since the attacker does not possess the ech_hrr_key, it cannot
 generate a valid encryption of the second inner ClientHello. The server will
-attempt decryption using ech_hrr_key, detect failure, and fail the connection.<a href="#section-10.8.2-3" class="pilcrow">¶</a></p>
-<p id="section-10.8.2-4">If the second ClientHello were not bound to the first, it might be possible
+attempt decryption using ech_hrr_key, detect failure, and fail the connection.<a href="#section-10.7.2-3" class="pilcrow">¶</a></p>
+<p id="section-10.7.2-4">If the second ClientHello were not bound to the first, it might be possible
 for the server to act as an oracle if it required parameters from the first
 ClientHello to match that of the second ClientHello. For example, imagine
 the client's original SNI value in the inner ClientHello is "example.com",
 and the attacker's hijacked SNI value in its inner ClientHello is "test.com".
 A server which checks these for equality and changes behavior based on the
-result can be used as an oracle to learn the client's SNI.<a href="#section-10.8.2-4" class="pilcrow">¶</a></p>
+result can be used as an oracle to learn the client's SNI.<a href="#section-10.7.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="flow-resumption-oracle">
-<section id="section-10.8.3">
+<section id="section-10.7.3">
           <h4 id="name-resumption-psk-oracle-mitig">
-<a href="#section-10.8.3" class="section-number selfRef">10.8.3. </a><a href="#name-resumption-psk-oracle-mitig" class="section-name selfRef">Resumption PSK Oracle Mitigation</a>
+<a href="#section-10.7.3" class="section-number selfRef">10.7.3. </a><a href="#name-resumption-psk-oracle-mitig" class="section-name selfRef">Resumption PSK Oracle Mitigation</a>
           </h4>
-<p id="section-10.8.3-1">This attack uses resumption PSKs as an oracle for dictionary attacks against
+<p id="section-10.7.3-1">This attack uses resumption PSKs as an oracle for dictionary attacks against
 a given ClientHello's true SNI. To begin, the attacker first interacts
 with a server to obtain a resumption ticket for a given test domain, such
 as "test.com". Later, upon receipt of a legitimate ClientHello without a PSK
@@ -2342,10 +2318,10 @@ ClientHello. Assume the server then validates the PSK binder on the outer
 ClientHello and chooses connection parameters based on the inner ClientHello.
 A server which then validates information in the outer ClientHello ticket against
 information in the inner ClientHello, such as the SNI, introduces an oracle that
-can be used to test the encrypted SNI value of specific ClientHello messages.<a href="#section-10.8.3-1" class="pilcrow">¶</a></p>
+can be used to test the encrypted SNI value of specific ClientHello messages.<a href="#section-10.7.3-1" class="pilcrow">¶</a></p>
 <span id="name-message-flow-for-resumption"></span><div id="tls-resumption-psk">
 <figure id="figure-5">
-            <div class="artwork art-text alignLeft" id="section-10.8.3-2.1">
+            <div class="artwork art-text alignLeft" id="section-10.7.3-2.1">
 <pre>
        Client                    Attacker                    Server
 
@@ -2369,11 +2345,11 @@ can be used to test the encrypted SNI value of specific ClientHello messages.<a 
 <a href="#name-message-flow-for-resumption" class="selfRef">Message flow for resumption and PSK</a>
             </figcaption></figure>
 </div>
-<p id="section-10.8.3-3">ECH mitigates against this attack by requiring servers not mix-and-match
+<p id="section-10.7.3-3">ECH mitigates against this attack by requiring servers not mix-and-match
 information from the inner and outer ClientHello. For example, if the server
 accepts the inner ClientHello, it does not validate binders in the outer
 ClientHello. This means that ECH PSKs are used within the HPKE encryption
-envelope.<a href="#section-10.8.3-3" class="pilcrow">¶</a></p>
+envelope.<a href="#section-10.7.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
